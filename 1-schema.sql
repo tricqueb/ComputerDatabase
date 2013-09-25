@@ -26,10 +26,10 @@ create index ix_computer_company_1 on computer (company_id);
 #-----------------------------------
 #USER RIGHTS MANAGEMENT
 #-----------------------------------
-CREATE USER 'jee-computer-database'@'localhost' IDENTIFIED BY 'password';
+CREATE USER 'jee-cdb'@'localhost' IDENTIFIED BY 'password';
 
-GRANT ALL PRIVILEGES ON `computer`.* TO 'jee-computer-database'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON `computer`.* TO 'jee-cdb'@'localhost' WITH GRANT OPTION;
 
-GRANT ALL PRIVILEGES ON `company`.* TO 'jee-computer-database'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON `company`.* TO 'jee-cdb'@'localhost' WITH GRANT OPTION;
 
 FLUSH PRIVILEGES;
