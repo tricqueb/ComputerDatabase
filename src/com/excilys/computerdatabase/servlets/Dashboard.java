@@ -49,10 +49,8 @@ public class Dashboard extends HttpServlet {
 			String search = request.getParameter("search");
 			if (search == null)
 				search = "%";
-			System.out.println("Search: " + search);
 			List<Computer> cList = ComputerService.getInstance().find(search);
-
-			System.out.println("Computers List " + cList);
+			System.out.println("###Dashboard - Search: " + search);
 
 			// Servlet context attributes
 			getServletContext().setAttribute("cList", cList);
@@ -73,12 +71,16 @@ public class Dashboard extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
+	 * 
+	 *      Add a new computer
 	 */
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		Context ctx;
 		try {
 			ctx = new InitialContext();
+
+			// Gettings parameters
 			String name = request.getParameter("name");
 			Date introducedDate = Date.valueOf(request
 					.getParameter("introducedDate"));
@@ -86,21 +88,19 @@ public class Dashboard extends HttpServlet {
 					.getParameter("discontinuedDate"));
 			Long companyId = Long.parseLong(request.getParameter("company"));
 
+			// Getting corresponding company
 			Company cy = CompanyService.getInstance().find(companyId);
-
 			Computer c = new Computer(cy, name, introducedDate,
 					discontinuedDate);
-			System.out.println("Dashboard - Ajout de " + name
+
+			// Adding new computer to db
+			System.out.println("###Dashboard - Ajout de " + name
 					+ " de la companie " + c.getCompany().getName());
 			ComputerService.getInstance().create(c);
 
-			// RequestDispatcher rd =
-			// getServletContext().getRequestDispatcher("/computer-database/Dashboard");
-
-			// rd.forward(request, response);
-			doGet(request, response);
+			// Back to main jsp
+			response.sendRedirect("Dashboard");
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -12,12 +12,12 @@
 <script
 	src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 </head> 
-<!-- <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">-->
+
 <link href="css/main.css" rel="stylesheet" media="screen"> 
 </head>
 <body class="">
 	<nav class="navbar navbar-inverse" role="navigation">
 	<div class="navbar-header">
-			<a class="navbar-brand" href="dashboard.jsp"> Application - Computer Database </a>
+			<a class="navbar-brand" href="Dashboard"> Application - Computer Database </a>
 	</div>
 	</nav>

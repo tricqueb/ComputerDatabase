@@ -2,14 +2,23 @@ package com.excilys.computerdatabaseDao;
 
 import java.util.List;
 
+/**
+ * Describe a classic DAO
+ * 
+ * @author excilys
+ * 
+ * @param <T>
+ */
 public interface IDao<T> {
 	/**
+	 * Add a new element to db
 	 * 
 	 * @param o
 	 */
 	public void create(T o);
 
 	/**
+	 * Delete an existing element to db
 	 * 
 	 * @param o
 	 */
@@ -33,6 +42,7 @@ public interface IDao<T> {
 	public T find(long o);
 
 	/**
+	 * Replace an existing element by another
 	 * 
 	 * @param o
 	 */
