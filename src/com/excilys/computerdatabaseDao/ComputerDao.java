@@ -19,17 +19,19 @@ import com.excilys.computerdatabase.models.Computer;
  */
 public enum ComputerDao implements IDao<Computer> {
 	INSTANCE;
-	private ComputerDao() {
-	}
-
-	public static ComputerDao getInstance() {
-		return INSTANCE;
-	}
 
 	Connection cn;
 	ConnectionManager cnManager;
 	Statement stmt = null;
 	ResultSet rs = null;
+
+	private ComputerDao() {
+		cnManager = new ConnectionManager();
+	}
+
+	public static ComputerDao getInstance() {
+		return INSTANCE;
+	}
 
 	// FIXME Validation (null...)
 	public void create(Computer computer) {
@@ -104,6 +106,22 @@ public enum ComputerDao implements IDao<Computer> {
 	}
 
 	@Override
+	public List<Computer> find() {
+		cn = cnManager.getConnection();
+		PreparedStatement stmt = null;
+		try {
+			stmt = cn
+					.prepareStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id;");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return doFind(stmt);
+	}
+
+	// TODO add search criteria parameter to do more than lookign for name
+	// (WARNING : Care about data type)
+	@Override
 	public List<Computer> find(String computerName) {
 
 		cn = cnManager.getConnection();
@@ -136,7 +154,8 @@ public enum ComputerDao implements IDao<Computer> {
 		return doFind(stmt).get(0);
 	}
 
-	public List<Computer> doFind(PreparedStatement stmt) {
+	// TODO Test if null values
+	private List<Computer> doFind(PreparedStatement stmt) {
 		List<Computer> cList = new ArrayList<Computer>();
 		try {
 

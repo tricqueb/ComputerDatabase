@@ -2,6 +2,8 @@ package com.excilys.computerdatabaseDao;
 
 import java.util.List;
 
+import com.excilys.computerdatabase.models.Computer;
+
 /**
  * Describe a classic DAO
  * 
@@ -47,4 +49,6 @@ public interface IDao<T> {
 	 * @param o
 	 */
 	public void update(T o);
+
+	List<Computer> find();
 }

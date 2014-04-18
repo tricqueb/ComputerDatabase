@@ -8,20 +8,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computerdatabase.models.Company;
+import com.excilys.computerdatabase.models.Computer;
 
 public enum CompanyDao implements IDao<Company> {
-
 	INSTANCE;
+
+	Connection cn;
+	ConnectionManager cnManager;
+	private ResultSet rs;
+
 	private CompanyDao() {
+		cnManager = new ConnectionManager();
 	}
 
 	public static CompanyDao getInstance() {
 		return INSTANCE;
 	}
-
-	Connection cn;
-	ConnectionManager cnManager;
-	private ResultSet rs;
 
 	@Override
 	public void create(Company c) {
@@ -105,6 +107,12 @@ public enum CompanyDao implements IDao<Company> {
 			}
 		}
 		return cList;
+	}
+
+	@Override
+	public List<Computer> find() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
