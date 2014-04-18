@@ -2,8 +2,8 @@ package com.excilys.computerdatabase.services;
 
 import java.util.List;
 
+import com.excilys.computerdatabase.dao.CompanyDao;
 import com.excilys.computerdatabase.models.Company;
-import com.excilys.computerdatabaseDao.CompanyDao;
 
 public enum CompanyService {
 	INSTANCE;

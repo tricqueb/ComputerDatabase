@@ -3,9 +3,9 @@ package com.excilys.computerdatabase.services;
 import java.util.List;
 import java.util.Map;
 
+import com.excilys.computerdatabase.dao.ComputerDao;
 import com.excilys.computerdatabase.models.Company;
 import com.excilys.computerdatabase.models.Computer;
-import com.excilys.computerdatabaseDao.ComputerDao;
 
 public enum ComputerService {
 	INSTANCE;
