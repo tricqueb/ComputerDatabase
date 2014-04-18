@@ -18,9 +18,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
-import com.excilys.computerdatabase.models.Company;
 import com.excilys.computerdatabase.models.Computer;
-import com.excilys.computerdatabase.services.CompanyService;
 import com.excilys.computerdatabase.services.ComputerService;
 
 /**
@@ -54,20 +52,19 @@ public class Dashboard extends HttpServlet {
 		try {
 			ctx = new InitialContext();
 
-			// CompanyList
-			List<Company> cyList = CompanyService.getInstance().find("%");
-
 			// Search filter
 			String search = request.getParameter("search");
 
+			List<Computer> cList;
 			if (search == null)
-				search = "%";
-			List<Computer> cList = ComputerService.getInstance().find(search);
+				cList = ComputerService.getInstance().find();
+			else
+				cList = ComputerService.getInstance().find(search);
 			logger.debug("Parameters : {} ", search);
+			logger.debug("Result : {} ", cList);
 
 			// Servlet context attributes
-			getServletContext().setAttribute("cList", cList);
-			getServletContext().setAttribute("cyList", cyList);
+			request.setAttribute("cList", cList);
 
 			// forward
 			RequestDispatcher rd = getServletContext().getRequestDispatcher(

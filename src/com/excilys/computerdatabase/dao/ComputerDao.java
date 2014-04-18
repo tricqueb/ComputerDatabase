@@ -9,6 +9,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.computerdatabase.models.Company;
 import com.excilys.computerdatabase.models.Computer;
 
@@ -19,8 +22,10 @@ import com.excilys.computerdatabase.models.Computer;
  */
 public enum ComputerDao implements IDao<Computer> {
 	INSTANCE;
+	private static final Logger logger = LoggerFactory
+			.getLogger(ComputerDao.class);
 
-	Connection cn;
+	Connection cn = null;
 	ConnectionManager cnManager;
 	Statement stmt = null;
 	ResultSet rs = null;
@@ -46,30 +51,26 @@ public enum ComputerDao implements IDao<Computer> {
 			stmt.setLong(5, computer.getCompany().getId());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-			System.out
-					.println("ComputerDao - Creation Error " + e.getMessage());
+			logger.error("ComputerDao - Creation Error " + e.getMessage());
 			e.printStackTrace();
 		} finally {
 			try {
 				if (rs != null)
 					rs.close();
 			} catch (SQLException e) {
-				System.out.println("ComputerDao - Closing Error : "
-						+ e.getMessage());
+				logger.error("ComputerDao - Closing Error : " + e.getMessage());
 			}
 			try {
 				if (stmt != null)
 					stmt.close();
 			} catch (SQLException e) {
-				System.out.println("ComputerDao - Closing Error : "
-						+ e.getMessage());
+				logger.error("ComputerDao - Closing Error : " + e.getMessage());
 			}
 			try {
 				if (cn != null)
 					cn.close();
 			} catch (SQLException e) {
-				System.out.println("ComputerDao - Closing Error : "
-						+ e.getMessage());
+				logger.error("ComputerDao - Closing Error : " + e.getMessage());
 			}
 
 		}
@@ -85,8 +86,7 @@ public enum ComputerDao implements IDao<Computer> {
 			stmt.setString(1, Long.toString(computer.getId()));
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-			System.out.println("ComputerDao - Deletion Error: "
-					+ e.getMessage());
+			logger.error("Deletion statement Error: " + e.getMessage());
 			e.printStackTrace();
 		} finally {
 			try {
@@ -99,7 +99,7 @@ public enum ComputerDao implements IDao<Computer> {
 				if (cn != null)
 					cn.close();
 			} catch (SQLException e) {
-				System.out.println("ComputerDao - Closing Error : " + e);
+				logger.error("Closing Error : " + e.getMessage());
 			}
 		}
 
@@ -107,19 +107,20 @@ public enum ComputerDao implements IDao<Computer> {
 
 	@Override
 	public List<Computer> find() {
+		logger.debug("Find all");
 		cn = cnManager.getConnection();
 		PreparedStatement stmt = null;
 		try {
 			stmt = cn
 					.prepareStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id;");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			logger.error("Statement Error : " + e.getMessage());
 			e.printStackTrace();
 		}
 		return doFind(stmt);
 	}
 
-	// TODO add search criteria parameter to do more than lookign for name
+	// TODO add search criteria parameter to do more than looking for name
 	// (WARNING : Care about data type)
 	@Override
 	public List<Computer> find(String computerName) {
@@ -132,7 +133,7 @@ public enum ComputerDao implements IDao<Computer> {
 					.prepareStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.name LIKE ?;");
 			stmt.setString(1, "%" + computerName + "%");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			logger.error("Statement Error : " + e.getMessage());
 			e.printStackTrace();
 		}
 		return doFind(stmt);
@@ -148,7 +149,7 @@ public enum ComputerDao implements IDao<Computer> {
 					.prepareStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.id = ?;");
 			stmt.setLong(1, computerId);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			logger.error("Statement Error : " + e.getMessage());
 			e.printStackTrace();
 		}
 		return doFind(stmt).get(0);
@@ -156,10 +157,11 @@ public enum ComputerDao implements IDao<Computer> {
 
 	// TODO Test if null values
 	private List<Computer> doFind(PreparedStatement stmt) {
+		logger.debug("do Find");
 		List<Computer> cList = new ArrayList<Computer>();
 		try {
-
 			rs = stmt.executeQuery();
+			logger.debug("Filling Computer list");
 			while (rs.next()) {
 				Computer c = new Computer();
 				Company cy = new Company();
@@ -172,9 +174,10 @@ public enum ComputerDao implements IDao<Computer> {
 				c.setCompany(cy);
 				cList.add(c);
 			}
+			logger.debug("Done: {}", cList.size());
 
 		} catch (SQLException e) {
-			System.out.println("ComputerDao - find Error: " + e.getMessage());
+			logger.error("find query Error: " + e.getMessage());
 			e.printStackTrace();
 		} finally {
 			try {
@@ -187,7 +190,7 @@ public enum ComputerDao implements IDao<Computer> {
 				if (cn != null)
 					cn.close();
 			} catch (SQLException e) {
-				System.out.println("ComputerDao - Closing Error : " + e);
+				logger.error("Closing Error: " + e);
 			}
 		}
 		return cList;

@@ -7,12 +7,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.computerdatabase.models.Company;
 import com.excilys.computerdatabase.models.Computer;
 
 public enum CompanyDao implements IDao<Company> {
 	INSTANCE;
-
+	private static final Logger logger = LoggerFactory
+			.getLogger(CompanyDao.class);
 	Connection cn;
 	ConnectionManager cnManager;
 	private ResultSet rs;

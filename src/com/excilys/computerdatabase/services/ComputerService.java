@@ -53,4 +53,8 @@ public enum ComputerService {
 
 	}
 
+	public List<Computer> find() {
+		return ComputerDao.getInstance().find();
+
+	}
 }
