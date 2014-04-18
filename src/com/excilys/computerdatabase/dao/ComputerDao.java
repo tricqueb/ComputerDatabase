@@ -43,12 +43,11 @@ public enum ComputerDao implements IDao<Computer> {
 		try {
 			cn = cnManager.getConnection();
 			PreparedStatement stmt = cn
-					.prepareStatement("INSERT into computer(id,name,introduced,discontinued,company_id) VALUES(?,?,?,?,?);");
-			stmt.setLong(1, computer.getId());
-			stmt.setString(2, computer.getName());
-			stmt.setDate(3, new Date(computer.getIntroduced().getTime()));
-			stmt.setDate(4, new Date(computer.getDiscontinued().getTime()));
-			stmt.setLong(5, computer.getCompany().getId());
+					.prepareStatement("INSERT into computer(name,introduced,discontinued,company_id) VALUES(?,?,?,?);");
+			stmt.setString(1, computer.getName());
+			stmt.setDate(2, new Date(computer.getIntroduced().getTime()));
+			stmt.setDate(3, new Date(computer.getDiscontinued().getTime()));
+			stmt.setLong(4, computer.getCompany().getId());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 			logger.error("ComputerDao - Creation Error " + e.getMessage());

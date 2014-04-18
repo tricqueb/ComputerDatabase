@@ -66,27 +66,42 @@ public class AddComputer extends HttpServlet {
 		Context ctx;
 		try {
 			ctx = new InitialContext();
-			logger.debug("Getting parameters");
+
 			// Gettings parameters
 			String name = request.getParameter("name");
-			Date introducedDate = Date.valueOf(request
-					.getParameter("introducedDate"));
-			Date discontinuedDate = Date.valueOf(request
-					.getParameter("discontinuedDate"));
-			Long companyId = Long.parseLong(request.getParameter("company"));
+			String introducedDateString = request
+					.getParameter("introducedDate");
+			String discontinuedDateString = request
+					.getParameter("discontinuedDate");
+			String companyIdString = request.getParameter("company");
+			logger.debug("Getting parameters {} {} {} {}", name,
+					introducedDateString, discontinuedDateString,
+					companyIdString);
+
+			Date introducedDate = null;
+			Date discontinuedDate = null;
+			if (!introducedDateString.isEmpty())
+				introducedDate = Date.valueOf(introducedDateString);
+			if (!discontinuedDateString.isEmpty())
+				discontinuedDate = Date.valueOf(discontinuedDateString);
+
+			Long companyId = null;
+			Company cy = null;
+			Computer c = null;
+			if (!"null".contentEquals(companyIdString)) {
+				companyId = Long.parseLong(companyIdString);
+				logger.debug("Getting company !");
+				// Getting corresponding company
+				cy = CompanyService.getInstance().find(companyId);
+				logger.debug("The company : {}", cy);
+			}
+			c = new Computer(cy, name, introducedDate, discontinuedDate);
+
 			logger.debug("Computer parameters : {} {} {} {}", name,
 					introducedDate, discontinuedDate, companyId);
 
-			logger.debug("Getting company !");
-			// Getting corresponding company
-			Company cy = CompanyService.getInstance().find(companyId);
-			Computer c = new Computer(cy, name, introducedDate,
-					discontinuedDate);
-			logger.debug("The company : {}", c);
-
 			// Adding new computer to db
-			logger.debug("Ajout de {} de la companie {}", name, c.getCompany()
-					.getName());
+			logger.debug("Ajout de {} de la companie {}", name, c);
 			ComputerService.getInstance().create(c);
 
 			// Back to main jsp
