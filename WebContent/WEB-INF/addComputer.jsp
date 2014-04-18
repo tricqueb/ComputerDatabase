@@ -5,7 +5,7 @@
 
 	<h1>Add Computer</h1>
 	<div class="form-group">
-	<form action="Dashboard" method="POST">
+	<form action="" method="POST">
 		<fieldset>
 			<div class="clearfix">
 				<label for="name">Computer name:</label>
@@ -44,4 +44,4 @@
 	</div>
 </div>
 
-<jsp:include page="include/footer.jsp" />
+<jsp:include page="/WEB-INF/include/footer.jsp" />

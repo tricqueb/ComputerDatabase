@@ -7,16 +7,11 @@ import com.excilys.computerdatabase.models.Company;
 import com.excilys.computerdatabase.models.Computer;
 import com.excilys.computerdatabaseDao.ComputerDao;
 
-public class ComputerService {
-
-	/** Constructeur privé */
+public enum ComputerService {
+	INSTANCE;
 	private ComputerService() {
 	}
 
-	/** Instance unique pré-initialisée */
-	private static ComputerService INSTANCE = new ComputerService();
-
-	/** Point d'accès pour l'instance unique du singleton */
 	public static ComputerService getInstance() {
 		return INSTANCE;
 	}

@@ -1,7 +1,6 @@
 package com.excilys.computerdatabase.servlets;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.util.List;
 
 import javax.naming.Context;
@@ -58,7 +57,7 @@ public class Dashboard extends HttpServlet {
 
 			// forward
 			RequestDispatcher rd = getServletContext().getRequestDispatcher(
-					"/dashboard.jsp");
+					"/WEB-INF/dashboard.jsp");
 			rd.forward(request, response);
 
 		} catch (NamingException e) {
@@ -76,32 +75,6 @@ public class Dashboard extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		Context ctx;
-		try {
-			ctx = new InitialContext();
 
-			// Gettings parameters
-			String name = request.getParameter("name");
-			Date introducedDate = Date.valueOf(request
-					.getParameter("introducedDate"));
-			Date discontinuedDate = Date.valueOf(request
-					.getParameter("discontinuedDate"));
-			Long companyId = Long.parseLong(request.getParameter("company"));
-
-			// Getting corresponding company
-			Company cy = CompanyService.getInstance().find(companyId);
-			Computer c = new Computer(cy, name, introducedDate,
-					discontinuedDate);
-
-			// Adding new computer to db
-			System.out.println("###Dashboard - Ajout de " + name
-					+ " de la companie " + c.getCompany().getName());
-			ComputerService.getInstance().create(c);
-
-			// Back to main jsp
-			response.sendRedirect("Dashboard");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
 	}
 }

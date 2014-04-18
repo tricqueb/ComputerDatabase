@@ -9,24 +9,19 @@ import java.util.List;
 
 import com.excilys.computerdatabase.models.Company;
 
-public class CompanyDao implements IDao<Company> {
+public enum CompanyDao implements IDao<Company> {
+
+	INSTANCE;
+	private CompanyDao() {
+	}
+
+	public static CompanyDao getInstance() {
+		return INSTANCE;
+	}
 
 	Connection cn;
 	ConnectionManager cnManager;
 	private ResultSet rs;
-
-	/** Constructeur privé */
-	private CompanyDao() {
-		cnManager = new ConnectionManager();
-	}
-
-	/** Instance unique pré-initialisée */
-	private static CompanyDao INSTANCE = new CompanyDao();
-
-	/** Point d'accès pour l'instance unique du singleton */
-	public static CompanyDao getInstance() {
-		return INSTANCE;
-	}
 
 	@Override
 	public void create(Company c) {

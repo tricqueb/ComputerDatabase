@@ -7,7 +7,6 @@ public class Computer {
 	public Computer(Company company, String name, Date introduced,
 			Date discontinued) {
 		super();
-		this.id = id;
 		this.company = company;
 		this.name = name;
 		this.introduced = introduced;

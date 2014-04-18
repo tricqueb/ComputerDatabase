@@ -47,5 +47,4 @@ public interface IDao<T> {
 	 * @param o
 	 */
 	public void update(T o);
-
 }

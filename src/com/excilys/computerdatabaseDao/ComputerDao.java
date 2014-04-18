@@ -17,31 +17,21 @@ import com.excilys.computerdatabase.models.Computer;
  * @author excilys
  * 
  */
-public class ComputerDao implements IDao<Computer> {
-
-	private Connection cn = null;
-	private ConnectionManager cnManager;
-
-	/** Constructeur privé */
+public enum ComputerDao implements IDao<Computer> {
+	INSTANCE;
 	private ComputerDao() {
-		cnManager = new ConnectionManager();
 	}
 
-	/** Instance unique pré-initialisée */
-	private static ComputerDao INSTANCE = new ComputerDao();
-
-	/** Point d'accès pour l'instance unique du singleton */
 	public static ComputerDao getInstance() {
 		return INSTANCE;
 	}
 
-	// Problème accès concurrent avec singleton ?
+	Connection cn;
+	ConnectionManager cnManager;
 	Statement stmt = null;
 	ResultSet rs = null;
 
-	/**
-	 * 
-	 */
+	// FIXME Validation (null...)
 	public void create(Computer computer) {
 		try {
 			cn = cnManager.getConnection();
@@ -61,16 +51,25 @@ public class ComputerDao implements IDao<Computer> {
 			try {
 				if (rs != null)
 					rs.close();
-
+			} catch (SQLException e) {
+				System.out.println("ComputerDao - Closing Error : "
+						+ e.getMessage());
+			}
+			try {
 				if (stmt != null)
 					stmt.close();
-
+			} catch (SQLException e) {
+				System.out.println("ComputerDao - Closing Error : "
+						+ e.getMessage());
+			}
+			try {
 				if (cn != null)
 					cn.close();
 			} catch (SQLException e) {
 				System.out.println("ComputerDao - Closing Error : "
 						+ e.getMessage());
 			}
+
 		}
 
 	}

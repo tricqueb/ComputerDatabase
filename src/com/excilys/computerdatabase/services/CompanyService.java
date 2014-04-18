@@ -5,15 +5,11 @@ import java.util.List;
 import com.excilys.computerdatabase.models.Company;
 import com.excilys.computerdatabaseDao.CompanyDao;
 
-public class CompanyService {
-	/** Constructeur privé */
+public enum CompanyService {
+	INSTANCE;
 	private CompanyService() {
 	}
 
-	/** Instance unique pré-initialisée */
-	private static CompanyService INSTANCE = new CompanyService();
-
-	/** Point d'accès pour l'instance unique du singleton */
 	public static CompanyService getInstance() {
 		return INSTANCE;
 	}

@@ -1,4 +1,4 @@
-<jsp:include page="include/header.jsp" />
+<jsp:include page="/WEB-INF/include/header.jsp" />
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <c:set var="computerCount" value="${cList.size()}" />
@@ -15,7 +15,7 @@
 				placeholder="Search name"> <input type="submit"
 				id="searchsubmit" value="Filter by name" class="btn btn-primary">
 		</form>
-		<a class="btn btn-success" id="add" href="addComputer.jsp">Add Computer</a>
+		<a class="btn btn-success" id="add" href="AddComputer">Add Computer</a>
 		</div>
 </div>
 
@@ -48,4 +48,4 @@
 </table>
 </div>
 
-<jsp:include page="include/footer.jsp" />
+<jsp:include page="/WEB-INF/include/footer.jsp" />
