@@ -24,11 +24,11 @@ public class Computer {
 				+ discontinued + "]";
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -64,7 +64,7 @@ public class Computer {
 		this.discontinued = discontinued;
 	}
 
-	private long id;
+	private Long id;
 	private Company company;
 	private String name;
 	private Date introduced, discontinued;
