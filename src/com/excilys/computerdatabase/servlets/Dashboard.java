@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
+
 import com.excilys.computerdatabase.models.Company;
 import com.excilys.computerdatabase.models.Computer;
 import com.excilys.computerdatabase.services.CompanyService;
@@ -25,13 +28,18 @@ import com.excilys.computerdatabase.services.ComputerService;
  */
 public class Dashboard extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LoggerFactory
+			.getLogger(Dashboard.class);
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public Dashboard() {
 		super();
-		// TODO Auto-generated constructor stub
+		// TODO: Decide between this and dedicated servlet in web.xml
+		LoggerContext logCtx = (LoggerContext) LoggerFactory
+				.getILoggerFactory();
+		StatusPrinter.print(logCtx);
 	}
 
 	/**
@@ -40,8 +48,6 @@ public class Dashboard extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		Logger logger = LoggerFactory.getLogger(Dashboard.class);
-		logger.debug("Little info");
 		logger.debug("GET !");
 
 		Context ctx;
@@ -58,7 +64,6 @@ public class Dashboard extends HttpServlet {
 				search = "%";
 			List<Computer> cList = ComputerService.getInstance().find(search);
 			logger.debug("Parameters : {} ", search);
-			System.out.println("###Dashboard - Search: " + search);
 
 			// Servlet context attributes
 			getServletContext().setAttribute("cList", cList);
@@ -70,20 +75,8 @@ public class Dashboard extends HttpServlet {
 			rd.forward(request, response);
 
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
+			logger.error("Naming {}", e.getMessage());
 			e.printStackTrace();
 		}
-
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 * 
-	 *      Add a new computer
-	 */
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-
 	}
 }
