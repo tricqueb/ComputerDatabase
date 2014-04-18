@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.computerdatabase.models.Company;
 import com.excilys.computerdatabase.models.Computer;
 import com.excilys.computerdatabase.services.CompanyService;
@@ -37,6 +40,10 @@ public class Dashboard extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		Logger logger = LoggerFactory.getLogger(Dashboard.class);
+		logger.debug("Little info");
+		logger.debug("GET !");
+
 		Context ctx;
 		try {
 			ctx = new InitialContext();
@@ -46,9 +53,11 @@ public class Dashboard extends HttpServlet {
 
 			// Search filter
 			String search = request.getParameter("search");
+
 			if (search == null)
 				search = "%";
 			List<Computer> cList = ComputerService.getInstance().find(search);
+			logger.debug("Parameters : {} ", search);
 			System.out.println("###Dashboard - Search: " + search);
 
 			// Servlet context attributes
