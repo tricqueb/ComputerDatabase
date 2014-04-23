@@ -5,12 +5,13 @@
 
 	<h1>Add Computer</h1>
 	<div class="form-group">
-	<form action="" method="POST">
+	<form action="ComputerCrud" method="POST">
 		<fieldset>
+		
 			<div class="clearfix">
 				<label for="name">Computer name:</label>
 				<div class="input">
-					<input class="form-control" type="text" name="name" />
+					<input class="form-control" type="text" name="name" required />
 				</div>
 			</div>
 			<div class="clearfix">
@@ -38,7 +39,7 @@
 			</div>
 		</fieldset>
 		<div class="actions form-group">
-			<input type="submit"  value="Add" class="btn btn-success">
+			<input type="submit"  name="create" value="create" class="btn btn-success">
 			or <a href="Dashboard" class="btn btn-warning">Cancel</a>
 		</div>
 	</form>

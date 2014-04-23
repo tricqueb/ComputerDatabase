@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +26,10 @@ public enum ComputerDao implements IDao<Computer> {
 	private static final Logger logger = LoggerFactory
 			.getLogger(ComputerDao.class);
 
-	Connection cn = null;
-	ConnectionManager cnManager;
-	Statement stmt = null;
-	ResultSet rs = null;
+	private Connection cn = null;
+	private ConnectionManager cnManager;
+	private Statement stmt = null;
+	private ResultSet rs = null;
 
 	private ComputerDao() {
 		cnManager = new ConnectionManager();
@@ -38,40 +39,34 @@ public enum ComputerDao implements IDao<Computer> {
 		return INSTANCE;
 	}
 
-	// FIXME Validation (null...)
 	public void create(Computer computer) {
 		try {
 			cn = cnManager.getConnection();
 			PreparedStatement stmt = cn
 					.prepareStatement("INSERT into computer(name,introduced,discontinued,company_id) VALUES(?,?,?,?);");
 			stmt.setString(1, computer.getName());
-			stmt.setDate(2, new Date(computer.getIntroduced().getTime()));
-			stmt.setDate(3, new Date(computer.getDiscontinued().getTime()));
-			stmt.setLong(4, computer.getCompany().getId());
+
+			if (computer.getIntroduced() != null)
+				stmt.setDate(2, new Date(computer.getIntroduced().getTime()));
+			else
+				stmt.setNull(2, Types.NULL);
+
+			if (computer.getDiscontinued() != null)
+				stmt.setDate(3, new Date(computer.getDiscontinued().getTime()));
+			else
+				stmt.setNull(3, Types.NULL);
+
+			if (computer.getCompany() != null)
+				stmt.setLong(4, computer.getCompany().getId());
+			else
+				stmt.setNull(4, Types.NULL);
+
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-			logger.error("ComputerDao - Creation Error " + e.getMessage());
+			logger.error(" Creation Error " + e.getMessage());
 			e.printStackTrace();
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-			} catch (SQLException e) {
-				logger.error("ComputerDao - Closing Error : " + e.getMessage());
-			}
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException e) {
-				logger.error("ComputerDao - Closing Error : " + e.getMessage());
-			}
-			try {
-				if (cn != null)
-					cn.close();
-			} catch (SQLException e) {
-				logger.error("ComputerDao - Closing Error : " + e.getMessage());
-			}
-
+			disconnect();
 		}
 
 	}
@@ -81,27 +76,31 @@ public enum ComputerDao implements IDao<Computer> {
 		try {
 			cn = cnManager.getConnection();
 			PreparedStatement stmt = cn
-					.prepareStatement("DELETE c from computer where c.id=?;");
+					.prepareStatement("DELETE from computer where id=?;");
 			stmt.setString(1, Long.toString(computer.getId()));
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 			logger.error("Deletion statement Error: " + e.getMessage());
 			e.printStackTrace();
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-
-				if (stmt != null)
-					stmt.close();
-
-				if (cn != null)
-					cn.close();
-			} catch (SQLException e) {
-				logger.error("Closing Error : " + e.getMessage());
-			}
+			disconnect();
 		}
+	}
 
+	@Override
+	public void delete(Long id) {
+		try {
+			cn = cnManager.getConnection();
+			PreparedStatement stmt = cn
+					.prepareStatement("DELETE from computer where id=?;");
+			stmt.setString(1, Long.toString(id));
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			logger.error("Deletion statement Error: " + e.getMessage());
+			e.printStackTrace();
+		} finally {
+			disconnect();
+		}
 	}
 
 	@Override
@@ -127,7 +126,6 @@ public enum ComputerDao implements IDao<Computer> {
 		cn = cnManager.getConnection();
 		PreparedStatement stmt = null;
 		try {
-
 			stmt = cn
 					.prepareStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.name LIKE ?;");
 			stmt.setString(1, "%" + computerName + "%");
@@ -143,7 +141,6 @@ public enum ComputerDao implements IDao<Computer> {
 		cn = cnManager.getConnection();
 		PreparedStatement stmt = null;
 		try {
-
 			stmt = cn
 					.prepareStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.id = ?;");
 			stmt.setLong(1, computerId);
@@ -154,7 +151,6 @@ public enum ComputerDao implements IDao<Computer> {
 		return doFind(stmt).get(0);
 	}
 
-	// TODO Test if null values
 	private List<Computer> doFind(PreparedStatement stmt) {
 		logger.debug("do Find");
 		List<Computer> cList = new ArrayList<Computer>();
@@ -163,13 +159,17 @@ public enum ComputerDao implements IDao<Computer> {
 			logger.debug("Filling Computer list");
 			while (rs.next()) {
 				Computer c = new Computer();
-				Company cy = new Company();
+				Company cy = null;
 				c.setId(rs.getLong(1));
 				c.setName(rs.getString(2));
 				c.setIntroduced((rs.getDate(3)));
 				c.setDiscontinued(rs.getDate(4));
-				cy.setId(rs.getLong(5));
-				cy.setName(rs.getString(6));
+				if (rs.getLong(5) != 0) {
+					cy = new Company();
+					cy.setId(rs.getLong(5));
+					cy.setName(rs.getString(6));
+				}
+
 				c.setCompany(cy);
 				cList.add(c);
 			}
@@ -179,26 +179,70 @@ public enum ComputerDao implements IDao<Computer> {
 			logger.error("find query Error: " + e.getMessage());
 			e.printStackTrace();
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-
-				if (stmt != null)
-					stmt.close();
-
-				if (cn != null)
-					cn.close();
-			} catch (SQLException e) {
-				logger.error("Closing Error: " + e);
-			}
+			disconnect();
 		}
 		return cList;
 	}
 
 	@Override
 	public void update(Computer computer) {
-		// TODO Auto-generated method stub
+		try {
+			cn = cnManager.getConnection();
+			PreparedStatement stmt = cn
+					.prepareStatement("UPDATE computer SET name=?,introduced=?,discontinued=?,company_id=? where id=?;");
+			stmt.setString(1, computer.getName());
 
+			if (computer.getIntroduced() != null)
+				stmt.setDate(2, new Date(computer.getIntroduced().getTime()));
+			else
+				stmt.setNull(2, Types.NULL);
+
+			if (computer.getDiscontinued() != null)
+				stmt.setDate(3, new Date(computer.getDiscontinued().getTime()));
+			else {
+				logger.debug("Setting null value");
+				stmt.setNull(3, Types.NULL);
+			}
+
+			if (computer.getCompany() != null)
+				stmt.setLong(4, computer.getCompany().getId());
+			else
+				stmt.setNull(4, Types.NULL);
+
+			stmt.setLong(5, computer.getId());
+
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			logger.error(" Update Error " + e.getMessage());
+			e.printStackTrace();
+		} finally {
+			disconnect();
+		}
+	}
+
+	private void disconnect() {
+		try {
+			if (rs != null)
+				rs.close();
+		} catch (SQLException e) {
+			logger.error("Closing Error : " + e.getMessage());
+		} finally {
+			try {
+				if (stmt != null)
+					stmt.close();
+			} catch (SQLException e) {
+				logger.error("Closing Error : " + e.getMessage());
+			} finally {
+				try {
+					if (cn != null)
+						cn.close();
+				} catch (SQLException e) {
+					logger.error("ComputerDao - Closing Error : "
+							+ e.getMessage());
+				}
+
+			}
+		}
 	}
 
 	/**

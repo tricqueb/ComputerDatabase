@@ -1,7 +1,6 @@
 package com.excilys.computerdatabase.servlets;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.util.List;
 
 import javax.naming.Context;
@@ -18,23 +17,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.computerdatabase.models.Company;
-import com.excilys.computerdatabase.models.Computer;
 import com.excilys.computerdatabase.services.CompanyService;
 import com.excilys.computerdatabase.services.ComputerService;
 
 /**
  * Servlet implementation class AddComputer
  */
-@WebServlet("/AddComputer")
-public class AddComputer extends HttpServlet {
+@WebServlet("/ComputerCrud")
+public class ComputerCrud extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = LoggerFactory
-			.getLogger(AddComputer.class);
+			.getLogger(ComputerCrud.class);
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public AddComputer() {
+	public ComputerCrud() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -42,6 +40,8 @@ public class AddComputer extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
+	 * 
+	 *      TODO Add read (get) request
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -67,47 +67,48 @@ public class AddComputer extends HttpServlet {
 		try {
 			ctx = new InitialContext();
 
-			// Gettings parameters
-			String name = request.getParameter("name");
-			String introducedDateString = request
-					.getParameter("introducedDate");
-			String discontinuedDateString = request
-					.getParameter("discontinuedDate");
-			String companyIdString = request.getParameter("company");
-			logger.debug("Getting parameters {} {} {} {}", name,
-					introducedDateString, discontinuedDateString,
-					companyIdString);
+			logger.debug("Parameters :{} {} {} {} {}",
+					request.getParameter("create"),
+					request.getParameter("update"),
+					request.getParameter("updateValue"),
+					request.getParameter("delete"),
+					request.getParameter("deleteValue"));
 
-			Date introducedDate = null;
-			Date discontinuedDate = null;
-			if (!introducedDateString.isEmpty())
-				introducedDate = Date.valueOf(introducedDateString);
-			if (!discontinuedDateString.isEmpty())
-				discontinuedDate = Date.valueOf(discontinuedDateString);
+			// -------------------------------Create-------------------------------
+			if (request.getParameter("create") != null) {
+				// Gettings parameters
+				if (!ComputerService.getInstance().create(
+						request.getParameter("name"),
+						request.getParameter("introducedDate"),
+						request.getParameter("discontinuedDate"),
+						request.getParameter("company")))
+					response.sendError(404, "Error on creation");
 
-			Long companyId = null;
-			Company cy = null;
-			Computer c = null;
-			if (!"null".contentEquals(companyIdString)) {
-				companyId = Long.parseLong(companyIdString);
-				logger.debug("Getting company !");
-				// Getting corresponding company
-				cy = CompanyService.getInstance().find(companyId);
-				logger.debug("The company : {}", cy);
 			}
-			c = new Computer(cy, name, introducedDate, discontinuedDate);
+			// -------------------------------Update-------------------------------
+			else if (request.getParameter("update") != null) {
+				if (!ComputerService.getInstance().update(
+						request.getParameter("id"),
+						request.getParameter("name"),
+						request.getParameter("introducedDate"),
+						request.getParameter("discontinuedDate"),
+						request.getParameter("company")))
+					response.sendError(404, "Error on deletion");
 
-			logger.debug("Computer parameters : {} {} {} {}", name,
-					introducedDate, discontinuedDate, companyId);
+			} else
+			// -------------------------------Delete-------------------------------
+			// FIXME SendError not working - Cant make a sendRedirect after a
+			// sendError
+			if (request.getParameter("delete") != null) {
+				if (!ComputerService.getInstance().delete(
+						request.getParameter("deleteValue")))
+					response.sendError(404, "Error on deletion");
+			}
 
-			// Adding new computer to db
-			logger.debug("Ajout de {} de la companie {}", name, c);
-			ComputerService.getInstance().create(c);
-
-			// Back to main jsp
-			response.sendRedirect("Dashboard");
 		} catch (NamingException e) {
+			logger.error("Context error {}", e.getMessage());
 			e.printStackTrace();
 		}
+		response.sendRedirect("Dashboard");
 	}
 }

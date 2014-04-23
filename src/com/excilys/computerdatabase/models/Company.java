@@ -2,13 +2,11 @@ package com.excilys.computerdatabase.models;
 
 public class Company {
 
-	long id;
-
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -20,5 +18,11 @@ public class Company {
 		this.name = name;
 	}
 
-	String name;
+	@Override
+	public String toString() {
+		return "Company [id=" + id + ", name=" + name + "]";
+	}
+
+	private Long id;
+	private String name;
 }

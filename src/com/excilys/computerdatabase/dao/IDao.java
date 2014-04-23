@@ -20,11 +20,19 @@ public interface IDao<T> {
 	public void create(T o);
 
 	/**
-	 * Delete an existing element to db
+	 * Delete an existing element in db
 	 * 
 	 * @param o
 	 */
 	public void delete(T o);
+
+	/**
+	 * Delete an existing element in db
+	 * 
+	 * @param id
+	 *            of computer
+	 */
+	void delete(Long id);
 
 	/**
 	 * (Find by name)
@@ -51,4 +59,5 @@ public interface IDao<T> {
 	public void update(T o);
 
 	List<Computer> find();
+
 }

@@ -18,7 +18,9 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
+import com.excilys.computerdatabase.models.Company;
 import com.excilys.computerdatabase.models.Computer;
+import com.excilys.computerdatabase.services.CompanyService;
 import com.excilys.computerdatabase.services.ComputerService;
 
 /**
@@ -60,11 +62,41 @@ public class Dashboard extends HttpServlet {
 				cList = ComputerService.getInstance().find();
 			else
 				cList = ComputerService.getInstance().find(search);
+
 			logger.debug("Parameters : {} ", search);
-			logger.debug("Result : {} ", cList);
+			logger.debug("Result : {} ", cList.size());
+
+			// Pagination
+			int pageNumber = 1;
+			int perPage = 20;
+
+			int nbPages = cList.size() / perPage;
+			if (cList.size() % perPage > 0)
+				nbPages++;
+
+			if (request.getParameter("pageNumber") != null)
+				pageNumber = Integer.parseInt(request
+						.getParameter("pageNumber"));
+			if (request.getParameter("perPage") != null)
+				perPage = Integer.parseInt(request.getParameter("perPage"));
+
+			int lastEl = ((pageNumber - 1) * perPage + perPage - 1);
+			if (lastEl > cList.size())
+				lastEl = cList.size();
+
+			logger.debug("Pagination : {} {}", pageNumber, perPage);
+
+			// Company list
+			List<Company> cyList = CompanyService.getInstance().find("%");
+			logger.debug("Result : {} ", cyList.size());
 
 			// Servlet context attributes
-			request.setAttribute("cList", cList);
+			request.setAttribute("cListSize", cList.size());
+			request.setAttribute("nbPages", nbPages);
+
+			request.setAttribute("cList",
+					cList.subList((pageNumber - 1) * perPage, lastEl));
+			request.setAttribute("cyList", cyList);
 
 			// forward
 			RequestDispatcher rd = getServletContext().getRequestDispatcher(
@@ -75,5 +107,10 @@ public class Dashboard extends HttpServlet {
 			logger.error("Naming {}", e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		logger.debug("POST !");
 	}
 }
