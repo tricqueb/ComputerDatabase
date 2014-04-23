@@ -4,27 +4,45 @@ import java.util.Date;
 
 public class Computer {
 
-	public Computer(Long id, Company company, String name, Date introduced,
-			Date discontinued) {
-		super();
-		this.id = id;
-		this.company = company;
-		this.name = name;
-		this.introduced = introduced;
-		this.discontinued = discontinued;
+	public static class Builder {
+		Computer computer;
+
+		private Builder() {
+			computer = new Computer();
+		}
+
+		public Builder id(Long id) {
+			computer.id = id;
+			return this;
+		}
+
+		public Builder name(String name) {
+			computer.name = name;
+			return this;
+		}
+
+		public Builder introduced(Date introduced) {
+			computer.introduced = introduced;
+			return this;
+		}
+
+		public Builder discontinued(Date discontinued) {
+			computer.discontinued = discontinued;
+			return this;
+		}
+
+		public Builder company(Company company) {
+			computer.company = company;
+			return this;
+		}
+
+		public Computer build() {
+			return computer;
+		}
 	}
 
-	public Computer(Company company, String name, Date introduced,
-			Date discontinued) {
-		super();
-		this.company = company;
-		this.name = name;
-		this.introduced = introduced;
-		this.discontinued = discontinued;
-	}
-
-	public Computer() {
-		super();
+	public static Builder Builder() {
+		return new Builder();
 	}
 
 	@Override

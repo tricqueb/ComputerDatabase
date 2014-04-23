@@ -12,20 +12,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.computerdatabase.models.Company;
-import com.excilys.computerdatabase.models.Computer;
 
-public enum CompanyDao implements IDao<Company> {
+public enum CompanyDao implements ICompanyDao<Company> {
 	INSTANCE;
 	private static final Logger logger = LoggerFactory
 			.getLogger(CompanyDao.class);
 
 	private Connection cn;
-	private ConnectionManager cnManager;
 	private ResultSet rs;
 	private Statement stmt = null;
 
 	private CompanyDao() {
-		cnManager = new ConnectionManager();
+
 	}
 
 	public static CompanyDao getInstance() {
@@ -33,27 +31,9 @@ public enum CompanyDao implements IDao<Company> {
 	}
 
 	@Override
-	public void create(Company c) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void delete(Company c) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void update(Company c) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public List<Company> find(String companyName) {
 
-		cn = cnManager.getConnection();
+		cn = ConnectionManager.getInstance().getConnection();
 		PreparedStatement stmt = null;
 		try {
 			stmt = cn
@@ -68,7 +48,7 @@ public enum CompanyDao implements IDao<Company> {
 
 	@Override
 	public Company find(long CompanyId) {
-		cn = cnManager.getConnection();
+		cn = ConnectionManager.getInstance().getConnection();
 		PreparedStatement stmt = null;
 		try {
 
@@ -102,13 +82,6 @@ public enum CompanyDao implements IDao<Company> {
 		return cList;
 	}
 
-	@Override
-	public List<Computer> find() {
-		// TODO Auto-generated method stub
-		logger.error("TODO !");
-		return null;
-	}
-
 	private void disconnect() {
 		try {
 			if (rs != null)
@@ -132,12 +105,6 @@ public enum CompanyDao implements IDao<Company> {
 
 			}
 		}
-	}
-
-	@Override
-	public void delete(Long id) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

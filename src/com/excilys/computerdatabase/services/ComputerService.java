@@ -52,7 +52,9 @@ public enum ComputerService {
 			cy = CompanyService.getInstance().find(companyId);
 			logger.debug("The company : {}", cy);
 		}
-		c = new Computer(cy, name, introducedDate, discontinuedDate);
+		c = Computer.Builder().company(cy).name(name)
+				.introduced(introducedDate).discontinued(discontinuedDate)
+				.build();
 
 		logger.debug("Computer parameters : {} {} {} {}", name, introducedDate,
 				discontinuedDate, companyId);

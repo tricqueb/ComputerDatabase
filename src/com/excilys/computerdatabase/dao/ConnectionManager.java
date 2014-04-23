@@ -9,30 +9,31 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.computerdatabase.servlets.ComputerCrud;
 
-public class ConnectionManager {
+public enum ConnectionManager {
+	INSTANCE;
+
 	private static final Logger logger = LoggerFactory
 			.getLogger(ComputerCrud.class);
 	private static final String DATABASE = "computer-database-db";
 	private static final String url = "jdbc:mysql://localhost:3306/" + DATABASE
 			+ "?zeroDateTimeBehavior=convertToNull";
-
-	private Connection cn = null;
-
-	public ConnectionManager() {
-
+	// Bloc executed after constructor
+	static {
 		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch (InstantiationException e) {
-			logger.error("Error on driver instanciation {}", e.getMessage());
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			logger.error("Error on driver instanciation {}", e.getMessage());
-			e.printStackTrace();
+			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			logger.error("Error on driver instanciation {}", e.getMessage());
 			e.printStackTrace();
 		}
+	}
 
+	private Connection cn = null;
+
+	private ConnectionManager() {
+	}
+
+	public static ConnectionManager getInstance() {
+		return INSTANCE;
 	}
 
 	public Connection getConnection() {

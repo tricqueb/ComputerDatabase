@@ -20,16 +20,6 @@ public enum CompanyService {
 		return INSTANCE;
 	}
 
-	public void create(Company c) {
-		CompanyDao.getInstance().create(c);
-
-	}
-
-	public void delete(Company c) {
-		CompanyDao.getInstance().delete(c);
-
-	}
-
 	public List<Company> find(String cName) {
 		return CompanyDao.getInstance().find(cName);
 
@@ -39,8 +29,4 @@ public enum CompanyService {
 		return CompanyDao.getInstance().find(cId);
 	}
 
-	public void update(Company c) {
-		CompanyDao.getInstance().update(c);
-
-	}
 }

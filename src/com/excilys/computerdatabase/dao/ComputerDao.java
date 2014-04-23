@@ -27,12 +27,10 @@ public enum ComputerDao implements IDao<Computer> {
 			.getLogger(ComputerDao.class);
 
 	private Connection cn = null;
-	private ConnectionManager cnManager;
 	private Statement stmt = null;
 	private ResultSet rs = null;
 
 	private ComputerDao() {
-		cnManager = new ConnectionManager();
 	}
 
 	public static ComputerDao getInstance() {
@@ -41,7 +39,7 @@ public enum ComputerDao implements IDao<Computer> {
 
 	public void create(Computer computer) {
 		try {
-			cn = cnManager.getConnection();
+			cn = ConnectionManager.getInstance().getConnection();
 			PreparedStatement stmt = cn
 					.prepareStatement("INSERT into computer(name,introduced,discontinued,company_id) VALUES(?,?,?,?);");
 			stmt.setString(1, computer.getName());
@@ -74,7 +72,7 @@ public enum ComputerDao implements IDao<Computer> {
 	@Override
 	public void delete(Computer computer) {
 		try {
-			cn = cnManager.getConnection();
+			cn = ConnectionManager.getInstance().getConnection();
 			PreparedStatement stmt = cn
 					.prepareStatement("DELETE from computer where id=?;");
 			stmt.setString(1, Long.toString(computer.getId()));
@@ -90,7 +88,7 @@ public enum ComputerDao implements IDao<Computer> {
 	@Override
 	public void delete(Long id) {
 		try {
-			cn = cnManager.getConnection();
+			cn = ConnectionManager.getInstance().getConnection();
 			PreparedStatement stmt = cn
 					.prepareStatement("DELETE from computer where id=?;");
 			stmt.setString(1, Long.toString(id));
@@ -106,7 +104,7 @@ public enum ComputerDao implements IDao<Computer> {
 	@Override
 	public List<Computer> find() {
 		logger.debug("Find all");
-		cn = cnManager.getConnection();
+		cn = ConnectionManager.getInstance().getConnection();
 		PreparedStatement stmt = null;
 		try {
 			stmt = cn
@@ -123,7 +121,7 @@ public enum ComputerDao implements IDao<Computer> {
 	@Override
 	public List<Computer> find(String computerName) {
 
-		cn = cnManager.getConnection();
+		cn = ConnectionManager.getInstance().getConnection();
 		PreparedStatement stmt = null;
 		try {
 			stmt = cn
@@ -138,7 +136,7 @@ public enum ComputerDao implements IDao<Computer> {
 
 	@Override
 	public Computer find(long computerId) {
-		cn = cnManager.getConnection();
+		cn = ConnectionManager.getInstance().getConnection();
 		PreparedStatement stmt = null;
 		try {
 			stmt = cn
@@ -158,18 +156,15 @@ public enum ComputerDao implements IDao<Computer> {
 			rs = stmt.executeQuery();
 			logger.debug("Filling Computer list");
 			while (rs.next()) {
-				Computer c = new Computer();
+				Computer c;
 				Company cy = null;
-				c.setId(rs.getLong(1));
-				c.setName(rs.getString(2));
-				c.setIntroduced((rs.getDate(3)));
-				c.setDiscontinued(rs.getDate(4));
+				c = Computer.Builder().id(rs.getLong(1)).name(rs.getString(2))
+						.introduced(rs.getDate(3)).discontinued(rs.getDate(4))
+						.build();
 				if (rs.getLong(5) != 0) {
-					cy = new Company();
-					cy.setId(rs.getLong(5));
-					cy.setName(rs.getString(6));
+					cy = Company.Builder().id(rs.getLong(5))
+							.name(rs.getString(6)).build();
 				}
-
 				c.setCompany(cy);
 				cList.add(c);
 			}
@@ -187,7 +182,7 @@ public enum ComputerDao implements IDao<Computer> {
 	@Override
 	public void update(Computer computer) {
 		try {
-			cn = cnManager.getConnection();
+			cn = ConnectionManager.getInstance().getConnection();
 			PreparedStatement stmt = cn
 					.prepareStatement("UPDATE computer SET name=?,introduced=?,discontinued=?,company_id=? where id=?;");
 			stmt.setString(1, computer.getName());
@@ -244,104 +239,5 @@ public enum ComputerDao implements IDao<Computer> {
 			}
 		}
 	}
-
-	/**
-	 * Get related companies of cList
-	 * 
-	 * @param cList
-	 * @return a map with Computer's id as key and corresponding company TODO
-	 *         Company as key ?
-	 */
-	// public Map<Long, Company> getCompanies(List<Computer> cList) {
-	//
-	// Map<Long, Company> cMap = new HashMap<Long, Company>();
-	// try {
-	// cn = cnManager.getConnection();
-	// PreparedStatement stmt = cn
-	// .prepareStatement("Select cy.id,cy.name,cr.id, cr.name,cr.introduced,cr.discontinued from company as cy left outer join computer as cr ON cy.id=cr.id IN (?);");
-	// StringBuilder stateString = new StringBuilder(Long.toString(cList
-	// .get(0).getId()));
-	//
-	// int i = 1;
-	// while (i < cList.size()) {
-	// stateString.append(",");
-	// stateString.append(Long.toString(cList.get(i).getId()));
-	// i++;
-	// }
-	//
-	// stmt.setString(1, stateString.toString());
-	// rs = stmt.executeQuery();
-	// while (rs.next()) {
-	// Company c = new Company();
-	// cy.setId(rs.getLong(1));
-	// cy.setName(rs.getString(2));
-	// cr.setId(rs.getLong(3));
-	//
-	// cMap.put(cr, cy);
-	// }
-	// } catch (SQLException e) {
-	// System.out.println("ComputerDao - getCompanies Error: "
-	// + e.getMessage());
-	// e.printStackTrace();
-	// } finally {
-	// try {
-	// if (rs != null)
-	// rs.close();
-	//
-	// if (stmt != null)
-	// stmt.close();
-	//
-	// if (cn != null)
-	// cn.close();
-	// } catch (SQLException e) {
-	// System.out.println("ComputerDao - Closing Error : " + e);
-	// }
-	// }
-	// return null;
-	// }
-
-	//
-	// @Override
-	// public void update(Computer computer) {
-	// cn = cnManager.getConnection();
-	// List<Computer> cList = new ArrayList<Computer>();
-	// try {
-	//
-	// PreparedStatement stmt = cn
-	// .prepareStatement("Select id,name,introduce,discontinued from computer where c.id=?;");
-	// stmt.setLong(1, computer.getId());
-	// rs = stmt.executeQuery();
-	// while (rs.next()) {
-	// Computer c = new Computer();
-	// c.setId(new Long(rs.getLong(1)));
-	// c.setName(rs.getString(2));
-	// c.setIntroduce(Date.valueOf(rs.getString(3)));
-	// c.setDiscontinued(Date.valueOf(rs.getString(4)));
-	//
-	// cList.add(c);
-	// }
-	//
-	//
-	//
-	// } catch (SQLException e) {
-	// System.out.println("ComputerDao - find Error: " + e.getMessage());
-	// e.printStackTrace();
-	// } finally {
-	// try {
-	// if (rs != null)
-	// rs.close();
-	//
-	// if (stmt != null)
-	// stmt.close();
-	//
-	// if (cn != null)
-	// cn.close();
-	// } catch (SQLException e) {
-	// System.out.println("ComputerDao - Closing Error : " + e);
-	// }
-	// }
-	// return cList;
-	//
-	// }
 
 }
