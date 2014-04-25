@@ -16,9 +16,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.computerdatabase.models.Company;
+import com.excilys.computerdatabase.dto.CompanyDTO;
+import com.excilys.computerdatabase.dto.ComputerDTO;
+import com.excilys.computerdatabase.mappers.CompanyMapper;
+import com.excilys.computerdatabase.mappers.ComputerMapper;
 import com.excilys.computerdatabase.services.CompanyService;
 import com.excilys.computerdatabase.services.ComputerService;
+import com.excilys.computerdatabase.validators.ComputerValidator;
+import com.excilys.computerdatabase.validators.ErrorCodes;
 
 /**
  * Servlet implementation class AddComputer
@@ -26,15 +31,13 @@ import com.excilys.computerdatabase.services.ComputerService;
 @WebServlet("/ComputerCrud")
 public class ComputerCrud extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final Logger logger = LoggerFactory
-			.getLogger(ComputerCrud.class);
+	private static final Logger logger = LoggerFactory.getLogger(ComputerCrud.class);
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public ComputerCrud() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -43,13 +46,17 @@ public class ComputerCrud extends HttpServlet {
 	 * 
 	 *      TODO Add read (get) request
 	 */
-	protected void doGet(HttpServletRequest request,
+	protected void doGet(
+			HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		logger.debug("GET !");
 
-		// CompanyList
-		List<Company> cyList = CompanyService.getInstance().find("%");
+		// Getting companies list
+		CompanyMapper companyMapper = new CompanyMapper();
+		List<CompanyDTO> cyList = companyMapper.invert(CompanyService.getInstance()
+				.find("%"));
 		request.setAttribute("cyList", cyList);
+
 		// forward
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(
 				"/WEB-INF/addComputer.jsp");
@@ -60,10 +67,12 @@ public class ComputerCrud extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request,
+	protected void doPost(
+			HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		logger.debug("POST !");
 		Context ctx;
+		String action = "Dashboard";
 		try {
 			ctx = new InitialContext();
 
@@ -71,44 +80,109 @@ public class ComputerCrud extends HttpServlet {
 					request.getParameter("create"),
 					request.getParameter("update"),
 					request.getParameter("updateValue"),
-					request.getParameter("delete"),
-					request.getParameter("deleteValue"));
+					request.getParameter("delete"), request.getParameter("id"));
 
 			// -------------------------------Create-------------------------------
 			if (request.getParameter("create") != null) {
-				// Gettings parameters
-				if (!ComputerService.getInstance().create(
-						request.getParameter("name"),
-						request.getParameter("introducedDate"),
-						request.getParameter("discontinuedDate"),
-						request.getParameter("company")))
-					response.sendError(404, "Error on creation");
+				// Dto build
+				ComputerDTO computerdto = ComputerDTO.Builder()
+						.name(request.getParameter("name"))
+						.introduced(request.getParameter("introducedDate"))
+						.discontinued(request.getParameter("discontinuedDate"))
+						.companydto(
+								CompanyDTO.Builder()
+										.id(request.getParameter("company"))
+										.build())
+						.build();
+				// Validation
+				ComputerValidator computerV = new ComputerValidator();
+				List<ErrorCodes> errors = computerV.validate(computerdto);
 
+				if (errors.isEmpty()) {
+					// Mapping
+					ComputerMapper computerMapper = new ComputerMapper();
+					ComputerService.getInstance().create(
+							computerMapper.map(computerdto));
+				} else {
+					// Error handling
+					logger.warn("Error happened on create");
+					request.setAttribute("dto", computerdto);
+					request.setAttribute("errors", errors);
+					action = "ComputerCrud";
+				}
 			}
+
 			// -------------------------------Update-------------------------------
 			else if (request.getParameter("update") != null) {
-				if (!ComputerService.getInstance().update(
-						request.getParameter("id"),
-						request.getParameter("name"),
-						request.getParameter("introducedDate"),
-						request.getParameter("discontinuedDate"),
-						request.getParameter("company")))
-					response.sendError(404, "Error on deletion");
+				// Dto build
+				ComputerDTO computerdto = ComputerDTO.Builder()
+						.id(request.getParameter("id"))
+						.name(request.getParameter("name"))
+						.introduced(request.getParameter("introducedDate"))
+						.discontinued(request.getParameter("discontinuedDate"))
+						.companydto(
+								CompanyDTO.Builder()
+										.id(request.getParameter("company"))
+										.build())
+						.build();
+				// Validation
+				ComputerValidator computerV = new ComputerValidator();
+				List<ErrorCodes> errors = computerV.validate(computerdto);
 
-			} else
-			// -------------------------------Delete-------------------------------
-			// FIXME SendError not working - Cant make a sendRedirect after a
-			// sendError
-			if (request.getParameter("delete") != null) {
-				if (!ComputerService.getInstance().delete(
-						request.getParameter("deleteValue")))
-					response.sendError(404, "Error on deletion");
+				if (errors.isEmpty()) {
+					// Mapping
+					ComputerMapper computerMapper = new ComputerMapper();
+					ComputerService.getInstance().update(
+							computerMapper.map(computerdto));
+				} else {
+					// Error handling
+					logger.warn("Error happened on update");
+					request.getSession().setAttribute("computerdto",
+							computerdto);
+					request.getSession().setAttribute("errors", errors);
+					request.getSession().setAttribute("modalShow", "true");
+					request.getSession().setAttribute("hideErrors", "block");
+					action = "Dashboard";
+
+				}
+
+				// -------------------------------Delete-------------------------------
+				// FIXME SendError not working - Cant make a sendRedirect after
+				// a
+				// sendError
+			} else if (request.getParameter("delete") != null) {
+				// Dto build
+				ComputerDTO computerdto = ComputerDTO.Builder()
+						.id(request.getParameter("id"))
+						.build();
+				// Validation
+				ComputerValidator computerV = new ComputerValidator();
+				List<ErrorCodes> errors = computerV.validate(computerdto);
+				for (ErrorCodes error : errors) {
+					if (error.getCode() == 1) {
+						// Error handling
+						logger.warn("Error happened on delete");
+						request.setAttribute("errors", errors);
+						action = "Dashboard";
+					}
+
+				}
+
+				// Mapping
+				ComputerMapper computerMapper = new ComputerMapper();
+				ComputerService.getInstance().delete(
+						computerMapper.map(computerdto));
+
 			}
 
 		} catch (NamingException e) {
 			logger.error("Context error {}", e.getMessage());
 			e.printStackTrace();
 		}
-		response.sendRedirect("Dashboard");
+		response.sendRedirect(action);
+
+		// RequestDispatcher dispatcher =
+		// request.getRequestDispatcher("Dashboard");
+		// dispatcher.forward(request, response);
 	}
 }

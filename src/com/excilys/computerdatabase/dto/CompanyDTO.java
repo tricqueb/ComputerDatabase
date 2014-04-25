@@ -45,7 +45,7 @@ public class CompanyDTO {
 		this.name = name;
 	}
 
-	private String id;
-	private String name;
+	private String id = "";
+	private String name = "";
 
 }

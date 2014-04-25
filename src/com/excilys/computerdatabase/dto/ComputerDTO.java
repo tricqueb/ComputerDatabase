@@ -3,24 +3,39 @@ package com.excilys.computerdatabase.dto;
 public class ComputerDTO {
 	// Builder
 	public static class Builder {
-		ComputerDTO companyDto;
+		ComputerDTO computerDto;
 
 		private Builder() {
-			companyDto = new ComputerDTO();
+			computerDto = new ComputerDTO();
 		}
 
 		public Builder id(String id) {
-			companyDto.id = id;
+			computerDto.id = id;
 			return this;
 		}
 
 		public Builder name(String name) {
-			companyDto.name = name;
+			computerDto.name = name;
+			return this;
+		}
+
+		public Builder introduced(String introduced) {
+			computerDto.introduced = introduced;
+			return this;
+		}
+
+		public Builder discontinued(String discontinued) {
+			computerDto.discontinued = discontinued;
+			return this;
+		}
+
+		public Builder companydto(CompanyDTO companydto) {
+			computerDto.companydto = companydto;
 			return this;
 		}
 
 		public ComputerDTO build() {
-			return companyDto;
+			return computerDto;
 		}
 	}
 
@@ -37,12 +52,12 @@ public class ComputerDTO {
 		this.id = id;
 	}
 
-	public String getCompany() {
-		return company;
+	public CompanyDTO getCompany() {
+		return companydto;
 	}
 
-	public void setCompany(String company) {
-		this.company = company;
+	public void setCompany(CompanyDTO companydto) {
+		this.companydto = companydto;
 	}
 
 	public String getName() {
@@ -69,8 +84,15 @@ public class ComputerDTO {
 		this.discontinued = discontinued;
 	}
 
+	@Override
+	public String toString() {
+		return "ComputerDTO [id=" + id + ", companydto=" + companydto
+				+ ", name=" + name + ", introduced=" + introduced
+				+ ", discontinued=" + discontinued + "]";
+	}
+
 	private String id;
-	private String company;
+	private CompanyDTO companydto;
 	private String name;
 	private String introduced, discontinued;
 

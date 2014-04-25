@@ -18,8 +18,9 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
+import com.excilys.computerdatabase.dto.ComputerDTO;
+import com.excilys.computerdatabase.mappers.ComputerMapper;
 import com.excilys.computerdatabase.models.Company;
-import com.excilys.computerdatabase.models.Computer;
 import com.excilys.computerdatabase.services.CompanyService;
 import com.excilys.computerdatabase.services.ComputerService;
 
@@ -28,8 +29,7 @@ import com.excilys.computerdatabase.services.ComputerService;
  */
 public class Dashboard extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final Logger logger = LoggerFactory
-			.getLogger(Dashboard.class);
+	private static final Logger logger = LoggerFactory.getLogger(Dashboard.class);
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -37,8 +37,7 @@ public class Dashboard extends HttpServlet {
 	public Dashboard() {
 		super();
 		// TODO: Decide between this and dedicated servlet in web.xml
-		LoggerContext logCtx = (LoggerContext) LoggerFactory
-				.getILoggerFactory();
+		LoggerContext logCtx = (LoggerContext) LoggerFactory.getILoggerFactory();
 		StatusPrinter.print(logCtx);
 	}
 
@@ -46,7 +45,8 @@ public class Dashboard extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request,
+	protected void doGet(
+			HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		logger.debug("GET !");
 
@@ -56,15 +56,18 @@ public class Dashboard extends HttpServlet {
 
 			// Search filter
 			String search = request.getParameter("search");
+			logger.debug("Search : {} ", search);
 
-			List<Computer> cList;
+			List<ComputerDTO> cList;
+			ComputerMapper computerMapper = new ComputerMapper();
 			if (search == null)
-				cList = ComputerService.getInstance().find();
+				cList = computerMapper.invert(ComputerService.getInstance()
+						.find());
 			else
-				cList = ComputerService.getInstance().find(search);
+				cList = computerMapper.invert(ComputerService.getInstance()
+						.find(search));
 
-			logger.debug("Parameters : {} ", search);
-			logger.debug("Result : {} ", cList.size());
+			logger.debug("Results found : {} ", cList.size());
 
 			// Pagination
 			int pageNumber = 1;
@@ -75,8 +78,7 @@ public class Dashboard extends HttpServlet {
 				nbPages++;
 
 			if (request.getParameter("pageNumber") != null)
-				pageNumber = Integer.parseInt(request
-						.getParameter("pageNumber"));
+				pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
 			if (request.getParameter("perPage") != null)
 				perPage = Integer.parseInt(request.getParameter("perPage"));
 
@@ -98,6 +100,21 @@ public class Dashboard extends HttpServlet {
 					cList.subList((pageNumber - 1) * perPage, lastEl));
 			request.setAttribute("cyList", cyList);
 
+			// Get attributes from another servlet
+			request.setAttribute("computerdto", request.getSession()
+					.getAttribute("computerdto"));
+			request.setAttribute("modalShow", request.getSession()
+					.getAttribute("modalShow"));
+			request.setAttribute("errors",
+					request.getSession().getAttribute("errors"));
+			request.setAttribute("hideErrors", request.getSession()
+					.getAttribute("hideErrors"));
+
+			request.getSession().removeAttribute("computerdto");
+			request.getSession().removeAttribute("modalShow");
+			request.getSession().removeAttribute("errors");
+			request.getSession().removeAttribute("hideErrors");
+
 			// forward
 			RequestDispatcher rd = getServletContext().getRequestDispatcher(
 					"/WEB-INF/dashboard.jsp");
@@ -107,10 +124,5 @@ public class Dashboard extends HttpServlet {
 			logger.error("Naming {}", e.getMessage());
 			e.printStackTrace();
 		}
-	}
-
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		logger.debug("POST !");
 	}
 }

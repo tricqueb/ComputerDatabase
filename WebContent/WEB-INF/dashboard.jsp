@@ -7,8 +7,8 @@
 		found</h1>
 
 	<!-- Modal -->
-	<div class="modal fade" id="editModal" tabindex="-1" role="dialog"
-		aria-labelledby="editModalLabel" aria-hidden="true">
+	<div class="modal fade " modalShow="${modalShow}" id="editModal" tabindex="-1" role="dialog"
+		aria-labelledby="editModalLabel" aria-hidden="true" >
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -56,11 +56,11 @@
 			<c:forEach var="el" items="${cList}">
 				<tr>
 					<td hidden="true">${el.getId()}</td>
-					<td>${el.getName()}</td>
-					<td>${el.getIntroduced().toString()}</td>
-					<td>${el.getDiscontinued()}</td>
+					<td><c:out value="${el.getName()}"></c:out></td>
+					<td><c:out value="${el.getIntroduced().toString()}"></c:out></td>
+					<td><c:out value="${el.getDiscontinued()}"></c:out></td>
 					<td id=${el.getCompany().getId()}>
-						${el.getCompany().getName()}</td>
+						<c:out value="${el.getCompany().getName()}"></c:out></td>
 					<td>
 						<!-- 						<form class="form-inline" action="ComputerCrud" method="post"> -->
 						<!-- 							<input type="hidden" name="EditValue" --> <%-- 								value="${el.getCompany().getName()}"></input>  --%>
@@ -70,7 +70,7 @@
 					</td>
 					<td>
 						<form class="form-inline" action="ComputerCrud" method="post">
-							<input type="hidden" name="deleteValue" value="${el.getId()}"></input>
+							<input type="hidden" name="id" value="${el.getId()}"></input>
 							<input type="submit" name="delete" value="delete"
 								class="btn btn-danger"></input>
 						</form>
