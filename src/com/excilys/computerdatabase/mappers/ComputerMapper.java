@@ -4,11 +4,14 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.computerdatabase.dto.ComputerDTO;
 import com.excilys.computerdatabase.models.Computer;
 
 public class ComputerMapper implements Mapper<ComputerDTO, Computer> {
-
+	private static final Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
 	CompanyMapper companyMapper = new CompanyMapper();
 
 	@Override

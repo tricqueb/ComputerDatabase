@@ -23,8 +23,7 @@ import com.excilys.computerdatabase.models.Computer;
  */
 public enum ComputerDao implements IDao<Computer> {
 	INSTANCE;
-	private static final Logger logger = LoggerFactory
-			.getLogger(ComputerDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(ComputerDao.class);
 
 	private Connection cn = null;
 	private Statement stmt = null;
@@ -40,8 +39,7 @@ public enum ComputerDao implements IDao<Computer> {
 	public void create(Computer computer) {
 		try {
 			cn = ConnectionManager.getInstance().getConnection();
-			PreparedStatement stmt = cn
-					.prepareStatement("INSERT into computer(name,introduced,discontinued,company_id) VALUES(?,?,?,?);");
+			PreparedStatement stmt = cn.prepareStatement("INSERT into computer(name,introduced,discontinued,company_id) VALUES(?,?,?,?);");
 			stmt.setString(1, computer.getName());
 
 			if (computer.getIntroduced() != null)
@@ -73,8 +71,7 @@ public enum ComputerDao implements IDao<Computer> {
 	public void delete(Computer computer) {
 		try {
 			cn = ConnectionManager.getInstance().getConnection();
-			PreparedStatement stmt = cn
-					.prepareStatement("DELETE from computer where id=?;");
+			PreparedStatement stmt = cn.prepareStatement("DELETE from computer where id=?;");
 			stmt.setString(1, Long.toString(computer.getId()));
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -89,8 +86,7 @@ public enum ComputerDao implements IDao<Computer> {
 	public void delete(Long id) {
 		try {
 			cn = ConnectionManager.getInstance().getConnection();
-			PreparedStatement stmt = cn
-					.prepareStatement("DELETE from computer where id=?;");
+			PreparedStatement stmt = cn.prepareStatement("DELETE from computer where id=?;");
 			stmt.setString(1, Long.toString(id));
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -107,8 +103,7 @@ public enum ComputerDao implements IDao<Computer> {
 		cn = ConnectionManager.getInstance().getConnection();
 		PreparedStatement stmt = null;
 		try {
-			stmt = cn
-					.prepareStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id;");
+			stmt = cn.prepareStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id;");
 		} catch (SQLException e) {
 			logger.error("Statement Error : " + e.getMessage());
 			e.printStackTrace();
@@ -117,16 +112,45 @@ public enum ComputerDao implements IDao<Computer> {
 	}
 
 	// TODO add search criteria parameter to do more than looking for name
+	// TODO Add a filter function to separate "LIKE" part.
 	// (WARNING : Care about data type)
 	@Override
-	public List<Computer> find(String computerName) {
+	public List<Computer> find(
+			String computerName,
+			Integer offset,
+			Integer limit,
+			Long orderBy,
+			Boolean desc) {
 
 		cn = ConnectionManager.getInstance().getConnection();
 		PreparedStatement stmt = null;
+		StringBuilder query;
 		try {
-			stmt = cn
-					.prepareStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.name LIKE ?;");
+			query = new StringBuilder(
+					"Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.name LIKE ? OR cy.name LIKE ? ORDER BY ? ");
+
+			if (orderBy == null)
+				orderBy = 1l;
+
+			if (desc)
+				query.append("DESC ");
+
+			query.append("LIMIT ? OFFSET ?");
+
+			stmt = cn.prepareStatement(query.toString());
+
 			stmt.setString(1, "%" + computerName + "%");
+			stmt.setString(2, "%" + computerName + "%");
+			stmt.setLong(3, orderBy);
+			if (limit == null)
+				stmt.setString(4, "ALL");
+			else
+				stmt.setLong(4, limit);
+			if (offset == null)
+				stmt.setLong(5, 0);
+			else
+				stmt.setLong(5, offset);
+
 		} catch (SQLException e) {
 			logger.error("Statement Error : " + e.getMessage());
 			e.printStackTrace();
@@ -134,13 +158,33 @@ public enum ComputerDao implements IDao<Computer> {
 		return doFind(stmt);
 	}
 
+	public int count(String search) {
+		cn = ConnectionManager.getInstance().getConnection();
+		PreparedStatement stmt = null;
+		Integer result = 0;
+		logger.debug("Counting element with {} as search parameter: " + search);
+		try {
+			stmt = cn.prepareStatement("select count(*) from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.name LIKE ? OR cy.name LIKE ?;");
+			stmt.setString(1, "%" + search + "%");
+			stmt.setString(2, "%" + search + "%");
+			rs = stmt.executeQuery();
+			while (rs.next())
+				result = rs.getInt(1);
+		} catch (SQLException e) {
+			logger.error("count statement Error: " + e.getMessage());
+			e.printStackTrace();
+		} finally {
+			disconnect();
+		}
+		return result;
+	}
+
 	@Override
 	public Computer find(long computerId) {
 		cn = ConnectionManager.getInstance().getConnection();
 		PreparedStatement stmt = null;
 		try {
-			stmt = cn
-					.prepareStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.id = ?;");
+			stmt = cn.prepareStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.id = ?;");
 			stmt.setLong(1, computerId);
 		} catch (SQLException e) {
 			logger.error("Statement Error : " + e.getMessage());
@@ -158,12 +202,17 @@ public enum ComputerDao implements IDao<Computer> {
 			while (rs.next()) {
 				Computer c;
 				Company cy = null;
-				c = Computer.Builder().id(rs.getLong(1)).name(rs.getString(2))
-						.introduced(rs.getDate(3)).discontinued(rs.getDate(4))
+				c = Computer.Builder()
+						.id(rs.getLong(1))
+						.name(rs.getString(2))
+						.introduced(rs.getDate(3))
+						.discontinued(rs.getDate(4))
 						.build();
 				if (rs.getLong(5) != 0) {
-					cy = Company.Builder().id(rs.getLong(5))
-							.name(rs.getString(6)).build();
+					cy = Company.Builder()
+							.id(rs.getLong(5))
+							.name(rs.getString(6))
+							.build();
 				}
 				c.setCompany(cy);
 				cList.add(c);
@@ -183,14 +232,15 @@ public enum ComputerDao implements IDao<Computer> {
 	public void update(Computer computer) {
 		try {
 			cn = ConnectionManager.getInstance().getConnection();
-			PreparedStatement stmt = cn
-					.prepareStatement("UPDATE computer SET name=?,introduced=?,discontinued=?,company_id=? where id=?;");
+			PreparedStatement stmt = cn.prepareStatement("UPDATE computer SET name=?,introduced=?,discontinued=?,company_id=? where id=?;");
 			stmt.setString(1, computer.getName());
 
 			if (computer.getIntroduced() != null)
 				stmt.setDate(2, new Date(computer.getIntroduced().getTime()));
-			else
+			else {
+				logger.debug("Setting null value");
 				stmt.setNull(2, Types.NULL);
+			}
 
 			if (computer.getDiscontinued() != null)
 				stmt.setDate(3, new Date(computer.getDiscontinued().getTime()));

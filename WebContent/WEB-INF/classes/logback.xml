@@ -7,6 +7,15 @@
       <pattern>%d{HH:mm:ss.SSS} - %-5level %15logger{0} - %15method - %msg%n</pattern>
     </encoder>
   </appender>
+  
+<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+    <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+      <driverClass>com.mysql.jdbc.Driver</driverClass>
+      <url>jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull</url>
+      <user>root</user>
+      <password>root</password>
+    </connectionSource>
+  </appender>
 
   <logger name="com.excilys.computerdatabase.servlets.Dashboard" level="DEBUG"/>
 

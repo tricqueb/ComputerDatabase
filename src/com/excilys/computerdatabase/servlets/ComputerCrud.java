@@ -83,6 +83,7 @@ public class ComputerCrud extends HttpServlet {
 					request.getParameter("delete"), request.getParameter("id"));
 
 			// -------------------------------Create-------------------------------
+			// FIXME Do not create if there is an error !!!
 			if (request.getParameter("create") != null) {
 				// Dto build
 				ComputerDTO computerdto = ComputerDTO.Builder()
@@ -98,18 +99,24 @@ public class ComputerCrud extends HttpServlet {
 				ComputerValidator computerV = new ComputerValidator();
 				List<ErrorCodes> errors = computerV.validate(computerdto);
 
-				if (errors.isEmpty()) {
+				// if there is only id error
+				if (errors.size() == 1 && errors.get(0).getCode() == 1) {
+					// Error handling
 					// Mapping
 					ComputerMapper computerMapper = new ComputerMapper();
 					ComputerService.getInstance().create(
 							computerMapper.map(computerdto));
+
 				} else {
 					// Error handling
 					logger.warn("Error happened on create");
-					request.setAttribute("dto", computerdto);
-					request.setAttribute("errors", errors);
+					request.getSession().setAttribute("computerdto",
+							computerdto);
+					request.getSession().setAttribute("errors", errors);
+					request.getSession().setAttribute("hideErrors", "block");
 					action = "ComputerCrud";
 				}
+
 			}
 
 			// -------------------------------Update-------------------------------
@@ -130,6 +137,7 @@ public class ComputerCrud extends HttpServlet {
 				List<ErrorCodes> errors = computerV.validate(computerdto);
 
 				if (errors.isEmpty()) {
+					logger.warn("Update is valid, calling service");
 					// Mapping
 					ComputerMapper computerMapper = new ComputerMapper();
 					ComputerService.getInstance().update(
@@ -143,13 +151,9 @@ public class ComputerCrud extends HttpServlet {
 					request.getSession().setAttribute("modalShow", "true");
 					request.getSession().setAttribute("hideErrors", "block");
 					action = "Dashboard";
-
 				}
 
 				// -------------------------------Delete-------------------------------
-				// FIXME SendError not working - Cant make a sendRedirect after
-				// a
-				// sendError
 			} else if (request.getParameter("delete") != null) {
 				// Dto build
 				ComputerDTO computerdto = ComputerDTO.Builder()
@@ -158,20 +162,23 @@ public class ComputerCrud extends HttpServlet {
 				// Validation
 				ComputerValidator computerV = new ComputerValidator();
 				List<ErrorCodes> errors = computerV.validate(computerdto);
+				Boolean wrongId = false;
 				for (ErrorCodes error : errors) {
 					if (error.getCode() == 1) {
 						// Error handling
 						logger.warn("Error happened on delete");
 						request.setAttribute("errors", errors);
 						action = "Dashboard";
+						wrongId = true;
 					}
 
 				}
-
-				// Mapping
-				ComputerMapper computerMapper = new ComputerMapper();
-				ComputerService.getInstance().delete(
-						computerMapper.map(computerdto));
+				if (!wrongId) {
+					// Mapping
+					ComputerMapper computerMapper = new ComputerMapper();
+					ComputerService.getInstance().delete(
+							computerMapper.map(computerdto));
+				}
 
 			}
 
@@ -180,9 +187,5 @@ public class ComputerCrud extends HttpServlet {
 			e.printStackTrace();
 		}
 		response.sendRedirect(action);
-
-		// RequestDispatcher dispatcher =
-		// request.getRequestDispatcher("Dashboard");
-		// dispatcher.forward(request, response);
 	}
 }

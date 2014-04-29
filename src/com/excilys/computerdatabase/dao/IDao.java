@@ -36,10 +36,16 @@ public interface IDao<T> {
 	 * (Find by name)
 	 * 
 	 * @param o
+	 *            ob is the order column number applied
 	 * 
 	 * @return Object T found or an empty list
 	 */
-	public List<T> find(String o);
+	public List<T> find(
+			String o,
+			Integer offset,
+			Integer limit,
+			Long ob,
+			Boolean desc);
 
 	/**
 	 * Find by id

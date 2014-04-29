@@ -36,14 +36,24 @@ public enum ComputerService {
 
 	}
 
-	public List<Computer> find(String cName) {
-		return ComputerDao.getInstance().find(cName);
+	public Integer count(String search) {
+		return ComputerDao.getInstance().count(search);
+	}
+
+	public List<Computer> find(
+			String cName,
+			Integer offset,
+			Integer limit,
+			Long orderBy,
+			Boolean desc) {
+		return ComputerDao.getInstance().find(cName, offset, limit, orderBy,
+				desc);
 
 	}
 
 	public void update(Computer c) {
-		logger.debug("Updating computer {} with new values:  {} {} {}",
-				c.getName(), c.getIntroduced(), c.getDiscontinued(),
+		logger.debug("Updating computer {} ({}) with new values:  {} {} {}",
+				c.getName(), c.getId(), c.getIntroduced(), c.getDiscontinued(),
 				c.getCompany());
 
 		ComputerDao.getInstance().update(c);
