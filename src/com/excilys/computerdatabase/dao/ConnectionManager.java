@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.computerdatabase.services.ConnectionBox;
 import com.excilys.computerdatabase.servlets.ComputerCrud;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
@@ -35,7 +36,6 @@ public enum ConnectionManager {
 	}
 
 	private static BoneCP connectionPool;
-	private Connection cn = null;
 
 	private ConnectionManager() {
 	}
@@ -56,5 +56,30 @@ public enum ConnectionManager {
 		}
 
 		return connection; // fetch a connection
+	}
+
+	public void disconnect(ConnectionBox cnb) {
+		try {
+			if (cnb.getStatement() != null)
+				cnb.getStatement().close();
+		} catch (SQLException e) {
+			logger.error("Closing Error : " + e.getMessage());
+		} finally {
+			try {
+				if (cnb.getStatement() != null)
+					cnb.getStatement().close();
+			} catch (SQLException e) {
+				logger.error("Closing Error : " + e.getMessage());
+			} finally {
+				try {
+					if (cnb.getConnection() != null)
+						cnb.getConnection().close();
+				} catch (SQLException e) {
+					logger.error("ComputerDao - Closing Error : "
+							+ e.getMessage());
+				}
+
+			}
+		}
 	}
 }

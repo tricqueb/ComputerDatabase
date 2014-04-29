@@ -1,6 +1,9 @@
 package com.excilys.computerdatabase.dao;
 
+import java.sql.SQLException;
 import java.util.List;
+
+import com.excilys.computerdatabase.services.ConnectionBox;
 
 public interface ICompanyDao<T> {
 
@@ -11,7 +14,7 @@ public interface ICompanyDao<T> {
 	 * 
 	 * @return Object T found or an empty list
 	 */
-	public List<T> find(String o);
+	public List<T> find(ConnectionBox cnb, String o) throws SQLException;
 
 	/**
 	 * Find by id
@@ -19,5 +22,5 @@ public interface ICompanyDao<T> {
 	 * @param o
 	 * @return
 	 */
-	public T find(long o);
+	public T find(ConnectionBox cnb, long o) throws SQLException;
 }

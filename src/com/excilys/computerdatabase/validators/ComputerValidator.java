@@ -44,11 +44,13 @@ public class ComputerValidator implements IValidator<ComputerDTO> {
 		}
 
 		if (dto.getDiscontinued() != null) {
-			if (!dto.getDiscontinued().isEmpty())
+			if (!dto.getDiscontinued().isEmpty()) {
 				if (!dto.getDiscontinued().matches(datePattern))
 					errorList.add(ErrorCodes.DISCONTINUED_FORMAT);
-			if (dto.getIntroduced() == null || (dto.getIntroduced().isEmpty()))
-				errorList.add(ErrorCodes.INTRODUCED_MISSING);
+				if (dto.getIntroduced() == null
+						|| (dto.getIntroduced().isEmpty()))
+					errorList.add(ErrorCodes.INTRODUCED_MISSING);
+			}
 		}
 
 		if (dto.getCompany() != null) {

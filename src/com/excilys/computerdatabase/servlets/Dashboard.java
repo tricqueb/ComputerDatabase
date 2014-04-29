@@ -75,21 +75,21 @@ public class Dashboard extends HttpServlet {
 
 			logger.debug("Desc ?: {}", desc);
 
-			Integer cListSize = null;
+			Integer total = null;
 			if (search == null || search.isEmpty())
-				cListSize = ComputerService.getInstance().count("%");
+				total = ComputerService.getInstance().count("%");
 			else
-				cListSize = ComputerService.getInstance().count(search);
-			logger.debug("Total count result : {} ", cListSize);
+				total = ComputerService.getInstance().count(search);
+			logger.debug("Total count result : {} ", total);
 			// Pagination
 			int currentPage = 1;
-			int perPage = 20;
+			int elementsPerPage = 20;
 
 			// Change 'pageNumber' to currentPage
 			if (request.getParameter("pageNumber") != null)
 				currentPage = Integer.parseInt(request.getParameter("pageNumber"));
 			if (request.getParameter("perPage") != null)
-				perPage = Integer.parseInt(request.getParameter("perPage"));
+				elementsPerPage = Integer.parseInt(request.getParameter("perPage"));
 
 			int startPage = currentPage - 5;
 
@@ -101,25 +101,25 @@ public class Dashboard extends HttpServlet {
 			// if (lastEl > cListSize)
 			// lastEl = cListSize;
 
-			int nbPages = cListSize / perPage;
-			if (cListSize % perPage > 0)
+			int nbPages = total / elementsPerPage;
+			if (total % elementsPerPage > 0)
 				nbPages++;
 
 			if (currentPage > nbPages)
 				currentPage = nbPages;
 
-			if (perPage > cListSize)
-				perPage = cListSize;
+			if (elementsPerPage > total)
+				elementsPerPage = total;
 
 			List<ComputerDTO> cList;
 			ComputerMapper computerMapper = new ComputerMapper();
 			if (search == null || search.isEmpty())
 				cList = computerMapper.invert(ComputerService.getInstance()
-						.find("%", (currentPage - 1) * perPage, perPage,
+						.find("%", (currentPage - 1) * elementsPerPage, elementsPerPage,
 								orderBy, desc));
 			else
 				cList = computerMapper.invert(ComputerService.getInstance()
-						.find(search, (currentPage - 1) * perPage, perPage,
+						.find(search, (currentPage - 1) * elementsPerPage, elementsPerPage,
 								orderBy, desc));
 
 			int endPage = currentPage + 5;
@@ -132,7 +132,7 @@ public class Dashboard extends HttpServlet {
 
 			logger.debug(
 					"Pagination : Number of pages: {} Elements per page: {} Start/End of pagination : {} {}",
-					nbPages, perPage, startPage, endPage);
+					nbPages, elementsPerPage, startPage, endPage);
 
 			// Company list
 			List<Company> cyList = CompanyService.getInstance().find("%");
@@ -148,13 +148,13 @@ public class Dashboard extends HttpServlet {
 			request.setAttribute("desc", desc);
 
 			// pagination
-			request.setAttribute("cListSize", cListSize);
+			request.setAttribute("cListSize", total);
 			request.setAttribute("currentPage", currentPage);
 			request.setAttribute("startPage", startPage);
 			request.setAttribute("endPage", endPage);
 
 			// computer list
-			logger.debug("Results found : {} ", cListSize);
+			logger.debug("Results found : {} ", total);
 			request.setAttribute("cList", cList);
 			request.setAttribute("cyList", cyList);
 
