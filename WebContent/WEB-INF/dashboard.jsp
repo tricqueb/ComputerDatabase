@@ -1,98 +1,28 @@
 <jsp:include page="/WEB-INF/include/header.jsp" />
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib tagdir="/WEB-INF/tags/42" prefix="KD"%>
 
 <div class=container>
 
-	<h1 id="homeTitle" class="page-header">${cListSize} Computers
-		found</h1>
+	<h1 id="homeTitle" class="page-header">${cListSize} Computers found</h1>
 
-	<!-- Modal -->
-	<div class="modal fade " modalShow="${modalShow}" id="editModal" tabindex="-1" role="dialog"
-		aria-labelledby="editModalLabel" aria-hidden="true" >
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="editModalLabel">Edit a computer</h4>
-				</div>
-				<jsp:include page="/WEB-INF/editComputer.jsp" />
-			</div>
-		</div>
-	</div>
+	<jsp:include page="/WEB-INF/modalForm.jsp" />
 
 	<div id="actions">
-		<div class="form-group">
-			<form class="form-inline" action="/computer-database/Dashboard"
-				method="GET">
-				<input class="form-control" type="search" id="searchbox"
-					name="search" value="" placeholder="Search name"> <input
-					type="submit" id="searchsubmit" value="Filter by name"
-					class="btn btn-primary">
-			</form>
-			<a class="btn btn-success" id="add" href="ComputerCrud">Add
-				Computer</a>
-		</div>
+		<KD:search value="${search}" method="search" action="Dashboard"
+			id="searchbox" column="15" placeholder="Search computer"
+			inline="col-xs-2" />
+		<a class="btn btn-success" id="add" href="ComputerCrud">Add
+			Computer</a>
 	</div>
 
-	<table class="computers table table-striped">
-		<thead>
-			<tr>
-				<!-- Variable declarations for passing labels as parameters -->
-				<!-- Table header for Computer Name -->
-				<th>Computer Name</th>
-				<th>Introduced Date</th>
-				<!-- Table header for Discontinued Date -->
-				<th>Discontinued Date</th>
-				<!-- Table header for Company -->
-				<th>Company</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
+	<jsp:include page="/WEB-INF/dashboardTable.jsp" />
 
-			<!-- Afficher tous les éléments d'une collection dans le request-->
-
-			<c:forEach var="el" items="${cList}">
-				<tr>
-					<td hidden="true">${el.getId()}</td>
-					<td><c:out value="${el.getName()}"></c:out></td>
-					<td><c:out value="${el.getIntroduced().toString()}"></c:out></td>
-					<td><c:out value="${el.getDiscontinued()}"></c:out></td>
-					<td id=${el.getCompany().getId()}>
-						<c:out value="${el.getCompany().getName()}"></c:out></td>
-					<td>
-						<!-- 						<form class="form-inline" action="ComputerCrud" method="post"> -->
-						<!-- 							<input type="hidden" name="EditValue" --> <%-- 								value="${el.getCompany().getName()}"></input>  --%>
-						<!-- 								<input type="submit" name="Edit" value="Edit" class="btn btn-warning" data-toggle="modal" data-target="#editModal"></input> -->
-						<button class="btn btn-warning edit" data-toggle="modal"
-							data-target="#editModal">Edit</button> <!-- 						</form> -->
-					</td>
-					<td>
-						<form class="form-inline" action="ComputerCrud" method="post">
-							<input type="hidden" name="id" value="${el.getId()}"></input>
-							<input type="submit" name="delete" value="delete"
-								class="btn btn-danger"></input>
-						</form>
-					</td>
-				</tr>
-			</c:forEach>
-		</tbody>
-	</table>
-	
-	<ul class="pagination">
-	<li><a href="#">&laquo;</a></li>
-	<c:forEach var="page" begin="1" end="${nbPages}">
-		<li><a href=<c:url value="Dashboard">	
-						<c:param name="pageNumber" value="${page}" />
-					</c:url>>
-				${page}
-			</a>
-		</li>
-		</c:forEach>
-		<li><a href="#">&raquo;</a></li>
-	</ul>
-	
+	<div style="text-align:center; width:100%;">
+		<KD:pagination action="Dashboard?search=${search}"
+			currentPage="${currentPage}" startPage="${startPage}"
+			endPage="${endPage}" />
+	</div>
 </div>
 
 <jsp:include page="/WEB-INF/include/footer.jsp" />

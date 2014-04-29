@@ -1,11 +1,10 @@
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 	
+	
 <c:if test="empty hideErrors">
 	<c:set var="hideErrors" value="none" />
 </c:if>
 
-<form id=computerForm action="ComputerCrud" method="POST">  
-<div class="modal-body">
 	<div class="form-group">
 	<label id="formAlertLabel" hidden="true" class="alert alert-danger"></label>
 	<div id="formAlert" style="display:${hideErrors}" class="alert alert-danger">
@@ -46,10 +45,3 @@
 			</div>
 		</fieldset>
 	</div>
-	<div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <input type="submit"  name="update" value="update" class="btn btn-success">
-      </div>
-      
-</div>
-</form>
