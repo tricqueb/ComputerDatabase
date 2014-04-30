@@ -5,14 +5,17 @@
 <%@ attribute name="action" required="true"%>
 <%@ attribute name="orderby" required="true"%>
 <%@ attribute name="width" required="false"%>
+<%@ attribute name="currentPage" required="false"%>
+<%@ attribute name="desc" required="false"%>
+<%@ attribute name="search" required="false"%>
 
 <c:if test="${orderby eq value}">
 	<c:choose>
-		<c:when test="${desc eq 'true'}">
-			<c:set scope="request" var="desc" value="false" />
+		<c:when test="${desc eq true}">
+			<c:set scope="request" var="descLocal" value="false" />
 		</c:when>
 		<c:otherwise>
-			<c:set scope="request" var="desc" value="true" />
+			<c:set scope="request" var="descLocal" value="true" />
 		</c:otherwise>
 	</c:choose>
 </c:if>
@@ -20,7 +23,7 @@
 <th style="width:${width}"><a href=<c:url value="${action}">
 				<c:param name="pageNumber" value="${currentPage}" />
 				<c:param name="orderby" value="${value}"/>
-				<c:param name="desc" value="${desc}"/>
+				<c:param name="desc" value="${descLocal}"/>
 				<c:param name="search" value="${search}"/>
 			</c:url>
 	>

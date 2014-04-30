@@ -12,8 +12,8 @@
 <form class="" action="${action}" method="GET">
 	<div class="${inline}">
 		 
-		<input type="hidden" name="orderby" value="${orderby}" /> 
-		<input type="hidden" name="desc" value="${desc}" />
+		<input type="hidden" name="orderby" value="${page.getOrderBy()}" /> 
+		<input type="hidden" name="desc" value="${page.getDesc()}" />
 		<c:if test="${method eq 'pageNumber'}" >
 			<input type="hidden" name="search" value="${search}" />
 		</c:if>

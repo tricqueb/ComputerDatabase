@@ -21,6 +21,8 @@ import ch.qos.logback.core.util.StatusPrinter;
 import com.excilys.computerdatabase.dto.ComputerDTO;
 import com.excilys.computerdatabase.mappers.ComputerMapper;
 import com.excilys.computerdatabase.models.Company;
+import com.excilys.computerdatabase.pages.Page;
+import com.excilys.computerdatabase.pages.Page.PageBuilder;
 import com.excilys.computerdatabase.services.CompanyService;
 import com.excilys.computerdatabase.services.ComputerService;
 
@@ -115,12 +117,12 @@ public class Dashboard extends HttpServlet {
 			ComputerMapper computerMapper = new ComputerMapper();
 			if (search == null || search.isEmpty())
 				cList = computerMapper.invert(ComputerService.getInstance()
-						.find("%", (currentPage - 1) * elementsPerPage, elementsPerPage,
-								orderBy, desc));
+						.find("%", (currentPage - 1) * elementsPerPage,
+								elementsPerPage, orderBy, desc));
 			else
 				cList = computerMapper.invert(ComputerService.getInstance()
-						.find(search, (currentPage - 1) * elementsPerPage, elementsPerPage,
-								orderBy, desc));
+						.find(search, (currentPage - 1) * elementsPerPage,
+								elementsPerPage, orderBy, desc));
 
 			int endPage = currentPage + 5;
 			if (endPage > nbPages) {
@@ -144,18 +146,28 @@ public class Dashboard extends HttpServlet {
 			request.setAttribute("search", search);
 
 			// order By
-			request.setAttribute("orderby", orderBy);
-			request.setAttribute("desc", desc);
+			// request.setAttribute("orderby", orderBy);
+			// request.setAttribute("desc", desc);
 
 			// pagination
-			request.setAttribute("cListSize", total);
-			request.setAttribute("currentPage", currentPage);
-			request.setAttribute("startPage", startPage);
-			request.setAttribute("endPage", endPage);
+			PageBuilder<ComputerDTO> pageBuilder = Page.builder();
+			pageBuilder.cList(cList)
+					.total(total)
+					.currentPage(currentPage)
+					.startPage(startPage)
+					.endPage(endPage)
+					.orderBy(orderBy)
+					.desc(desc);
+
+			request.setAttribute("page", pageBuilder.build());
+
+			// request.setAttribute("cListSize", total);
+			// request.setAttribute("currentPage", currentPage);
+			// request.setAttribute("startPage", startPage);
+			// request.setAttribute("endPage", endPage);
 
 			// computer list
 			logger.debug("Results found : {} ", total);
-			request.setAttribute("cList", cList);
 			request.setAttribute("cyList", cyList);
 
 			// Get attributes from another servlet

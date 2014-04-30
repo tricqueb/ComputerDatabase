@@ -4,7 +4,7 @@
 
 <div class=container>
 
-	<h1 id="homeTitle" class="page-header">${cListSize} Computers found</h1>
+	<h1 id="homeTitle" class="page-header">${page.getTotal()} Computers found</h1>
 
 	<jsp:include page="/WEB-INF/modalForm.jsp" />
 
@@ -20,8 +20,8 @@
 
 	<div style="text-align:center; width:100%;">
 		<KD:pagination action="Dashboard?search=${search}"
-			currentPage="${currentPage}" startPage="${startPage}"
-			endPage="${endPage}" />
+			currentPage="${page.getCurrentPage()}" startPage="${page.getStartPage()}"
+			endPage="${page.getEndPage()}" orderby="${page.getOrderBy()}" desc="${page.getDesc() }"/>
 	</div>
 </div>
 

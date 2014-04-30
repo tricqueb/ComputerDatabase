@@ -6,6 +6,9 @@
 <%@ attribute name="startPage" required="true"%>
 <%@ attribute name="endPage" required="true"%>
 <%@ attribute name="action" required="true"%>
+<%@ attribute name="orderby" required="true"%>
+<%@ attribute name="desc" required="true"%>
+
 
 <c:set var="predecessor" value="${currentPage-1}" />
 <c:if test="${currentPage==startPage}">
