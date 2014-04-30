@@ -6,18 +6,18 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.computerdatabase.dto.ComputerDTO;
+import com.excilys.computerdatabase.dto.impl.ComputerDTOImpl;
 
 //TODO add name length verification
-public class ComputerValidator implements IValidator<ComputerDTO> {
-	private static final Logger logger = LoggerFactory.getLogger(ComputerValidator.class);
+public class ComputerValidatorImpl implements Validator<ComputerDTOImpl> {
+	private static final Logger logger = LoggerFactory.getLogger(ComputerValidatorImpl.class);
 
 	// id can't start with 0, then any number
 	private String idPattern = "^[1-9]\\d{0,17}$";
 	private String datePattern = "(\\d{4})-(([0][0-9])|([1][0-2]))-(([0-2][0-9])|(3[0-1]))";
 
 	@Override
-	public List<ErrorCodes> validate(ComputerDTO dto) {
+	public List<ErrorCodes> validate(ComputerDTOImpl dto) {
 		logger.debug("Id pattern : {}", idPattern);
 		logger.debug("Date pattern : {}", datePattern);
 		logger.debug("Dto to validate: {}", dto);
@@ -54,7 +54,7 @@ public class ComputerValidator implements IValidator<ComputerDTO> {
 		}
 
 		if (dto.getCompany() != null) {
-			CompanyValidator companyV = new CompanyValidator();
+			CompanyValidatorImpl companyV = new CompanyValidatorImpl();
 			errorList.addAll(companyV.validate(dto.getCompany()));
 		}
 

@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.dao;
+package com.excilys.computerdatabase.connections;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.computerdatabase.services.ConnectionBox;
+import com.excilys.computerdatabase.services.ConnectionBoxImpl;
 import com.excilys.computerdatabase.servlets.ComputerCrud;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
@@ -36,29 +36,58 @@ public enum ConnectionManager {
 	}
 
 	private static BoneCP connectionPool;
+	private ThreadLocal<ConnectionBoxImpl> threadLocal;
 
 	private ConnectionManager() {
+		threadLocal = new ThreadLocal<ConnectionBoxImpl>();
 	}
 
 	public static ConnectionManager getInstance() {
 		return INSTANCE;
 	}
 
-	public Connection getConnection() {
+	public void initTransaction() {
+
 		logger.debug("Getting connection...");
 		Connection connection = null;
 		try {
 			connection = connectionPool.getConnection();
-
+			ConnectionBoxImpl cnb = ConnectionBoxImpl.Builder()
+					.connection(connection)
+					.build();
+			cnb.getConnection().setAutoCommit(false);
+			threadLocal.set(cnb);
 		} catch (SQLException e) {
 			logger.error("Error while trying to connect: {}", e.getMessage());
 			e.printStackTrace();
 		}
 
-		return connection; // fetch a connection
 	}
 
-	public void disconnect(ConnectionBox cnb) {
+	public void closeTransaction() {
+		ConnectionBoxImpl cnb = threadLocal.get();
+		try {
+			cnb.getConnection().commit();
+		} catch (SQLException e1) {
+			logger.error("Commit error: " + e1.getMessage());
+			e1.printStackTrace();
+			try {
+				cnb.getConnection().rollback();
+			} catch (SQLException e) {
+				logger.error("Rollback error: " + e.getMessage());
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public ConnectionBoxImpl getConnection() {
+
+		return threadLocal.get(); // fetch a connection
+	}
+
+	public void disconnect() {
+
+		ConnectionBoxImpl cnb = threadLocal.get();
 		try {
 			if (cnb.getStatement() != null)
 				cnb.getStatement().close();
@@ -77,8 +106,9 @@ public enum ConnectionManager {
 				} catch (SQLException e) {
 					logger.error("ComputerDao - Closing Error : "
 							+ e.getMessage());
+				} finally {
+					threadLocal.remove();
 				}
-
 			}
 		}
 	}

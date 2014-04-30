@@ -6,15 +6,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.excilys.computerdatabase.dao.ComputerDao;
-import com.excilys.computerdatabase.models.Computer;
+import com.excilys.computerdatabase.dao.impl.ComputerDaoImpl;
+import com.excilys.computerdatabase.domain.Computer;
 
 @RunWith(JUnit4.class)
 public class ComputerDaoTest {
 
 	@Test
 	public void createTest() {
-		ComputerDao cd = ComputerDao.getInstance();
+		ComputerDaoImpl cd = ComputerDaoImpl.getInstance();
 		Computer computer = new Computer();
 
 		computer.setName("poil");

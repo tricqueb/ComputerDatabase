@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.mappers;
+package com.excilys.computerdatabase.mappers.impl;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -7,15 +7,16 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.computerdatabase.dto.ComputerDTO;
-import com.excilys.computerdatabase.models.Computer;
+import com.excilys.computerdatabase.domain.Computer;
+import com.excilys.computerdatabase.dto.impl.ComputerDTOImpl;
+import com.excilys.computerdatabase.mappers.Mapper;
 
-public class ComputerMapper implements Mapper<ComputerDTO, Computer> {
-	private static final Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
-	CompanyMapper companyMapper = new CompanyMapper();
+public class ComputerMapperImpl implements Mapper<ComputerDTOImpl, Computer> {
+	private static final Logger logger = LoggerFactory.getLogger(ComputerMapperImpl.class);
+	CompanyMapperImpl companyMapper = new CompanyMapperImpl();
 
 	@Override
-	public Computer map(ComputerDTO computerDTO) {
+	public Computer map(ComputerDTOImpl computerDTO) {
 
 		Computer.Builder builder = Computer.Builder();
 
@@ -42,9 +43,9 @@ public class ComputerMapper implements Mapper<ComputerDTO, Computer> {
 	}
 
 	@Override
-	public ComputerDTO invert(Computer computer) {
+	public ComputerDTOImpl invert(Computer computer) {
 
-		ComputerDTO.Builder builder = ComputerDTO.Builder();
+		ComputerDTOImpl.Builder builder = ComputerDTOImpl.Builder();
 		builder.id(String.valueOf(computer.getId())).name(computer.getName());
 		if (computer.getIntroduced() != null)
 			builder.introduced(String.valueOf(computer.getIntroduced()));
@@ -57,17 +58,17 @@ public class ComputerMapper implements Mapper<ComputerDTO, Computer> {
 	}
 
 	@Override
-	public List<Computer> map(List<ComputerDTO> computerDtoList) {
+	public List<Computer> map(List<ComputerDTOImpl> computerDtoList) {
 		List<Computer> computerList = new ArrayList<Computer>();
-		for (ComputerDTO cdto : computerDtoList) {
+		for (ComputerDTOImpl cdto : computerDtoList) {
 			computerList.add(map(cdto));
 		}
 		return computerList;
 	}
 
 	@Override
-	public List<ComputerDTO> invert(List<Computer> computerList) {
-		List<ComputerDTO> computerDtoList = new ArrayList<ComputerDTO>();
+	public List<ComputerDTOImpl> invert(List<Computer> computerList) {
+		List<ComputerDTOImpl> computerDtoList = new ArrayList<ComputerDTOImpl>();
 		for (Computer c : computerList) {
 			computerDtoList.add(invert(c));
 		}

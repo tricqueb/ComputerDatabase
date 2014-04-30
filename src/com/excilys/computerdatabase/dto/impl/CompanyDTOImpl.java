@@ -1,12 +1,12 @@
-package com.excilys.computerdatabase.dto;
+package com.excilys.computerdatabase.dto.impl;
 
-public class CompanyDTO {
+public class CompanyDTOImpl {
 	// Builder
 	public static class Builder {
-		CompanyDTO companyDto;
+		CompanyDTOImpl companyDto;
 
 		private Builder() {
-			companyDto = new CompanyDTO();
+			companyDto = new CompanyDTOImpl();
 		}
 
 		public Builder id(String id) {
@@ -19,7 +19,7 @@ public class CompanyDTO {
 			return this;
 		}
 
-		public CompanyDTO build() {
+		public CompanyDTOImpl build() {
 			return companyDto;
 		}
 	}

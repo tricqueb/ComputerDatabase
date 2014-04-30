@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.models;
+package com.excilys.computerdatabase.domain;
 
 import java.util.Date;
 

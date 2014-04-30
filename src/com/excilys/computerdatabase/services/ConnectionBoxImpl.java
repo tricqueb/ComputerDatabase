@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ConnectionBox {
+public class ConnectionBoxImpl {
 
 	public Connection getConnection() {
 		return connection;
@@ -49,10 +49,10 @@ public class ConnectionBox {
 	private PreparedStatement statement = null;
 
 	public static class Builder {
-		ConnectionBox connectionBox;
+		ConnectionBoxImpl connectionBox;
 
 		private Builder() {
-			connectionBox = new ConnectionBox();
+			connectionBox = new ConnectionBoxImpl();
 		}
 
 		public Builder connection(Connection c) {
@@ -70,7 +70,7 @@ public class ConnectionBox {
 			return this;
 		}
 
-		public ConnectionBox build() {
+		public ConnectionBoxImpl build() {
 			return connectionBox;
 		}
 	}

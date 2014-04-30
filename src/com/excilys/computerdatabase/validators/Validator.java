@@ -2,7 +2,7 @@ package com.excilys.computerdatabase.validators;
 
 import java.util.List;
 
-public interface IValidator<T> {
+public interface Validator<T> {
 	/**
 	 * Validate the given dto
 	 * 

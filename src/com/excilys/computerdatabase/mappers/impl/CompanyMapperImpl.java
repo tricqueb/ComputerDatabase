@@ -1,15 +1,16 @@
-package com.excilys.computerdatabase.mappers;
+package com.excilys.computerdatabase.mappers.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.excilys.computerdatabase.dto.CompanyDTO;
-import com.excilys.computerdatabase.models.Company;
+import com.excilys.computerdatabase.domain.Company;
+import com.excilys.computerdatabase.dto.impl.CompanyDTOImpl;
+import com.excilys.computerdatabase.mappers.Mapper;
 
-public class CompanyMapper implements Mapper<CompanyDTO, Company> {
+public class CompanyMapperImpl implements Mapper<CompanyDTOImpl, Company> {
 
 	@Override
-	public Company map(CompanyDTO companydto) {
+	public Company map(CompanyDTOImpl companydto) {
 		if (companydto != null)
 			if (!"null".contentEquals(companydto.getId())) {
 
@@ -24,17 +25,17 @@ public class CompanyMapper implements Mapper<CompanyDTO, Company> {
 	}
 
 	@Override
-	public CompanyDTO invert(Company company) {
-		return CompanyDTO.Builder()
+	public CompanyDTOImpl invert(Company company) {
+		return CompanyDTOImpl.Builder()
 				.id(String.valueOf(company.getId()))
 				.name(company.getName())
 				.build();
 	}
 
 	@Override
-	public List<Company> map(List<CompanyDTO> companyDtoList) {
+	public List<Company> map(List<CompanyDTOImpl> companyDtoList) {
 		List<Company> companyList = new ArrayList<Company>();
-		for (CompanyDTO cdto : companyDtoList) {
+		for (CompanyDTOImpl cdto : companyDtoList) {
 			companyList.add(map(cdto));
 		}
 		return companyList;
@@ -42,8 +43,8 @@ public class CompanyMapper implements Mapper<CompanyDTO, Company> {
 	}
 
 	@Override
-	public List<CompanyDTO> invert(List<Company> companyList) {
-		List<CompanyDTO> companyDtoList = new ArrayList<CompanyDTO>();
+	public List<CompanyDTOImpl> invert(List<Company> companyList) {
+		List<CompanyDTOImpl> companyDtoList = new ArrayList<CompanyDTOImpl>();
 		for (Company cdto : companyList) {
 			companyDtoList.add(invert(cdto));
 		}

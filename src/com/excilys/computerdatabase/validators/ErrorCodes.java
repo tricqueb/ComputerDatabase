@@ -1,5 +1,6 @@
 package com.excilys.computerdatabase.validators;
 
+//TODO Make one error one code id
 public enum ErrorCodes {
 	ID_ERROR(1, "Error on id"), ID_NULL(1, "id is missing"), NAME_NULL(2,
 			"Name is missing"), NAME_EMPTY(2, "Name can't be empty"), NAME_LENGTH(
@@ -23,5 +24,4 @@ public enum ErrorCodes {
 		this.code = code;
 		this.message = error;
 	}
-
 }
