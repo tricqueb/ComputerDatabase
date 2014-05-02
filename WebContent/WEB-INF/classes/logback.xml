@@ -9,7 +9,7 @@
   </appender>
   
 <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
-    <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+    <connectionSource class="com.excilys.computerdatabase.connections.LogConnection">
       <driverClass>com.mysql.jdbc.Driver</driverClass>
       <url>jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull</url>
       <user>root</user>

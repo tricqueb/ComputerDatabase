@@ -7,11 +7,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.computerdatabase.connections.ConnectionBox;
+import com.excilys.computerdatabase.connections.ConnectionBoxImpl;
 import com.excilys.computerdatabase.connections.ConnectionManager;
 import com.excilys.computerdatabase.dao.CompanyDao;
 import com.excilys.computerdatabase.domain.Company;
-import com.excilys.computerdatabase.services.ConnectionBox;
-import com.excilys.computerdatabase.services.impl.ConnectionBoxImpl;
 
 public enum CompanyDaoImpl implements CompanyDao<Company> {
 	INSTANCE;
@@ -30,7 +30,7 @@ public enum CompanyDaoImpl implements CompanyDao<Company> {
 	public List<Company> find(String companyName) throws SQLException {
 
 		// Connection
-		ConnectionBox cnb = ConnectionManager.getInstance().getConnection();
+		ConnectionBox cnb = ConnectionManager.getInstance().getConnectionBox();
 
 		// Query
 		cnb.setStatement("Select cy.id,cy.name from company as cy where cy.name LIKE ?;");
@@ -45,7 +45,7 @@ public enum CompanyDaoImpl implements CompanyDao<Company> {
 	public Company find(long CompanyId) throws SQLException {
 
 		// Connection
-		ConnectionBox cnb = ConnectionManager.getInstance().getConnection();
+		ConnectionBox cnb = ConnectionManager.getInstance().getConnectionBox();
 
 		// Query
 		cnb.setStatement("Select cy.id,cy.name from company as cy where cy.id = ?;");

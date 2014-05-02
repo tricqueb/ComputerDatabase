@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.computerdatabase.services.ConnectionBox;
-import com.excilys.computerdatabase.services.impl.ConnectionBoxImpl;
 import com.excilys.computerdatabase.servlets.ComputerCrud;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
@@ -19,6 +17,11 @@ public enum ConnectionManager {
 	private static final String DATABASE = "computer-database-db";
 	private static final String url = "jdbc:mysql://localhost:3306/" + DATABASE
 			+ "?zeroDateTimeBehavior=convertToNull";
+
+	public static String getUrl() {
+		return url;
+	}
+
 	// Bloc executed after constructor
 	static {
 		try {
@@ -48,6 +51,16 @@ public enum ConnectionManager {
 		return INSTANCE;
 	}
 
+	public Connection getConnection() {
+		try {
+			return connectionPool.getConnection();
+		} catch (SQLException e) {
+			logger.error("Error while trying to connect: {}", e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public void initTransaction() {
 
 		logger.debug("Getting connection...");
@@ -58,12 +71,12 @@ public enum ConnectionManager {
 					.connection(connection)
 					.build();
 			cnb.getConnection().setAutoCommit(false);
+			cnb.setTransactionState(true);
 			threadLocal.set(cnb);
 		} catch (SQLException e) {
 			logger.error("Error while trying to connect: {}", e.getMessage());
 			e.printStackTrace();
 		}
-
 	}
 
 	public void closeTransaction() {
@@ -80,9 +93,10 @@ public enum ConnectionManager {
 				e.printStackTrace();
 			}
 		}
+		cnb.setTransactionState(false);
 	}
 
-	public ConnectionBox getConnection() {
+	public ConnectionBox getConnectionBox() {
 		return threadLocal.get(); // fetch a connection
 	}
 

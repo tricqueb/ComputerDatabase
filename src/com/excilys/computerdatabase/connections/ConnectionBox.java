@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.services;
+package com.excilys.computerdatabase.connections;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,4 +30,7 @@ public interface ConnectionBox {
 	 */
 	public void setStatement(String query) throws SQLException;
 
+	public boolean isInTransactionState();
+
+	public void setTransactionState(Boolean b);
 }

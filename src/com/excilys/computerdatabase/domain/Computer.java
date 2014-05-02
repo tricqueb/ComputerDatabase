@@ -73,8 +73,7 @@ public class Computer {
 	}
 
 	public void setName(String name) {
-		if (!name.isEmpty())
-			this.name = name;
+		this.name = name;
 	}
 
 	public Date getIntroduced() {
@@ -98,8 +97,11 @@ public class Computer {
 	private String name;
 	private Date introduced, discontinued;
 
-	public void update(String name, java.util.Date introducedDate,
-			java.util.Date discontinuedDate, Company cy) {
+	public void update(
+			String name,
+			java.util.Date introducedDate,
+			java.util.Date discontinuedDate,
+			Company cy) {
 		setName(name);
 		setIntroduced(introducedDate);
 		setDiscontinued(discontinuedDate);

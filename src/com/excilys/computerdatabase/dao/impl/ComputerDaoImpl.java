@@ -9,12 +9,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.computerdatabase.connections.ConnectionBox;
+import com.excilys.computerdatabase.connections.ConnectionBoxImpl;
 import com.excilys.computerdatabase.connections.ConnectionManager;
 import com.excilys.computerdatabase.dao.Dao;
 import com.excilys.computerdatabase.domain.Company;
 import com.excilys.computerdatabase.domain.Computer;
-import com.excilys.computerdatabase.services.ConnectionBox;
-import com.excilys.computerdatabase.services.impl.ConnectionBoxImpl;
 
 /**
  * 
@@ -37,7 +37,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 	@Override
 	public void create(Computer computer) throws SQLException {
 
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
 		cnb.setStatement("INSERT into computer(name,introduced,discontinued,company_id) VALUES(?,?,?,?);");
 		cnb.getStatement().setString(1, computer.getName());
 
@@ -63,7 +63,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	@Override
 	public void delete(Computer computer) throws SQLException {
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
 		cnb.setStatement("DELETE from computer where id=?;");
 		cnb.getStatement().setString(1, Long.toString(computer.getId()));
 		cnb.getStatement().executeUpdate();
@@ -71,7 +71,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	@Override
 	public void delete(Long id) throws SQLException {
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
 		cnb.setStatement("DELETE from computer where id=?;");
 		cnb.getStatement().setString(1, Long.toString(id));
 		cnb.getStatement().executeUpdate();
@@ -80,7 +80,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	@Override
 	public List<Computer> find() throws SQLException {
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
 
 		logger.debug("Find all");
 		cnb.setStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id;");
@@ -112,7 +112,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 		query.append("LIMIT ? OFFSET ?");
 
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
 		cnb.setStatement(query.toString());
 
 		cnb.getStatement().setString(1, "%" + computerName + "%");
@@ -132,7 +132,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	public int count(String search) throws SQLException {
 		// Connection
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
 
 		Integer result = 0;
 		logger.debug("Counting element with {} as search parameter: " + search);
@@ -148,7 +148,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	@Override
 	public Computer find(long computerId) throws SQLException {
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
 		cnb.setStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.id = ?;");
 		cnb.getStatement().setLong(1, computerId);
 
@@ -185,7 +185,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	@Override
 	public void update(Computer computer) throws SQLException {
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
 		cnb.setStatement("UPDATE computer SET name=?,introduced=?,discontinued=?,company_id=? where id=?;");
 		cnb.getStatement().setString(1, computer.getName());
 

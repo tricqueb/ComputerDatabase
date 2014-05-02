@@ -40,12 +40,13 @@ public enum ComputerServiceImpl implements ComputerService {
 
 			logger.warn("Ajout de {}", c.getName());
 			ComputerDaoImpl.getInstance().create(c);
-			ConnectionManager.getInstance().closeTransaction();
 
+			ConnectionManager.getInstance().closeTransaction();
 		} catch (SQLException e) {
 			logger.error("Create error : " + e.getMessage());
 
 		} finally {
+
 			ConnectionManager.getInstance().disconnect();
 		}
 
@@ -180,10 +181,10 @@ public enum ComputerServiceImpl implements ComputerService {
 		ConnectionManager.getInstance().initTransaction();
 		try {
 
+			ComputerDaoImpl.getInstance().update(c);
 			logger.warn("Updating computer {} ({}) with new values:  {} {} {}",
 					c.getName(), c.getId(), c.getIntroduced(),
 					c.getDiscontinued(), c.getCompany());
-			ComputerDaoImpl.getInstance().update(c);
 			ConnectionManager.getInstance().closeTransaction();
 			logger.debug("Find ");
 
