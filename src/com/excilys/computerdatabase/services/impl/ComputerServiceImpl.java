@@ -120,7 +120,7 @@ public enum ComputerServiceImpl implements ComputerService {
 		ConnectionManager.getInstance().initTransaction();
 		try {
 
-			logger.warn("Counting {} elements", search);
+			logger.debug("Counting {} elements", search);
 			count = ComputerDaoImpl.getInstance().count(search);
 		} catch (SQLException e) {
 			logger.error("Count error : " + e.getMessage());

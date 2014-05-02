@@ -134,10 +134,6 @@ public class Dashboard extends HttpServlet {
 		// search
 		request.setAttribute("search", search);
 
-		// order By
-		// request.setAttribute("orderby", orderBy);
-		// request.setAttribute("desc", desc);
-
 		// pagination
 		PageBuilder<ComputerDTOImpl> pageBuilder = Page.builder();
 		pageBuilder.cList(cList)
