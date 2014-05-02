@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.services;
+package com.excilys.computerdatabase.services.impl;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -9,8 +9,9 @@ import org.slf4j.LoggerFactory;
 import com.excilys.computerdatabase.connections.ConnectionManager;
 import com.excilys.computerdatabase.dao.impl.CompanyDaoImpl;
 import com.excilys.computerdatabase.domain.Company;
+import com.excilys.computerdatabase.services.CompanyService;
 
-public enum CompanyServiceImpl {
+public enum CompanyServiceImpl implements CompanyService {
 	INSTANCE;
 	private static final Logger logger = LoggerFactory.getLogger(CompanyServiceImpl.class);
 
@@ -21,12 +22,13 @@ public enum CompanyServiceImpl {
 		return INSTANCE;
 	}
 
+	@Override
 	public List<Company> find(String cName) {
 		List<Company> cList = null;
 		logger.debug("Getting connection");
 		ConnectionManager.getInstance().initTransaction();
 		try {
-			logger.warn("Read for {}", cName);
+			logger.debug("Read for {}", cName);
 			cList = CompanyDaoImpl.getInstance().find(cName);
 			ConnectionManager.getInstance().closeTransaction();
 
@@ -40,13 +42,14 @@ public enum CompanyServiceImpl {
 		return cList;
 	}
 
+	@Override
 	public Company find(Long cId) {
 		logger.debug("Getting connection");
 		Company company = null;
 		ConnectionManager.getInstance().initTransaction();
 		try {
 
-			logger.warn("Read for {}", cId);
+			logger.debug("Read for {}", cId);
 			company = CompanyDaoImpl.getInstance().find(cId);
 			ConnectionManager.getInstance().closeTransaction();
 

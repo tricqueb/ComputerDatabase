@@ -20,9 +20,8 @@
 	<c:set var="next" value="${currentPage}" />
 </c:if>
 	
-	<div class="">
-	
-		<ul class="pagination">
+	<div class=""  style="text-align:center; width:100%;">
+		<ul class="pagination" style="margin:1px">
 
 			<li><a
 				href=<c:url value="${action}">
@@ -63,12 +62,12 @@
 						<c:param name="desc" value="${desc}"/>
 						<c:param name="search" value="${search}"/>			
 					</c:url>>&raquo;</a></li>
-					
 		</ul>
-		<div class="pull-right">
-		<KD:search value="${currentPage}" method="pageNumber"
-			action="Dashboard" column="2" />
-			</div>
 		
+		<div class="pull-right pagination" style="margin:2px;">
+				<KD:search value="${currentPage}" method="pageNumber"
+			action="Dashboard" column="2" />
+		</div>
 	</div>
+	
 	

@@ -20,8 +20,8 @@ import com.excilys.computerdatabase.dto.impl.ComputerDTOImpl;
 import com.excilys.computerdatabase.mappers.impl.ComputerMapperImpl;
 import com.excilys.computerdatabase.pages.Page;
 import com.excilys.computerdatabase.pages.Page.PageBuilder;
-import com.excilys.computerdatabase.services.CompanyServiceImpl;
-import com.excilys.computerdatabase.services.ComputerServiceImpl;
+import com.excilys.computerdatabase.services.impl.CompanyServiceImpl;
+import com.excilys.computerdatabase.services.impl.ComputerServiceImpl;
 
 /**
  * Servlet implementation class Dashboard
@@ -157,21 +157,12 @@ public class Dashboard extends HttpServlet {
 		// Get attributes from another servlet
 		// Errors attributes
 
-		request.setAttribute("computerdto",
-				request.getSession().getAttribute("computerdto"));
-		request.setAttribute("modalShow",
-				request.getSession().getAttribute("modalShow"));
-		request.setAttribute("errors",
-				request.getSession().getAttribute("errors"));
-		request.setAttribute("hideErrors",
-				request.getSession().getAttribute("hideErrors"));
+		request.setAttribute("validationErrorPage", request.getSession()
+				.getAttribute("validationErrorPage"));
 
-		if (request.getSession().getAttribute("hideErrors") != null) {
+		if (request.getSession().getAttribute("validationErrorPage") != null) {
 			logger.debug("Removing session attributes");
-			request.getSession().removeAttribute("computerdto");
-			request.getSession().removeAttribute("modalShow");
-			request.getSession().removeAttribute("errors");
-			request.getSession().removeAttribute("hideErrors");
+			request.getSession().removeAttribute("validationErrorPage");
 		}
 
 		// forward

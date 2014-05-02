@@ -18,8 +18,8 @@ import com.excilys.computerdatabase.dto.impl.ComputerDTOImpl;
 import com.excilys.computerdatabase.mappers.impl.CompanyMapperImpl;
 import com.excilys.computerdatabase.mappers.impl.ComputerMapperImpl;
 import com.excilys.computerdatabase.pages.ValidationErrorPage;
-import com.excilys.computerdatabase.services.CompanyServiceImpl;
-import com.excilys.computerdatabase.services.ComputerServiceImpl;
+import com.excilys.computerdatabase.services.impl.CompanyServiceImpl;
+import com.excilys.computerdatabase.services.impl.ComputerServiceImpl;
 import com.excilys.computerdatabase.validators.ComputerValidatorImpl;
 import com.excilys.computerdatabase.validators.ErrorCodes;
 

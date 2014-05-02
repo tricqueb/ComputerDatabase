@@ -18,11 +18,14 @@
 
 	<jsp:include page="/WEB-INF/dashboardTable.jsp" />
 
-	<div style="text-align:center; width:100%;">
-		<KD:pagination action="Dashboard?search=${search}"
+	<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+  		<div class="container"> 
+			<KD:pagination action="Dashboard?search=${search}"
 			currentPage="${page.getCurrentPage()}" startPage="${page.getStartPage()}"
 			endPage="${page.getEndPage()}" orderby="${page.getOrderBy()}" desc="${page.getDesc() }"/>
-	</div>
+  		</div>
+	</nav>
+
 </div>
 
 <jsp:include page="/WEB-INF/include/footer.jsp" />

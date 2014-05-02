@@ -23,7 +23,7 @@
 
 <link href="css/main.css" rel="stylesheet" media="screen"> 
 </head>
-<body class="">
+<body style="padding-bottom: 70px;" class="">
 	<nav class="navbar navbar-inverse" role="navigation">
 	<div class="navbar-header">
 			<a class="navbar-brand" href="Dashboard"> Application - Computer Database </a>

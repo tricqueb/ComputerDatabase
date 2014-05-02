@@ -1,5 +1,6 @@
 package com.excilys.computerdatabase.dto.impl;
 
+
 public class ComputerDTOImpl {
 	// Builder
 	public static class Builder {

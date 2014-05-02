@@ -4,10 +4,10 @@
 <table class="computers table table-striped">
 		<thead>
 			<tr>
-				<KD:th-orderBy text="Computer Name" value="2" action="Dashboard" orderby="${page.getOrderBy()}" currentPage="${page.getCurrentPage()}" desc="${page.getDesc()}" search="${search}" width="30%" />
-				<KD:th-orderBy text="Introduced Date" value="3" action="Dashboard" orderby="${page.getOrderBy()}" currentPage="${page.getCurrentPage()}" desc="${page.getDesc()}" search="${search}" />
-				<KD:th-orderBy text="Discontinued" value="4" action="Dashboard" orderby="${page.getOrderBy()}"  currentPage="${page.getCurrentPage()}" desc="${page.getDesc()}" search="${search}"/>
-				<KD:th-orderBy text="Company" value="6" action="Dashboard" orderby="${page.getOrderBy()}"  currentPage="${page.getCurrentPage()}" desc="${page.getDesc()}" search="${search}" width="20%"/>
+				<KD:th-orderBy text="Computer Name" value="2" action="Dashboard" page="${page}" search="${search}" width="30%" />
+				<KD:th-orderBy text="Introduced Date" value="3" action="Dashboard" page="${page}" search="${search}" />
+				<KD:th-orderBy text="Discontinued" value="4" action="Dashboard" page="${page}" search="${search}"/>
+				<KD:th-orderBy text="Company" value="6" action="Dashboard" page="${page}" search="${search}" width="20%"/>
 				<th></th>
 			</tr>
 		</thead>

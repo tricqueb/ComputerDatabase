@@ -11,15 +11,13 @@
 
 <form class="" action="${action}" method="GET">
 	<div class="${inline}">
-		 
-		<input type="hidden" name="orderby" value="${page.getOrderBy()}" /> 
+		 <input class="form-control" type="${method}" id="${id}"
+			name="${method}" value="${value}" placeholder="${placeholder}"
+			size="${column}" />
+			<input type="hidden" name="orderby" value="${page.getOrderBy()}" /> 
 		<input type="hidden" name="desc" value="${page.getDesc()}" />
 		<c:if test="${method eq 'pageNumber'}" >
 			<input type="hidden" name="search" value="${search}" />
 		</c:if>
-		
-		<input class="form-control" type="${method}" id="${id}"
-			name="${method}" value="${value}" placeholder="${placeholder}"
-			size="${column}" />
 	</div>
 </form>

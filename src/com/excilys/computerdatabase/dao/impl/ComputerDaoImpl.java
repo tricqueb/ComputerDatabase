@@ -13,7 +13,8 @@ import com.excilys.computerdatabase.connections.ConnectionManager;
 import com.excilys.computerdatabase.dao.Dao;
 import com.excilys.computerdatabase.domain.Company;
 import com.excilys.computerdatabase.domain.Computer;
-import com.excilys.computerdatabase.services.ConnectionBoxImpl;
+import com.excilys.computerdatabase.services.ConnectionBox;
+import com.excilys.computerdatabase.services.impl.ConnectionBoxImpl;
 
 /**
  * 
@@ -36,7 +37,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 	@Override
 	public void create(Computer computer) throws SQLException {
 
-		ConnectionBoxImpl cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
 		cnb.setStatement("INSERT into computer(name,introduced,discontinued,company_id) VALUES(?,?,?,?);");
 		cnb.getStatement().setString(1, computer.getName());
 
@@ -62,7 +63,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	@Override
 	public void delete(Computer computer) throws SQLException {
-		ConnectionBoxImpl cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
 		cnb.setStatement("DELETE from computer where id=?;");
 		cnb.getStatement().setString(1, Long.toString(computer.getId()));
 		cnb.getStatement().executeUpdate();
@@ -70,7 +71,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	@Override
 	public void delete(Long id) throws SQLException {
-		ConnectionBoxImpl cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
 		cnb.setStatement("DELETE from computer where id=?;");
 		cnb.getStatement().setString(1, Long.toString(id));
 		cnb.getStatement().executeUpdate();
@@ -79,7 +80,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	@Override
 	public List<Computer> find() throws SQLException {
-		ConnectionBoxImpl cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
 
 		logger.debug("Find all");
 		cnb.setStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id;");
@@ -111,7 +112,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 		query.append("LIMIT ? OFFSET ?");
 
-		ConnectionBoxImpl cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
 		cnb.setStatement(query.toString());
 
 		cnb.getStatement().setString(1, "%" + computerName + "%");
@@ -131,7 +132,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	public int count(String search) throws SQLException {
 		// Connection
-		ConnectionBoxImpl cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
 
 		Integer result = 0;
 		logger.debug("Counting element with {} as search parameter: " + search);
@@ -147,14 +148,14 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	@Override
 	public Computer find(long computerId) throws SQLException {
-		ConnectionBoxImpl cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
 		cnb.setStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.id = ?;");
 		cnb.getStatement().setLong(1, computerId);
 
 		return doFind(cnb).get(0);
 	}
 
-	private List<Computer> doFind(ConnectionBoxImpl cnb) throws SQLException {
+	private List<Computer> doFind(ConnectionBox cnb) throws SQLException {
 		logger.debug("do Find");
 		List<Computer> cList = new ArrayList<Computer>();
 		cnb.setResultSet(cnb.getStatement().executeQuery());
@@ -184,7 +185,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	@Override
 	public void update(Computer computer) throws SQLException {
-		ConnectionBoxImpl cnb = ConnectionManager.INSTANCE.getConnection();
+		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnection();
 		cnb.setStatement("UPDATE computer SET name=?,introduced=?,discontinued=?,company_id=? where id=?;");
 		cnb.getStatement().setString(1, computer.getName());
 

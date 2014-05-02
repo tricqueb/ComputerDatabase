@@ -6,7 +6,8 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.computerdatabase.services.ConnectionBoxImpl;
+import com.excilys.computerdatabase.services.ConnectionBox;
+import com.excilys.computerdatabase.services.impl.ConnectionBoxImpl;
 import com.excilys.computerdatabase.servlets.ComputerCrud;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
@@ -27,6 +28,7 @@ public enum ConnectionManager {
 			config.setJdbcUrl(url); // set the JDBC url
 			config.setUsername("root"); // set the username
 			config.setPassword("root"); // set the passwords
+			config.setDefaultAutoCommit(true);
 			connectionPool = new BoneCP(config); // setup the connection pool
 
 		} catch (ClassNotFoundException | SQLException e) {
@@ -65,7 +67,7 @@ public enum ConnectionManager {
 	}
 
 	public void closeTransaction() {
-		ConnectionBoxImpl cnb = threadLocal.get();
+		ConnectionBox cnb = threadLocal.get();
 		try {
 			cnb.getConnection().commit();
 		} catch (SQLException e1) {
@@ -80,14 +82,13 @@ public enum ConnectionManager {
 		}
 	}
 
-	public ConnectionBoxImpl getConnection() {
-
+	public ConnectionBox getConnection() {
 		return threadLocal.get(); // fetch a connection
 	}
 
 	public void disconnect() {
 
-		ConnectionBoxImpl cnb = threadLocal.get();
+		ConnectionBox cnb = threadLocal.get();
 		try {
 			if (cnb.getStatement() != null)
 				cnb.getStatement().close();

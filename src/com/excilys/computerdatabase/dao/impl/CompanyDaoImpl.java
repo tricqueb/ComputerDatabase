@@ -10,7 +10,8 @@ import org.slf4j.LoggerFactory;
 import com.excilys.computerdatabase.connections.ConnectionManager;
 import com.excilys.computerdatabase.dao.CompanyDao;
 import com.excilys.computerdatabase.domain.Company;
-import com.excilys.computerdatabase.services.ConnectionBoxImpl;
+import com.excilys.computerdatabase.services.ConnectionBox;
+import com.excilys.computerdatabase.services.impl.ConnectionBoxImpl;
 
 public enum CompanyDaoImpl implements CompanyDao<Company> {
 	INSTANCE;
@@ -29,7 +30,7 @@ public enum CompanyDaoImpl implements CompanyDao<Company> {
 	public List<Company> find(String companyName) throws SQLException {
 
 		// Connection
-		ConnectionBoxImpl cnb = ConnectionManager.getInstance().getConnection();
+		ConnectionBox cnb = ConnectionManager.getInstance().getConnection();
 
 		// Query
 		cnb.setStatement("Select cy.id,cy.name from company as cy where cy.name LIKE ?;");
@@ -44,7 +45,7 @@ public enum CompanyDaoImpl implements CompanyDao<Company> {
 	public Company find(long CompanyId) throws SQLException {
 
 		// Connection
-		ConnectionBoxImpl cnb = ConnectionManager.getInstance().getConnection();
+		ConnectionBox cnb = ConnectionManager.getInstance().getConnection();
 
 		// Query
 		cnb.setStatement("Select cy.id,cy.name from company as cy where cy.id = ?;");
@@ -55,7 +56,7 @@ public enum CompanyDaoImpl implements CompanyDao<Company> {
 		return doFind(cnb).get(0);
 	}
 
-	public List<Company> doFind(ConnectionBoxImpl cnb) throws SQLException {
+	public List<Company> doFind(ConnectionBox cnb) throws SQLException {
 		// Connection
 
 		List<Company> cList = new ArrayList<Company>();

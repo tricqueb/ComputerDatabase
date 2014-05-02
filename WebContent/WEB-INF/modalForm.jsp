@@ -1,5 +1,5 @@
 <!-- Modal -->
-	<div class="modal fade " modalShow="${modalShow}" id="editModal"
+	<div class="modal fade " modalShow="${validationErrorPage.getModalShow()}" id="editModal"
 		tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
 		aria-hidden="true">
 		<div class="modal-dialog">
