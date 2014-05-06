@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+               
+     <context:annotation-config/>
+     
+
+	<bean id="companyService" class="com.excilys.computerdatabase.services.impl.CompanyServiceImpl">
+	</bean>
+	<bean id="computerService" class="com.excilys.computerdatabase.services.impl.ComputerServiceImpl">
+	</bean>
+	<bean id="computerDao" class="com.excilys.computerdatabase.dao.impl.ComputerDaoImpl">
+	</bean>
+	<bean id="companyDao" class="com.excilys.computerdatabase.dao.impl.CompanyDaoImpl">
+	</bean>
+	
+	<!-- Generic type is infered by reflection : ConnectionBox -->
+	<bean id="connectionManager" class="com.excilys.computerdatabase.connections.ConnectionManager">
+<!-- 	Final values: -->
+<!-- 	<property name="database" value="computer-database-db"></property> -->
+<!-- 	<property name="url" value="jdbc:mysql://localhost:3306/"></property> -->
+	
+	</bean>
+</beans>

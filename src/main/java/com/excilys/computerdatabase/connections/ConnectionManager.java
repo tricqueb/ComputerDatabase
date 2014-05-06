@@ -3,52 +3,29 @@ package com.excilys.computerdatabase.connections;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.excilys.computerdatabase.servlets.ComputerCrud;
-import com.jolbox.bonecp.BoneCP;
-import com.jolbox.bonecp.BoneCPConfig;
 
-public enum ConnectionManager {
-	INSTANCE;
+public class ConnectionManager {
 
-	private static final Logger logger = LoggerFactory.getLogger(ComputerCrud.class);
-	private static final String DATABASE = "computer-database-db";
-	private static final String url = "jdbc:mysql://localhost:3306/" + DATABASE
-			+ "?zeroDateTimeBehavior=convertToNull";
+	private final Logger logger = LoggerFactory.getLogger(ComputerCrud.class);
 
-	public static String getUrl() {
-		return url;
-	}
+	@Autowired
+	@Qualifier("DataSource")
+	private DataSource connectionPool;
 
-	// Bloc executed after constructor
-	static {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			BoneCPConfig config = new BoneCPConfig(); // create a new
-														// configuration object
-			config.setJdbcUrl(url); // set the JDBC url
-			config.setUsername("root"); // set the username
-			config.setPassword("root"); // set the passwords
-			config.setDefaultAutoCommit(true);
-			connectionPool = new BoneCP(config); // setup the connection pool
-
-		} catch (ClassNotFoundException | SQLException e) {
-			logger.error("Error on driver instanciation {}", e.getMessage());
-			e.printStackTrace();
-		}
-	}
-
-	private static BoneCP connectionPool;
 	private ThreadLocal<ConnectionBoxImpl> threadLocal;
 
 	private ConnectionManager() {
-		threadLocal = new ThreadLocal<ConnectionBoxImpl>();
-	}
 
-	public static ConnectionManager getInstance() {
-		return INSTANCE;
+		threadLocal = new ThreadLocal<ConnectionBoxImpl>();
+
 	}
 
 	public Connection getConnection() {
@@ -126,5 +103,13 @@ public enum ConnectionManager {
 				}
 			}
 		}
+	}
+
+	public ThreadLocal<ConnectionBoxImpl> getThreadLocal() {
+		return threadLocal;
+	}
+
+	public void setThreadLocal(ThreadLocal<ConnectionBoxImpl> threadLocal) {
+		this.threadLocal = threadLocal;
 	}
 }

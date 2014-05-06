@@ -3,27 +3,29 @@ package com.excilys.computerdatabase.dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.excilys.computerdatabase.domain.Computer;
+
 /**
  * Describe a classic DAO
  * 
  * @author excilys
  * 
- * @param <T>
+ * @param <ComputerDao>
  */
-public interface Dao<T> {
+public interface ComputerDao {
 	/**
 	 * Add a new element to db
 	 * 
 	 * @param o
 	 */
-	public void create(T o) throws SQLException;
+	public void create(Computer o) throws SQLException;
 
 	/**
 	 * Delete an existing element in db
 	 * 
 	 * @param o
 	 */
-	public void delete(T o) throws SQLException;
+	public void delete(Computer o) throws SQLException;
 
 	/**
 	 * Delete an existing element in db
@@ -39,9 +41,9 @@ public interface Dao<T> {
 	 * @param o
 	 *            ob is the order column number applied
 	 * 
-	 * @return Object T found or an empty list
+	 * @return Object ComputerDao found or an empty list
 	 */
-	public List<T> find(
+	public List<Computer> find(
 
 	String o, Integer offset, Integer limit, Long ob, Boolean desc)
 			throws SQLException;
@@ -52,15 +54,17 @@ public interface Dao<T> {
 	 * @param o
 	 * @return
 	 */
-	public T find(long o) throws SQLException;
+	public Computer find(long o) throws SQLException;
 
 	/**
 	 * Replace an existing element by another
 	 * 
 	 * @param o
 	 */
-	public void update(T o) throws SQLException;
+	public void update(Computer o) throws SQLException;
 
-	List<T> find() throws SQLException;
+	List<Computer> find() throws SQLException;
+
+	public int count(String search) throws SQLException;
 
 }

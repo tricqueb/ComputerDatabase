@@ -3,7 +3,9 @@ package com.excilys.computerdatabase.dao;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface CompanyDao<T> {
+import com.excilys.computerdatabase.domain.Company;
+
+public interface CompanyDao {
 
 	/**
 	 * (Find by name)
@@ -12,7 +14,7 @@ public interface CompanyDao<T> {
 	 * 
 	 * @return Object T found or an empty list
 	 */
-	public List<T> find(String o) throws SQLException;
+	public List<Company> find(String o) throws SQLException;
 
 	/**
 	 * Find by id
@@ -20,5 +22,5 @@ public interface CompanyDao<T> {
 	 * @param o
 	 * @return
 	 */
-	public T find(long o) throws SQLException;
+	public Company find(long o) throws SQLException;
 }

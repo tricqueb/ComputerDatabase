@@ -10,18 +10,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
+import com.excilys.computerdatabase.connections.ConnectionManager;
 import com.excilys.computerdatabase.dto.impl.CompanyDTOImpl;
 import com.excilys.computerdatabase.dto.impl.ComputerDTOImpl;
 import com.excilys.computerdatabase.mappers.impl.CompanyMapperImpl;
 import com.excilys.computerdatabase.mappers.impl.ComputerMapperImpl;
 import com.excilys.computerdatabase.pages.ValidationErrorPage;
-import com.excilys.computerdatabase.services.impl.CompanyServiceImpl;
-import com.excilys.computerdatabase.services.impl.ComputerServiceImpl;
+import com.excilys.computerdatabase.services.CompanyService;
+import com.excilys.computerdatabase.services.ComputerService;
 import com.excilys.computerdatabase.validators.ComputerValidatorImpl;
 import com.excilys.computerdatabase.validators.ErrorCodes;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Servlet implementation class AddComputer
@@ -30,12 +33,25 @@ import org.slf4j.LoggerFactory;
 public class ComputerCrud extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = LoggerFactory.getLogger(ComputerCrud.class);
+	@Autowired
+	private ConnectionManager cm;
+	@Autowired
+	private CompanyService companyService;
+	@Autowired
+	ComputerService computerService;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public ComputerCrud() {
 		super();
+	}
+
+	@Override
+	public void init() throws ServletException {
+		super.init();
+		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
+				getServletContext());
 	}
 
 	/**
@@ -51,8 +67,7 @@ public class ComputerCrud extends HttpServlet {
 
 		// Getting companies list
 		CompanyMapperImpl companyMapper = new CompanyMapperImpl();
-		List<CompanyDTOImpl> cyList = companyMapper.invert(CompanyServiceImpl.getInstance()
-				.find("%"));
+		List<CompanyDTOImpl> cyList = companyMapper.invert(companyService.find("%"));
 		request.setAttribute("cyList", cyList);
 
 		// forward
@@ -97,8 +112,7 @@ public class ComputerCrud extends HttpServlet {
 			if (errors.size() == 1 && errors.get(0).getCode() == 1) {
 				// Mapping
 				ComputerMapperImpl computerMapper = new ComputerMapperImpl();
-				ComputerServiceImpl.getInstance().create(
-						computerMapper.map(computerdto));
+				computerService.create(computerMapper.map(computerdto));
 
 			} else {
 				// Error handling
@@ -137,8 +151,7 @@ public class ComputerCrud extends HttpServlet {
 				logger.warn("Update is valid, calling service");
 				// Mapping
 				ComputerMapperImpl computerMapper = new ComputerMapperImpl();
-				ComputerServiceImpl.getInstance().update(
-						computerMapper.map(computerdto));
+				computerService.update(computerMapper.map(computerdto));
 			} else {
 				// Error handling
 				logger.warn("Error happened on update");
@@ -183,8 +196,7 @@ public class ComputerCrud extends HttpServlet {
 			if (!wrongId) {
 				// Mapping
 				ComputerMapperImpl computerMapper = new ComputerMapperImpl();
-				ComputerServiceImpl.getInstance().delete(
-						computerMapper.map(computerdto));
+				computerService.delete(computerMapper.map(computerdto));
 			}
 
 		}

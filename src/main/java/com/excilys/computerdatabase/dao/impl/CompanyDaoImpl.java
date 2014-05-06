@@ -4,32 +4,28 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.excilys.computerdatabase.connections.ConnectionBox;
-import com.excilys.computerdatabase.connections.ConnectionBoxImpl;
 import com.excilys.computerdatabase.connections.ConnectionManager;
 import com.excilys.computerdatabase.dao.CompanyDao;
 import com.excilys.computerdatabase.domain.Company;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class CompanyDaoImpl implements CompanyDao {
 
-public enum CompanyDaoImpl implements CompanyDao<Company> {
-	INSTANCE;
 	private static final Logger logger = LoggerFactory.getLogger(CompanyDaoImpl.class);
-	private ThreadLocal<ConnectionBoxImpl> threadLocal;
+	@Autowired
+	private ConnectionManager cm;
 
 	private CompanyDaoImpl() {
-		threadLocal = new ThreadLocal<ConnectionBoxImpl>();
-	}
-
-	public static CompanyDaoImpl getInstance() {
-		return INSTANCE;
 	}
 
 	public List<Company> find(String companyName) throws SQLException {
 
 		// Connection
-		ConnectionBox cnb = ConnectionManager.getInstance().getConnectionBox();
+		ConnectionBox cnb = cm.getConnectionBox();
 
 		// Query
 		cnb.setStatement("Select cy.id,cy.name from company as cy where cy.name LIKE ?;");
@@ -43,7 +39,7 @@ public enum CompanyDaoImpl implements CompanyDao<Company> {
 	public Company find(long CompanyId) throws SQLException {
 
 		// Connection
-		ConnectionBox cnb = ConnectionManager.getInstance().getConnectionBox();
+		ConnectionBox cnb = cm.getConnectionBox();
 
 		// Query
 		cnb.setStatement("Select cy.id,cy.name from company as cy where cy.id = ?;");

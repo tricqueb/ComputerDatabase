@@ -4,13 +4,19 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
 import ch.qos.logback.core.db.ConnectionSource;
 import ch.qos.logback.core.db.DBHelper;
 import ch.qos.logback.core.db.dialect.DBUtil;
 import ch.qos.logback.core.db.dialect.SQLDialectCode;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
-public class LogConnection extends ContextAwareBase implements ConnectionSource {
+public class LogConnection extends ContextAwareBase implements
+		ConnectionSource, ApplicationContextAware {
 
 	private String driverClass = null;
 	private String url = null;
@@ -25,12 +31,24 @@ public class LogConnection extends ContextAwareBase implements ConnectionSource 
 	private boolean supportsGetGeneratedKeys = false;
 	private boolean supportsBatchUpdates = false;
 
+	private ApplicationContext applicationContext;
+	@Autowired
+	private ConnectionManager cm;
+
 	public void start() {
-		if (driverClass != null) {
-			// Class.forName(driverClass);
-			discoverConnectionProperties();
-		} else {
-			addError("WARNING: No JDBC driver specified for logback DriverManagerConnectionSource.");
+		try {
+			if (driverClass != null) {
+				cm = (ConnectionManager) applicationContext.getBean("connectionManager");
+				Class.forName(driverClass);
+				discoverConnectionProperties();
+				// SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+				// cm = (ConnectionManager)
+				// applicationContext.getBean("applicationContext");
+			} else {
+				addError("WARNING: No JDBC driver specified for logback DriverManagerConnectionSource.");
+			}
+		} catch (final ClassNotFoundException cnfe) {
+			addError("Could not load JDBC driver class: " + driverClass, cnfe);
 		}
 	}
 
@@ -63,7 +81,7 @@ public class LogConnection extends ContextAwareBase implements ConnectionSource 
 		} catch (SQLException se) {
 			addWarn("Could not discover the dialect to use.", se);
 		} finally {
-			// if (ConnectionManager.getInstance().getConnection() == null) {
+			// if (cm.getConnection() == null) {
 			DBHelper.closeConnection(connection);
 			// }
 		}
@@ -73,9 +91,7 @@ public class LogConnection extends ContextAwareBase implements ConnectionSource 
 	 * @see ch.qos.logback.core.db.ConnectionSource#getConnection()
 	 */
 	public Connection getConnection() throws SQLException {
-		ConnectionManager cm = ConnectionManager.getInstance();
 		return cm.getConnection();
-
 	}
 
 	/**
@@ -176,4 +192,14 @@ public class LogConnection extends ContextAwareBase implements ConnectionSource 
 		started = false;
 	}
 
+	/**
+	 * Get Spring application context FIXME: Aha Spring is initializing his
+	 * container after appender initialization...
+	 */
+	@Override
+	public void setApplicationContext(
+			final ApplicationContext applicationContext) throws BeansException {
+		System.out.println("setting context");
+		this.applicationContext = applicationContext;
+	}
 }

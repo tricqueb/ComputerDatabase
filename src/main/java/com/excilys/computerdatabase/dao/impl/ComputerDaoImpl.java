@@ -6,37 +6,33 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.excilys.computerdatabase.connections.ConnectionBox;
-import com.excilys.computerdatabase.connections.ConnectionBoxImpl;
-import com.excilys.computerdatabase.connections.ConnectionManager;
-import com.excilys.computerdatabase.dao.Dao;
-import com.excilys.computerdatabase.domain.Company;
-import com.excilys.computerdatabase.domain.Computer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.excilys.computerdatabase.connections.ConnectionBox;
+import com.excilys.computerdatabase.connections.ConnectionManager;
+import com.excilys.computerdatabase.dao.ComputerDao;
+import com.excilys.computerdatabase.domain.Company;
+import com.excilys.computerdatabase.domain.Computer;
 
 /**
  * 
  * @author excilys
  * 
  */
-public enum ComputerDaoImpl implements Dao<Computer> {
-	INSTANCE;
+public class ComputerDaoImpl implements ComputerDao {
+
 	private static final Logger logger = LoggerFactory.getLogger(ComputerDaoImpl.class);
-	private ThreadLocal<ConnectionBoxImpl> threadLocal;
+	@Autowired
+	private ConnectionManager cm;
 
 	private ComputerDaoImpl() {
-		threadLocal = new ThreadLocal<ConnectionBoxImpl>();
-	}
-
-	public static ComputerDaoImpl getInstance() {
-		return INSTANCE;
 	}
 
 	public void create(Computer computer) throws SQLException {
 
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
+		ConnectionBox cnb = cm.getConnectionBox();
 		cnb.setStatement("INSERT into computer(name,introduced,discontinued,company_id) VALUES(?,?,?,?);");
 		cnb.getStatement().setString(1, computer.getName());
 
@@ -61,14 +57,14 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 	}
 
 	public void delete(Computer computer) throws SQLException {
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
+		ConnectionBox cnb = cm.getConnectionBox();
 		cnb.setStatement("DELETE from computer where id=?;");
 		cnb.getStatement().setString(1, Long.toString(computer.getId()));
 		cnb.getStatement().executeUpdate();
 	}
 
 	public void delete(Long id) throws SQLException {
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
+		ConnectionBox cnb = cm.getConnectionBox();
 		cnb.setStatement("DELETE from computer where id=?;");
 		cnb.getStatement().setString(1, Long.toString(id));
 		cnb.getStatement().executeUpdate();
@@ -76,7 +72,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 	}
 
 	public List<Computer> find() throws SQLException {
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
+		ConnectionBox cnb = cm.getConnectionBox();
 
 		logger.debug("Find all");
 		cnb.setStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id;");
@@ -108,7 +104,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 		query.append("LIMIT ? OFFSET ?");
 
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
+		ConnectionBox cnb = cm.getConnectionBox();
 		cnb.setStatement(query.toString());
 
 		cnb.getStatement().setString(1, "%" + computerName + "%");
@@ -128,7 +124,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	public int count(String search) throws SQLException {
 		// Connection
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
+		ConnectionBox cnb = cm.getConnectionBox();
 
 		Integer result = 0;
 		logger.debug("Counting element with {} as search parameter: " + search);
@@ -144,7 +140,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	@Override
 	public Computer find(long computerId) throws SQLException {
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
+		ConnectionBox cnb = cm.getConnectionBox();
 		cnb.setStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.id = ?;");
 		cnb.getStatement().setLong(1, computerId);
 
@@ -181,7 +177,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 	@Override
 	public void update(Computer computer) throws SQLException {
-		ConnectionBox cnb = ConnectionManager.INSTANCE.getConnectionBox();
+		ConnectionBox cnb = cm.getConnectionBox();
 		cnb.setStatement("UPDATE computer SET name=?,introduced=?,discontinued=?,company_id=? where id=?;");
 		cnb.getStatement().setString(1, computer.getName());
 

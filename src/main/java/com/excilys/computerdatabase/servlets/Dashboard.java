@@ -9,19 +9,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 import com.excilys.computerdatabase.domain.Company;
 import com.excilys.computerdatabase.dto.impl.ComputerDTOImpl;
 import com.excilys.computerdatabase.mappers.impl.ComputerMapperImpl;
 import com.excilys.computerdatabase.pages.Page;
 import com.excilys.computerdatabase.pages.Page.PageBuilder;
-import com.excilys.computerdatabase.services.impl.CompanyServiceImpl;
-import com.excilys.computerdatabase.services.impl.ComputerServiceImpl;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
+import com.excilys.computerdatabase.services.CompanyService;
+import com.excilys.computerdatabase.services.ComputerService;
 
 /**
  * Servlet implementation class Dashboard
@@ -30,14 +29,36 @@ public class Dashboard extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = LoggerFactory.getLogger(Dashboard.class);
 
+	@Autowired
+	private CompanyService companyService;
+	@Autowired
+	private ComputerService computerService;
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public Dashboard() {
 		super();
 		// TODO: Decide between this and dedicated servlet in web.xml
-		LoggerContext logCtx = (LoggerContext) LoggerFactory.getILoggerFactory();
-		StatusPrinter.print(logCtx);
+		// LoggerContext logCtx = (LoggerContext)
+		// LoggerFactory.getILoggerFactory();
+		// StatusPrinter.print(logCtx);
+
+		// ApplicationContext context = new ClassPathXmlApplicationContext(
+		// "applicationContext.xml");
+		// companyService = (CompanyService) context.getBean("companyService");
+		// computerService = (ComputerService)
+		// context.getBean("computerService");
+
+		// logger.debug(context.getBean("computerDao").toString());
+
+	}
+
+	@Override
+	public void init() throws ServletException {
+		super.init();
+		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
+				getServletContext());
 	}
 
 	/**
@@ -72,9 +93,9 @@ public class Dashboard extends HttpServlet {
 
 		Integer total = null;
 		if (search == null || search.isEmpty())
-			total = ComputerServiceImpl.getInstance().count("%");
+			total = computerService.count("%");
 		else
-			total = ComputerServiceImpl.getInstance().count(search);
+			total = computerService.count(search);
 		logger.debug("Total count result : {} ", total);
 		// Pagination
 		int currentPage = 1;
@@ -105,13 +126,13 @@ public class Dashboard extends HttpServlet {
 		List<ComputerDTOImpl> cList;
 		ComputerMapperImpl computerMapper = new ComputerMapperImpl();
 		if (search == null || search.isEmpty())
-			cList = computerMapper.invert(ComputerServiceImpl.getInstance()
-					.find("%", (currentPage - 1) * elementsPerPage,
-							elementsPerPage, orderBy, desc));
+			cList = computerMapper.invert(computerService.find("%",
+					(currentPage - 1) * elementsPerPage, elementsPerPage,
+					orderBy, desc));
 		else
-			cList = computerMapper.invert(ComputerServiceImpl.getInstance()
-					.find(search, (currentPage - 1) * elementsPerPage,
-							elementsPerPage, orderBy, desc));
+			cList = computerMapper.invert(computerService.find(search,
+					(currentPage - 1) * elementsPerPage, elementsPerPage,
+					orderBy, desc));
 
 		int endPage = currentPage + 5;
 		if (endPage > nbPages) {
@@ -126,7 +147,7 @@ public class Dashboard extends HttpServlet {
 				nbPages, elementsPerPage, startPage, endPage);
 
 		// Company list
-		List<Company> cyList = CompanyServiceImpl.getInstance().find("%");
+		List<Company> cyList = companyService.find("%");
 		logger.debug("Company list - Result : {} ", cyList.size());
 
 		// Servlet context attributes

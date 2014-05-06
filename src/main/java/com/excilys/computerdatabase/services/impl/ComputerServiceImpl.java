@@ -3,23 +3,24 @@ package com.excilys.computerdatabase.services.impl;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.excilys.computerdatabase.connections.ConnectionManager;
-import com.excilys.computerdatabase.dao.impl.ComputerDaoImpl;
+import com.excilys.computerdatabase.dao.ComputerDao;
 import com.excilys.computerdatabase.domain.Computer;
 import com.excilys.computerdatabase.services.ComputerService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class ComputerServiceImpl implements ComputerService {
 
-public enum ComputerServiceImpl implements ComputerService {
-	INSTANCE;
 	private static final Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
+	@Autowired
+	private ConnectionManager cm;
+	@Autowired
+	private ComputerDao computerDao;
 
-	private ComputerServiceImpl() {
-	}
-
-	public static ComputerService getInstance() {
-		return INSTANCE;
+	public ComputerServiceImpl() {
 	}
 
 	// FIXME No check on company id !
@@ -35,19 +36,19 @@ public enum ComputerServiceImpl implements ComputerService {
 	public void create(Computer c) {
 
 		logger.debug("Getting connection");
-		ConnectionManager.getInstance().initTransaction();
+		cm.initTransaction();
 		try {
 
 			logger.warn("Ajout de {}", c.getName());
-			ComputerDaoImpl.getInstance().create(c);
+			computerDao.create(c);
 
-			ConnectionManager.getInstance().closeTransaction();
+			cm.closeTransaction();
 		} catch (SQLException e) {
 			logger.error("Create error : " + e.getMessage());
 
 		} finally {
 
-			ConnectionManager.getInstance().disconnect();
+			cm.disconnect();
 		}
 
 		logger.debug("Create ");
@@ -64,18 +65,18 @@ public enum ComputerServiceImpl implements ComputerService {
 	@Override
 	public void delete(Computer c) {
 		logger.debug("Getting connection");
-		ConnectionManager.getInstance().initTransaction();
+		cm.initTransaction();
 		try {
 
 			logger.warn("Deleting {} ", c.getId());
-			ComputerDaoImpl.getInstance().delete(c.getId());
-			ConnectionManager.getInstance().closeTransaction();
+			computerDao.delete(c.getId());
+			cm.closeTransaction();
 
 		} catch (SQLException e) {
 			logger.error("Delete error : " + e.getMessage());
 
 		} finally {
-			ConnectionManager.getInstance().disconnect();
+			cm.disconnect();
 		}
 
 		logger.debug("Element {} has been deleted", c.getName());
@@ -92,16 +93,16 @@ public enum ComputerServiceImpl implements ComputerService {
 	public Computer find(Long cId) {
 		Computer computer = null;
 		logger.debug("Getting connection");
-		ConnectionManager.getInstance().initTransaction();
+		cm.initTransaction();
 		try {
 
 			logger.debug("Reading for {} ", cId);
-			computer = ComputerDaoImpl.getInstance().find(cId);
+			computer = computerDao.find(cId);
 		} catch (SQLException e) {
 			logger.error("Find error : " + e.getMessage());
 
 		} finally {
-			ConnectionManager.getInstance().disconnect();
+			cm.disconnect();
 		}
 		logger.debug("Element {} have been found", computer);
 		return computer;
@@ -118,16 +119,16 @@ public enum ComputerServiceImpl implements ComputerService {
 	public Integer count(String search) {
 		Integer count = null;
 		logger.debug("Getting connection");
-		ConnectionManager.getInstance().initTransaction();
+		cm.initTransaction();
 		try {
 
 			logger.debug("Counting {} elements", search);
-			count = ComputerDaoImpl.getInstance().count(search);
+			count = computerDao.count(search);
 		} catch (SQLException e) {
 			logger.error("Count error : " + e.getMessage());
 
 		} finally {
-			ConnectionManager.getInstance().disconnect();
+			cm.disconnect();
 		}
 		logger.debug("{} Element have been found", count);
 		return count;
@@ -150,18 +151,17 @@ public enum ComputerServiceImpl implements ComputerService {
 			Boolean desc) {
 		List<Computer> cList = null;
 		logger.debug("Getting connection");
-		ConnectionManager.getInstance().initTransaction();
+		cm.initTransaction();
 		try {
 
 			logger.debug("Reading {} elements", cName);
-			cList = ComputerDaoImpl.getInstance().find(cName, offset, limit,
-					orderBy, desc);
-			ConnectionManager.getInstance().closeTransaction();
+			cList = computerDao.find(cName, offset, limit, orderBy, desc);
+			cm.closeTransaction();
 		} catch (SQLException e) {
 			logger.error("find error : " + e.getMessage());
 
 		} finally {
-			ConnectionManager.getInstance().disconnect();
+			cm.disconnect();
 		}
 		logger.debug("{} Element have been found", cList.size());
 		return cList;
@@ -178,21 +178,21 @@ public enum ComputerServiceImpl implements ComputerService {
 	public void update(Computer c) {
 
 		logger.debug("Getting connection");
-		ConnectionManager.getInstance().initTransaction();
+		cm.initTransaction();
 		try {
 
-			ComputerDaoImpl.getInstance().update(c);
+			computerDao.update(c);
 			logger.warn("Updating computer {} ({}) with new values:  {} {} {}",
 					c.getName(), c.getId(), c.getIntroduced(),
 					c.getDiscontinued(), c.getCompany());
-			ConnectionManager.getInstance().closeTransaction();
+			cm.closeTransaction();
 			logger.debug("Find ");
 
 		} catch (SQLException e) {
 			logger.error("find error : " + e.getMessage());
 
 		} finally {
-			ConnectionManager.getInstance().disconnect();
+			cm.disconnect();
 		}
 		logger.debug("Update done");
 	}
@@ -206,18 +206,18 @@ public enum ComputerServiceImpl implements ComputerService {
 	public List<Computer> find() {
 		List<Computer> cList = null;
 		logger.debug("Getting connection");
-		ConnectionManager.getInstance().initTransaction();
+		cm.initTransaction();
 		try {
 
 			logger.debug("Read all");
-			cList = ComputerDaoImpl.getInstance().find();
-			ConnectionManager.getInstance().closeTransaction();
+			cList = computerDao.find();
+			cm.closeTransaction();
 
 		} catch (SQLException e) {
 			logger.error("find error : " + e.getMessage());
 
 		} finally {
-			ConnectionManager.getInstance().disconnect();
+			cm.disconnect();
 		}
 		logger.debug("{} Element have been found", cList.size());
 		return cList;
