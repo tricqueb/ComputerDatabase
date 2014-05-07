@@ -8,10 +8,10 @@ import lombok.experimental.Builder;
 @Getter
 @Builder
 public class Page<T> {
-	List<T> cList;
+	List<T> computerList;
 	Integer total;
-	Integer currentPage, startPage, endPage, elementsPerPage;
+	Pagination pagination;
 	String search;
-	Boolean desc;
-	Long orderBy;
+	Boolean orderDirection;
+	Long orderById;
 }

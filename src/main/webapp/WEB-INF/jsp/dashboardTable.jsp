@@ -15,7 +15,7 @@
 
 			<!-- Afficher tous les éléments d'une collection dans le request-->
 
-			<c:forEach var="el" items="${page.getCList()}">
+			<c:forEach var="el" items="${page.getComputerList()}">
 				<tr>
 					<KD:tdStyle value="${el.getId()}" name="id" hidden="none" action="Dashboard"/>
 					<KD:tdStyle value="${el.getName()}" name="name" action="Dashboard"/>
@@ -30,7 +30,7 @@
 							data-target="#editModal">Edit</button> 						
 					</td>
 					<td>
-						<form class="form-inline" action="ComputerCrud" method="post">
+						<form class="form-inline" action="Computer/Delete" method="post">
 							<input type="hidden" name="id" value="${el.getId()}"></input> <input
 								type="submit" name="delete" value="delete"
 								class="btn btn-danger"></input>

@@ -1,6 +1,9 @@
 package com.excilys.computerdatabase.dto.impl;
 
-public class ComputerDTOImpl {
+import com.excilys.computerdatabase.dto.CompanyDTO;
+import com.excilys.computerdatabase.dto.ComputerDTO;
+
+public class ComputerDTOImpl implements ComputerDTO {
 	// Builder
 	public static class Builder {
 		ComputerDTOImpl computerDto;
@@ -29,7 +32,7 @@ public class ComputerDTOImpl {
 			return this;
 		}
 
-		public Builder companydto(CompanyDTOImpl companydto) {
+		public Builder companydto(CompanyDTO companydto) {
 			computerDto.companydto = companydto;
 			return this;
 		}
@@ -52,11 +55,11 @@ public class ComputerDTOImpl {
 		this.id = id;
 	}
 
-	public CompanyDTOImpl getCompany() {
+	public CompanyDTO getCompany() {
 		return companydto;
 	}
 
-	public void setCompany(CompanyDTOImpl companydto) {
+	public void setCompany(CompanyDTO companydto) {
 		this.companydto = companydto;
 	}
 
@@ -92,7 +95,7 @@ public class ComputerDTOImpl {
 	}
 
 	private String id;
-	private CompanyDTOImpl companydto;
+	private CompanyDTO companydto;
 	private String name;
 	private String introduced, discontinued;
 

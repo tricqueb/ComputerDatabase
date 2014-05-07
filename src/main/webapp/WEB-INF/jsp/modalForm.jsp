@@ -10,8 +10,8 @@
 					<h4 class="modal-title" id="editModalLabel">Edit a computer</h4>
 				</div>
 				<div class="modal-body">
-					<form id=computerForm action="ComputerCrud" method="POST">
-						<jsp:include page="/WEB-INF/editComputer.jsp" />
+					<form id=computerForm action="Computer/Update" method="POST">
+						<jsp:include page="/WEB-INF/jsp/editComputer.jsp" />
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default"
 								data-dismiss="modal">Close</button>

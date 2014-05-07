@@ -37,7 +37,7 @@
 				<div id="companyDiv class="input">
 					<select id="company" class="form-control" name="company">
 					<option value=null>Inconnu</option>
-						<c:forEach var="el" items="${cyList}" >
+						<c:forEach var="el" items="${companyList}" >
 						<option value=${el.getId()}>${el.getName()}</option>
 						</c:forEach>
 					</select>

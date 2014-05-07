@@ -14,9 +14,9 @@
 		 <input class="form-control" type="${method}" id="${id}"
 			name="${method}" value="${value}" placeholder="${placeholder}"
 			size="${column}" />
-			<input type="hidden" name="orderby" value="${page.getOrderBy()}" /> 
-		<input type="hidden" name="desc" value="${page.getDesc()}" />
-		<c:if test="${method eq 'pageNumber'}" >
+			<input type="hidden" name="orderById" value="${page.getOrderById()}" /> 
+		<input type="hidden" name="orderDirection" value="${page.getOrderDirection()}" />
+		<c:if test="${method eq 'currentPage'}" >
 			<input type="hidden" name="search" value="${search}" />
 		</c:if>
 	</div>

@@ -3,13 +3,14 @@ package com.excilys.computerdatabase.validators;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.excilys.computerdatabase.dto.impl.ComputerDTOImpl;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.computerdatabase.dto.CompanyDTO;
+import com.excilys.computerdatabase.dto.ComputerDTO;
+
 //TODO add name length verification
-public class ComputerValidatorImpl implements Validator<ComputerDTOImpl> {
+public class ComputerValidatorImpl implements Validator<ComputerDTO> {
 	private static final Logger logger = LoggerFactory.getLogger(ComputerValidatorImpl.class);
 
 	// id can't start with 0, then any number
@@ -17,7 +18,7 @@ public class ComputerValidatorImpl implements Validator<ComputerDTOImpl> {
 	private String datePattern = "(\\d{4})-(([0][0-9])|([1][0-2]))-(([0-2][0-9])|(3[0-1]))";
 
 	@Override
-	public List<ErrorCodes> validate(ComputerDTOImpl dto) {
+	public List<ErrorCodes> validate(ComputerDTO dto) {
 		logger.debug("Id pattern : {}", idPattern);
 		logger.debug("Date pattern : {}", datePattern);
 		logger.debug("Dto to validate: {}", dto);
@@ -54,7 +55,7 @@ public class ComputerValidatorImpl implements Validator<ComputerDTOImpl> {
 		}
 
 		if (dto.getCompany() != null) {
-			CompanyValidatorImpl companyV = new CompanyValidatorImpl();
+			Validator<CompanyDTO> companyV = new CompanyValidatorImpl();
 			errorList.addAll(companyV.validate(dto.getCompany()));
 		}
 

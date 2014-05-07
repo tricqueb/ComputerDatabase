@@ -7,21 +7,21 @@
 <%@ attribute name="width" required="false"%>
 <%@ attribute name="search" required="false"%>
 
-<c:if test="${page.getOrderBy() eq value}">
+<c:if test="${page.getOrderById() eq value}">
 	<c:choose>
-		<c:when test="${page.getDesc() eq true}">
-			<c:set scope="request" var="descLocal" value="false" />
+		<c:when test="${page.getOrderDirection() eq true}">
+			<c:set scope="request" var="orderDirectionLocal" value="false" />
 		</c:when>
 		<c:otherwise>
-			<c:set scope="request" var="descLocal" value="true" />
+			<c:set scope="request" var="orderDirectionLocal" value="true" />
 		</c:otherwise>
 	</c:choose>
 </c:if>
 
 <th style="width:${width}"><a href=<c:url value="${action}">
-				<c:param name="pageNumber" value="${page.getCurrentPage()}" />
-				<c:param name="orderby" value="${value}"/>
-				<c:param name="desc" value="${descLocal}"/>
+				<c:param name="currentPage" value="${page.getPagination().getCurrentPage()}" />
+				<c:param name="orderById" value="${value}"/>
+				<c:param name="orderDirection" value="${orderDirectionLocal}"/>
 				<c:param name="search" value="${search}"/>
 			</c:url>
 	>

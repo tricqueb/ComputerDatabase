@@ -1,6 +1,8 @@
 package com.excilys.computerdatabase.dto.impl;
 
-public class CompanyDTOImpl {
+import com.excilys.computerdatabase.dto.CompanyDTO;
+
+public class CompanyDTOImpl implements CompanyDTO {
 	// Builder
 	public static class Builder {
 		CompanyDTOImpl companyDto;
@@ -29,18 +31,34 @@ public class CompanyDTOImpl {
 	}
 
 	// Getters and setters
+	/* (non-Javadoc)
+	 * @see com.excilys.computerdatabase.dto.impl.CompanyDTO#getId()
+	 */
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.excilys.computerdatabase.dto.impl.CompanyDTO#setId(java.lang.String)
+	 */
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.excilys.computerdatabase.dto.impl.CompanyDTO#getName()
+	 */
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.excilys.computerdatabase.dto.impl.CompanyDTO#setName(java.lang.String)
+	 */
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
