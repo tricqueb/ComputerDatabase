@@ -8,6 +8,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 import ch.qos.logback.core.db.ConnectionSource;
 import ch.qos.logback.core.db.DBHelper;
@@ -15,6 +16,7 @@ import ch.qos.logback.core.db.dialect.DBUtil;
 import ch.qos.logback.core.db.dialect.SQLDialectCode;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
+@Component
 public class LogConnection extends ContextAwareBase implements
 		ConnectionSource, ApplicationContextAware {
 
@@ -199,7 +201,7 @@ public class LogConnection extends ContextAwareBase implements
 	@Override
 	public void setApplicationContext(
 			final ApplicationContext applicationContext) throws BeansException {
-		System.out.println("setting context");
+		// System.out.println("setting context");
 		this.applicationContext = applicationContext;
 	}
 }

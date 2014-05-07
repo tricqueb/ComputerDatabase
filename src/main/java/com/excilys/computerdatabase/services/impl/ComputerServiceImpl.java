@@ -6,12 +6,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.excilys.computerdatabase.connections.ConnectionManager;
 import com.excilys.computerdatabase.dao.ComputerDao;
 import com.excilys.computerdatabase.domain.Computer;
 import com.excilys.computerdatabase.services.ComputerService;
 
+@Service
 public class ComputerServiceImpl implements ComputerService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);

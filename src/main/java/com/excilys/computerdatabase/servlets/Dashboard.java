@@ -14,6 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
+
 import com.excilys.computerdatabase.domain.Company;
 import com.excilys.computerdatabase.dto.impl.ComputerDTOImpl;
 import com.excilys.computerdatabase.mappers.impl.ComputerMapperImpl;
@@ -26,6 +29,7 @@ import com.excilys.computerdatabase.services.ComputerService;
  * Servlet implementation class Dashboard
  */
 public class Dashboard extends HttpServlet {
+
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = LoggerFactory.getLogger(Dashboard.class);
 
@@ -40,18 +44,8 @@ public class Dashboard extends HttpServlet {
 	public Dashboard() {
 		super();
 		// TODO: Decide between this and dedicated servlet in web.xml
-		// LoggerContext logCtx = (LoggerContext)
-		// LoggerFactory.getILoggerFactory();
-		// StatusPrinter.print(logCtx);
-
-		// ApplicationContext context = new ClassPathXmlApplicationContext(
-		// "applicationContext.xml");
-		// companyService = (CompanyService) context.getBean("companyService");
-		// computerService = (ComputerService)
-		// context.getBean("computerService");
-
-		// logger.debug(context.getBean("computerDao").toString());
-
+		LoggerContext logCtx = (LoggerContext) LoggerFactory.getILoggerFactory();
+		StatusPrinter.print(logCtx);
 	}
 
 	@Override

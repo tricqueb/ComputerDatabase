@@ -1,40 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
-  <display-name>computer-database</display-name>
-  <welcome-file-list>
-    <welcome-file>Dashboard</welcome-file>
-  </welcome-file-list>
-  
-<!--   Spring -->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	<display-name>computer-database</display-name>
+	<welcome-file-list>
+		<welcome-file>Dashboard</welcome-file>
+	</welcome-file-list>
 
-<listener>
-<listener-class>
-org.springframework.web.context.request.RequestContextListener
-</listener-class>
-</listener>
+	<!-- Spring -->
 
-<!-- Bootstrap the root application context as usual using ContextLoaderListener -->
-<listener>
-<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-</listener>
+<!-- TODO: Check what does this stuff: -->
+<!-- 	<listener> -->
+<!-- 		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class> -->
+<!-- 	</listener> -->
 
-  <!-- Dashboard servlet -->
-  <servlet>
-    <servlet-name>Dashboard</servlet-name>
-    <servlet-class>com.excilys.computerdatabase.servlets.Dashboard</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Dashboard</servlet-name>
-    <url-pattern>/Dashboard</url-pattern>
-  </servlet-mapping>
-  <!-- Logback servlet (Access by /lbClassicStatus)-->
-  <servlet>
-    <servlet-name>ViewStatusMessages</servlet-name>
-    <servlet-class>ch.qos.logback.classic.ViewStatusMessagesServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ViewStatusMessages</servlet-name>
-    <url-pattern>/lbClassicStatus</url-pattern>
-  </servlet-mapping>
-  <!--  -->
+	<!-- Bootstrap the root application context as usual using ContextLoaderListener -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- Spring Servlet -->
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- Logback servlet (Access by /lbClassicStatus) -->
+	<servlet>
+		<servlet-name>ViewStatusMessages</servlet-name>
+		<servlet-class>ch.qos.logback.classic.ViewStatusMessagesServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ViewStatusMessages</servlet-name>
+		<url-pattern>/lbClassicStatus</url-pattern>
+	</servlet-mapping>
+	<!-- -->
 </web-app>
