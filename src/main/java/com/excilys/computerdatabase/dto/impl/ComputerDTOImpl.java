@@ -1,5 +1,12 @@
 package com.excilys.computerdatabase.dto.impl;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+
 import com.excilys.computerdatabase.dto.CompanyDTO;
 import com.excilys.computerdatabase.dto.ComputerDTO;
 
@@ -32,8 +39,8 @@ public class ComputerDTOImpl implements ComputerDTO {
 			return this;
 		}
 
-		public Builder companydto(CompanyDTO companydto) {
-			computerDto.companydto = companydto;
+		public Builder companydto(CompanyDTO companyDto) {
+			computerDto.companyDto = companyDto;
 			return this;
 		}
 
@@ -56,11 +63,11 @@ public class ComputerDTOImpl implements ComputerDTO {
 	}
 
 	public CompanyDTO getCompany() {
-		return companydto;
+		return companyDto;
 	}
 
-	public void setCompany(CompanyDTO companydto) {
-		this.companydto = companydto;
+	public void setCompany(CompanyDTO companyDto) {
+		this.companyDto = companyDto;
 	}
 
 	public String getName() {
@@ -89,14 +96,23 @@ public class ComputerDTOImpl implements ComputerDTO {
 
 	@Override
 	public String toString() {
-		return "ComputerDTO [id=" + id + ", companydto=" + companydto
+		return "ComputerDTO [id=" + id + ", companydto=" + companyDto
 				+ ", name=" + name + ", introduced=" + introduced
 				+ ", discontinued=" + discontinued + "]";
 	}
 
+	// TODO Move constraints to interface ?
+	@NotNull(message = "An identificator must be specified")
 	private String id;
-	private CompanyDTO companydto;
+	@Valid
+	private CompanyDTO companyDto;
+	@NotBlank(message = "A computer name must be specified")
+	@Length(min = 1, max = 255, message = "computer name must be between 1 and 255 characters")
 	private String name;
-	private String introduced, discontinued;
+
+	@Pattern(regexp = "(\\d{4})-(([0][0-9])|([1][0-2]))-(([0-2][0-9])|(3[0-1]))|^$")
+	private String introduced;
+	@Pattern(regexp = "(\\d{4})-(([0][0-9])|([1][0-2]))-(([0-2][0-9])|(3[0-1]))|^$")
+	private String discontinued;
 
 }

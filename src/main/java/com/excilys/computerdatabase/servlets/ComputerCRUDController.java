@@ -1,6 +1,11 @@
 package com.excilys.computerdatabase.servlets;
 
-import java.util.List;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +25,6 @@ import com.excilys.computerdatabase.mappers.impl.ComputerMapperImpl;
 import com.excilys.computerdatabase.pages.ValidationErrorPage;
 import com.excilys.computerdatabase.services.CompanyService;
 import com.excilys.computerdatabase.services.ComputerService;
-import com.excilys.computerdatabase.validators.ComputerValidatorImpl;
-import com.excilys.computerdatabase.validators.ErrorCodes;
-import com.excilys.computerdatabase.validators.Validator;
 
 @Controller
 @RequestMapping("/Computer")
@@ -36,31 +38,43 @@ public class ComputerCRUDController {
 	@Autowired
 	ComputerService computerService;
 
+	@ModelAttribute
+	private ComputerDTO computerDto() {
+		return new ComputerDTOImpl();
+	}
+
 	// TODO Perform a search on the new element after adding it ?
 	@RequestMapping(value = "/Create", method = RequestMethod.POST)
 	public String create(
-			@ModelAttribute("computerDto") ComputerDTOImpl computerDto,
+			@ModelAttribute ComputerDTO computerDto,
 			@RequestParam("companyId") String companyId,
+
 			RedirectAttributes redirectAttribute) {
 
 		computerDto.setCompany(CompanyDTOImpl.Builder().id(companyId).build());
-		// Validation
-		Validator<ComputerDTO> computerV = new ComputerValidatorImpl();
-		List<ErrorCodes> errors = computerV.validate(computerDto);
 
-		// if there is only id error which is not relevant
-		// TODO Improve error test
-		if (errors.size() == 1 && errors.get(0).getCode() == 1) {
-			// Mapping
+		// Validation
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		Set<ConstraintViolation<ComputerDTO>> constraintViolations = validator.validateProperty(
+				computerDto, "name");
+
+		constraintViolations.addAll(validator.validateProperty(computerDto,
+				"companyDto"));
+		// ------------
+		constraintViolations.addAll(validator.validateProperty(computerDto,
+				"introduced"));
+		constraintViolations.addAll(validator.validateProperty(computerDto,
+				"discontinued"));
+
+		if (constraintViolations.isEmpty()) {
 			ComputerMapperImpl computerMapper = new ComputerMapperImpl();
 			computerService.create(computerMapper.map(computerDto));
-
-		} else {
-			// Error handling
+		} else { // Error handling
 			logger.warn("Error happened on create");
 			// TODO Change modalShow=null to false && hiderErrors=Block
-			ValidationErrorPage validationErrorPage = validationErrorPage(
-					computerDto, null, errors, "block");
+			ValidationErrorPage<ComputerDTO> validationErrorPage = validationErrorPage(
+					computerDto, null, constraintViolations, "block");
 			redirectAttribute.addFlashAttribute(validationErrorPage);
 			return "redirect:/Dashboard/computer/add";
 		}
@@ -71,17 +85,18 @@ public class ComputerCRUDController {
 
 	@RequestMapping(value = "/Update", method = RequestMethod.POST)
 	public String update(
-			@ModelAttribute("computerDto") ComputerDTOImpl computerDto,
+			@ModelAttribute ComputerDTO computerDto,
 			@RequestParam("companyId") String companyId,
 			RedirectAttributes redirectAttribute) {
 
 		logger.debug("computerDto : {}", computerDto);
 		computerDto.setCompany(CompanyDTOImpl.Builder().id(companyId).build());
 
-		Validator<ComputerDTO> computerV = new ComputerValidatorImpl();
-		List<ErrorCodes> errors = computerV.validate(computerDto);
+		// Validation
+		Validator validator = validator();
+		Set<ConstraintViolation<ComputerDTO>> constraintViolations = validator.validate((ComputerDTO) computerDto);
 
-		if (errors.isEmpty()) {
+		if (constraintViolations.isEmpty()) {
 			logger.warn("Update is valid, calling service");
 
 			// Mapping
@@ -91,8 +106,8 @@ public class ComputerCRUDController {
 		} else {
 			// Error handling
 			logger.warn("Error happened on update");
-			ValidationErrorPage validationErrorPage = validationErrorPage(
-					computerDto, true, errors, "block");
+			ValidationErrorPage<ComputerDTO> validationErrorPage = validationErrorPage(
+					computerDto, true, constraintViolations, "block");
 			redirectAttribute.addFlashAttribute(validationErrorPage);
 
 		}
@@ -109,11 +124,12 @@ public class ComputerCRUDController {
 				.id(id.toString())
 				.build();
 
-		Validator<ComputerDTO> computerV = new ComputerValidatorImpl();
-		List<ErrorCodes> errors = computerV.validate(computerDto);
+		Validator validator = validator();
+		Set<ConstraintViolation<ComputerDTO>> constraintViolations = validator.validateProperty(
+				computerDto, "id");
 
 		// Error can't be empty
-		if (errors.get(0).getCode() != 1) {
+		if (constraintViolations.isEmpty()) {
 			logger.warn("Delete is valid, calling service");
 
 			// Mapping
@@ -124,25 +140,31 @@ public class ComputerCRUDController {
 			// Error handling
 			logger.warn("Error happened on Delete");
 
-			ValidationErrorPage validationErrorPage = validationErrorPage(
-					computerDto, null, errors, "none");
+			ValidationErrorPage<ComputerDTO> validationErrorPage = validationErrorPage(
+					computerDto, null, constraintViolations, "none");
+
 			redirectAttribute.addFlashAttribute(validationErrorPage);
 
 		}
 		return "redirect:/Dashboard";
 	}
 
-	private ValidationErrorPage validationErrorPage(
+	private ValidationErrorPage<ComputerDTO> validationErrorPage(
 			ComputerDTO computerDto,
 			Boolean modalShow,
-			List<ErrorCodes> errors,
+			Set<ConstraintViolation<ComputerDTO>> contraintViolations,
 			String hideErrors) {
 
-		return ValidationErrorPage.builder()
-				.computerDto(computerDto)
+		return ValidationErrorPage.<ComputerDTO> builder()
+				.dto(computerDto)
 				.modalShow(null)
-				.errors(errors)
+				.constraintViolation(contraintViolations)
 				.hideErrors("block")
 				.build();
+	}
+
+	private Validator validator() {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		return factory.getValidator();
 	}
 }

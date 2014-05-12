@@ -93,8 +93,8 @@ public class Computer {
 	}
 
 	private Long id;
-	private Company company;
 	private String name;
+	private Company company;
 	private Date introduced, discontinued;
 
 	public void update(

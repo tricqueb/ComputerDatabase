@@ -1,5 +1,6 @@
 package com.excilys.computerdatabase.domain;
 
+
 public class Company {
 
 	public static class Builder {
@@ -50,5 +51,6 @@ public class Company {
 	}
 
 	private Long id;
+
 	private String name;
 }

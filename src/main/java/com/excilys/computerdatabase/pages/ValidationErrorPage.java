@@ -1,20 +1,19 @@
 package com.excilys.computerdatabase.pages;
 
-import java.util.List;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
 
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.Builder;
 
-import com.excilys.computerdatabase.dto.ComputerDTO;
-import com.excilys.computerdatabase.validators.ErrorCodes;
-
 @ToString
 @Getter
 @Builder
-public class ValidationErrorPage {
-	ComputerDTO computerDto;
+public class ValidationErrorPage<T> {
+	T dto;
 	Boolean modalShow;
-	List<ErrorCodes> errors;
+	Set<ConstraintViolation<T>> constraintViolation;
 	String hideErrors;
 }
