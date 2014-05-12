@@ -7,11 +7,7 @@
 <%@ attribute name="action" required="true"%>
 
 
-<td id="${id}" style="display:${hidden};">
-
-<c:out value="${value}"> </c:out>
-
-</td>
+<td id="${id}" style="display:${hidden};"><c:out value="${value}"> </c:out></td>
 
 
 

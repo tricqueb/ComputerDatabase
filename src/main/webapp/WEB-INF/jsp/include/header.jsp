@@ -14,6 +14,6 @@
 <body style="padding-bottom: 70px;" class="">
 	<nav class="navbar navbar-inverse" role="navigation">
 	<div class="navbar-header">
-			<a class="navbar-brand" href="Dashboard"> Application - Computer Database </a>
+			<a class="navbar-brand" href="/computer-database/Dashboard"> Application - Computer Database </a>
 	</div>
 	</nav>

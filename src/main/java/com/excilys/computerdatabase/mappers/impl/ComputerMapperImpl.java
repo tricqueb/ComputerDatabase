@@ -21,7 +21,7 @@ public class ComputerMapperImpl implements Mapper<ComputerDTO, Computer> {
 
 		Computer.Builder builder = Computer.Builder();
 
-		if (computerDTO.getId() != null)
+		if (computerDTO.getId() != null && !computerDTO.getId().isEmpty())
 			builder.id(Long.parseLong(computerDTO.getId()));
 
 		if (computerDTO.getName() != null)

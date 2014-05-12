@@ -15,8 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.excilys.computerdatabase.domain.Company;
 import com.excilys.computerdatabase.domain.Computer;
 import com.excilys.computerdatabase.pages.Page;
-import com.excilys.computerdatabase.pages.Page.PageBuilder;
 import com.excilys.computerdatabase.pages.Pagination;
+import com.excilys.computerdatabase.pages.ValidationErrorPage;
 import com.excilys.computerdatabase.services.CompanyService;
 import com.excilys.computerdatabase.services.ComputerService;
 
@@ -30,65 +30,69 @@ public class DashboardController {
 	@Autowired
 	private ComputerService computerService;
 
-	// TODO Create dashboard model
+	@ModelAttribute
+	ValidationErrorPage validationErrorPage() {
+		return null;
+	}
+
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView dashboard(
-			@ModelAttribute(value = "search") String search,
-			@RequestParam(value = "orderById", required = false, defaultValue = "2") Long orderById,
-			@RequestParam(value = "orderDirection", required = false, defaultValue = "false") Boolean orderDirection,
-			@RequestParam(value = "currentPage", required = false, defaultValue = "1") Integer currentPage,
-			@RequestParam(value = "elementsPerPage", required = false, defaultValue = "20") Integer elementsPerPage) {
-
-		logger.debug(
-				"Search : {}, Order by: {}, Direction(ACS>false): {}, currentPage: {},elementsPerPage: {}  ",
-				search, orderById, orderDirection, currentPage, elementsPerPage);
-
-		Integer total = computerService.count(search);
-
-		List<Computer> computerList = computerList(search, currentPage,
-				elementsPerPage, orderById, orderDirection);
-
-		List<Company> companyList = companyList("%");
-
-		Pagination pagination = pagination(currentPage, elementsPerPage, total);
-
-		Page<Computer> dashboardPage = dashboardPageBuilder(computerList,
-				total, pagination, orderById, orderDirection);
-
-		// TODO ValidationErrorPage coming from DashboardCrud (flash attribute
-		// ?)
+			@ModelAttribute ValidationErrorPage validationErrorPage) {
+		logger.debug("Error received: {}", validationErrorPage);
 
 		ModelAndView modelView = new ModelAndView("dashboard");
-
-		// modelView.addObject("search", search);
-		modelView.addObject("companyList", companyList);
-		modelView.addObject("page", dashboardPage);
-
 		return modelView;
 	}
 
-	private List<Computer> computerList(
-			String search,
-			int currentPage,
-			int elementsPerPage,
-			Long orderById,
-			Boolean orderDirection) {
+	// TODO Move to ComputerCrud as get request
+	@RequestMapping("/computer/add")
+	public ModelAndView add(
+			@ModelAttribute ValidationErrorPage validationErrorPage) {
 
-		return computerService.find(search,
-				(currentPage - 1) * elementsPerPage, elementsPerPage,
-				orderById, orderDirection);
+		// List<Company> companyList = companyList("%");
+		ModelAndView modelView = new ModelAndView("addComputer");
+
+		// modelView.addObject("companyList", companyList);
+		return modelView;
+	}
+
+	/**
+	 * Define the company list
+	 * 
+	 * @param search
+	 * @return
+	 */
+	@ModelAttribute("companyList")
+	private List<Company> companyList() {
+		return companyService.find("");
+	}
+
+	@ModelAttribute("total")
+	private Integer total(@RequestParam(defaultValue = "") String search) {
+
+		// @RequestParam(required = false) String search
+		logger.debug("Total");
+		return computerService.count(search);
 
 	}
 
-	private List<Company> companyList(String search) {
-		return companyService.find(search);
-	}
-
+	/**
+	 * Define pagination state of computer dashboard
+	 * 
+	 * @param currentPage
+	 * @param elementsPerPage
+	 * @param search
+	 * @return
+	 */
 	// TODO clean that shit
+	// Define setter and getter in pagination ?
+	@ModelAttribute
 	private Pagination pagination(
-			int currentPage,
-			int elementsPerPage,
-			int total) {
+			@RequestParam(defaultValue = "1") Integer currentPage,
+			@RequestParam(value = "elementsPerPage", defaultValue = "20") Integer elementsPerPage,
+			@RequestParam(defaultValue = "") String search) {
+		logger.debug("Pagination build");
+		Integer total = computerService.count(search);
 
 		int startPage = currentPage - 5;
 
@@ -120,29 +124,48 @@ public class DashboardController {
 				.build();
 	}
 
-	private Page<Computer> dashboardPageBuilder(
-			List<Computer> computerList,
-			int total,
-			Pagination pagination,
-			Long orderById,
-			Boolean orderDirection) {
+	/**
+	 * Populate a page into the dashboard
+	 * 
+	 * @param page
+	 * @param currentPage
+	 * @param elementsPerPage
+	 * @return
+	 */
+	@ModelAttribute("page")
+	private Page<Computer> dashboardPage(
+			@ModelAttribute Page<Computer> page,
+			@RequestParam(defaultValue = "1") Integer currentPage,
+			@RequestParam(value = "elementsPerPage", defaultValue = "20") Integer elementsPerPage) {
 
-		PageBuilder<Computer> pageBuilder = Page.builder();
-		pageBuilder.computerList(computerList)
-				.total(total)
-				.pagination(pagination)
-				.orderById(orderById)
-				.orderDirection(orderDirection);
-		return pageBuilder.build();
+		logger.debug("Page : {}, currentPage: {}, elementsPerPage: {}  ", page,
+				currentPage, elementsPerPage);
+
+		page.setComputerList(computerList(page.getSearch(),
+				page.getOrderById(), currentPage, elementsPerPage,
+				page.getOrderDirection()));
+		return page;
 	}
 
-	@RequestMapping("/computer/add")
-	public ModelAndView add() {
+	/**
+	 * Service request to obtain computerList
+	 * 
+	 * @param search
+	 * @param orderById
+	 * @param currentPage
+	 * @param elementsPerPage
+	 * @param orderDirection
+	 * @return
+	 */
+	private List<Computer> computerList(
+			String search,
+			Long orderById,
+			Integer currentPage,
+			Integer elementsPerPage,
+			Boolean orderDirection) {
 
-		List<Company> companyList = companyList("%");
-		ModelAndView modelView = new ModelAndView("addComputer");
-
-		modelView.addObject("companyList", companyList);
-		return modelView;
+		return computerService.find(search,
+				(currentPage - 1) * elementsPerPage, elementsPerPage,
+				orderById, orderDirection);
 	}
 }

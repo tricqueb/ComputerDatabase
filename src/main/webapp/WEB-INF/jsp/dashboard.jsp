@@ -4,7 +4,7 @@
 
 <div class=container>
 
-	<h1 id="homeTitle" class="page-header">${page.getTotal()} Computers found</h1>
+	<h1 id="homeTitle" class="page-header">${total} Computers found</h1>
 
 	<jsp:include page="/WEB-INF/jsp/modalForm.jsp" />
 
@@ -20,11 +20,11 @@
 
 	<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
   		<div class="container"> 
-			<KD:pagination action="Dashboard?search=${search}" pagination="${page.getPagination()}" orderBy="${page.getOrderById()}" orderDirection="${page.getOrderDirection() }"/>
+			<KD:pagination action="Dashboard"  orderBy="${page.getOrderById()}" orderDirection="${page.getOrderDirection()}"/>
   		</div>
 	</nav>
 
 </div>
 
 <jsp:include page="/WEB-INF/jsp/include/footer.jsp" />
-<script type="text/javascript" src="/resources/scripts/dashboard.js"></script>
+<script type="text/javascript" src="scripts/dashboard.js"></script>

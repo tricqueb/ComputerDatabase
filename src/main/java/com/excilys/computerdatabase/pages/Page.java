@@ -3,15 +3,29 @@ package com.excilys.computerdatabase.pages;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.experimental.Builder;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
-@Builder
+@Setter
+@ToString
 public class Page<T> {
+
+	public Page() {
+
+		super();
+		orderDirection = false;
+		orderById = 2l;
+		search = "";
+	}
+
 	List<T> computerList;
+
 	Integer total;
-	Pagination pagination;
+
 	String search;
+
 	Boolean orderDirection;
+
 	Long orderById;
 }

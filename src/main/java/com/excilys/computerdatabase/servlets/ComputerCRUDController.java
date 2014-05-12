@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.excilys.computerdatabase.connections.ConnectionManager;
 import com.excilys.computerdatabase.dto.ComputerDTO;
+import com.excilys.computerdatabase.dto.impl.CompanyDTOImpl;
 import com.excilys.computerdatabase.dto.impl.ComputerDTOImpl;
 import com.excilys.computerdatabase.mappers.impl.ComputerMapperImpl;
 import com.excilys.computerdatabase.pages.ValidationErrorPage;
@@ -36,8 +38,12 @@ public class ComputerCRUDController {
 
 	// TODO Perform a search on the new element after adding it ?
 	@RequestMapping(value = "/Create", method = RequestMethod.POST)
-	public String create(@ModelAttribute("Computer") ComputerDTO computerDto) {
+	public String create(
+			@ModelAttribute("computerDto") ComputerDTOImpl computerDto,
+			@RequestParam("companyId") String companyId,
+			RedirectAttributes redirectAttribute) {
 
+		computerDto.setCompany(CompanyDTOImpl.Builder().id(companyId).build());
 		// Validation
 		Validator<ComputerDTO> computerV = new ComputerValidatorImpl();
 		List<ErrorCodes> errors = computerV.validate(computerDto);
@@ -55,16 +61,22 @@ public class ComputerCRUDController {
 			// TODO Change modalShow=null to false && hiderErrors=Block
 			ValidationErrorPage validationErrorPage = validationErrorPage(
 					computerDto, null, errors, "block");
-
-			// TODO Use flash attribute
-
+			redirectAttribute.addFlashAttribute(validationErrorPage);
+			return "redirect:/Dashboard/computer/add";
 		}
 
-		return "redirect:Dashboard/add";
+		redirectAttribute.addAttribute("search", computerDto.getName());
+		return "redirect:/Dashboard";
 	}
 
 	@RequestMapping(value = "/Update", method = RequestMethod.POST)
-	public String update(@ModelAttribute("Computer") ComputerDTO computerDto) {
+	public String update(
+			@ModelAttribute("computerDto") ComputerDTOImpl computerDto,
+			@RequestParam("companyId") String companyId,
+			RedirectAttributes redirectAttribute) {
+
+		logger.debug("computerDto : {}", computerDto);
+		computerDto.setCompany(CompanyDTOImpl.Builder().id(companyId).build());
 
 		Validator<ComputerDTO> computerV = new ComputerValidatorImpl();
 		List<ErrorCodes> errors = computerV.validate(computerDto);
@@ -81,15 +93,16 @@ public class ComputerCRUDController {
 			logger.warn("Error happened on update");
 			ValidationErrorPage validationErrorPage = validationErrorPage(
 					computerDto, true, errors, "block");
-
-			// TODO Use flash attribute
+			redirectAttribute.addFlashAttribute(validationErrorPage);
 
 		}
-		return "redirect:Dashboard";
+		return "redirect:/Dashboard";
 	}
 
 	@RequestMapping(value = "/Delete", method = RequestMethod.POST)
-	public String delete(@RequestParam("id") Long id) {
+	public String delete(
+			@RequestParam("id") Long id,
+			RedirectAttributes redirectAttribute) {
 
 		// FIXME weak type conversion
 		ComputerDTO computerDto = ComputerDTOImpl.Builder()
@@ -110,10 +123,10 @@ public class ComputerCRUDController {
 		} else {
 			// Error handling
 			logger.warn("Error happened on Delete");
+
 			ValidationErrorPage validationErrorPage = validationErrorPage(
 					computerDto, null, errors, "none");
-
-			// TODO Use flash attribute
+			redirectAttribute.addFlashAttribute(validationErrorPage);
 
 		}
 		return "redirect:/Dashboard";
@@ -126,7 +139,7 @@ public class ComputerCRUDController {
 			String hideErrors) {
 
 		return ValidationErrorPage.builder()
-				.computerdto(computerDto)
+				.computerDto(computerDto)
 				.modalShow(null)
 				.errors(errors)
 				.hideErrors("block")

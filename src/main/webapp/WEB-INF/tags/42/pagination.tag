@@ -2,7 +2,7 @@
 <%@ taglib tagdir="/WEB-INF/tags/42" prefix="KD"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<%@ attribute type="com.excilys.computerdatabase.pages.Pagination" name="pagination" required="true"%>
+<%-- <%@ attribute type="com.excilys.computerdatabase.pages.Pagination" name="pagination" required="true"%> --%>
 <%@ attribute name="action" required="true"%>
 <%@ attribute name="orderBy" required="true"%>
 <%@ attribute name="orderDirection" required="true"%>
@@ -26,7 +26,7 @@
 						<c:param name="currentPage" value="${predecessor}" />
 						<c:param name="orderById" value="${orderBy}"/>
 						<c:param name="orderDirection" value="${orderDirection}"/>
-						<c:param name="search" value="${search}"/>
+						<c:param name="search" value="${page.search}"/>
 					</c:url>>&laquo;</a></li>
 
 			<c:forEach var="displayedPage" begin="${pagination.getStartPage()}" end="${pagination.getEndPage()}">
@@ -37,7 +37,7 @@
 						<c:param name="currentPage" value="${displayedPage}" />
 						<c:param name="orderById" value="${orderBy}"/>
 						<c:param name="orderDirection" value="${orderDirection}"/>
-						<c:param name="search" value="${search}"/>
+						<c:param name="search" value="${page.search}"/>
 					</c:url>>
 							${displayedPage} </a></li>
 				</c:if>
@@ -47,7 +47,7 @@
 						<c:param name="currentPage" value="${displayedPage}" />
 						<c:param name="orderById" value="${orderBy}"/>
 						<c:param name="orderDirection" value="${orderDirection}"/>
-						<c:param name="search" value="${search}"/>
+						<c:param name="search" value="${page.search}"/>
 					</c:url>>
 							${displayedPage} </a></li>
 				</c:if>
@@ -58,7 +58,7 @@
 						<c:param name="currentPage" value="${next}" />
 						<c:param name="orderById" value="${orderBy}"/>
 						<c:param name="orderDirection" value="${orderDirection}"/>
-						<c:param name="search" value="${search}"/>			
+						<c:param name="search" value="${page.search}"/>			
 					</c:url>>&raquo;</a></li>
 		</ul>
 		
