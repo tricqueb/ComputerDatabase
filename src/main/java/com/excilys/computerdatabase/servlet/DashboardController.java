@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.servlets;
+package com.excilys.computerdatabase.servlet;
 
 import java.util.List;
 
@@ -14,14 +14,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.computerdatabase.domain.Company;
 import com.excilys.computerdatabase.domain.Computer;
-import com.excilys.computerdatabase.pages.Page;
-import com.excilys.computerdatabase.pages.Pagination;
-import com.excilys.computerdatabase.pages.ValidationErrorPage;
-import com.excilys.computerdatabase.services.CompanyService;
-import com.excilys.computerdatabase.services.ComputerService;
+import com.excilys.computerdatabase.dto.ComputerDTO;
+import com.excilys.computerdatabase.mapper.Mapper;
+import com.excilys.computerdatabase.mapper.impl.ComputerMapperImpl;
+import com.excilys.computerdatabase.page.Page;
+import com.excilys.computerdatabase.page.Pagination;
+import com.excilys.computerdatabase.page.ValidationErrorPage;
+import com.excilys.computerdatabase.service.CompanyService;
+import com.excilys.computerdatabase.service.ComputerService;
 
 @Controller
-@RequestMapping("/Dashboard")
+@RequestMapping({ "/", "/Dashboard" })
 public class DashboardController {
 	private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
 
@@ -31,28 +34,27 @@ public class DashboardController {
 	private ComputerService computerService;
 
 	@ModelAttribute
-	ValidationErrorPage validationErrorPage() {
+	ValidationErrorPage<ComputerDTO> validationErrorPage() {
 		return null;
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView dashboard(
-			@ModelAttribute ValidationErrorPage validationErrorPage) {
+			@ModelAttribute ValidationErrorPage<ComputerDTO> validationErrorPage) {
 		logger.debug("Error received: {}", validationErrorPage);
 
 		ModelAndView modelView = new ModelAndView("dashboard");
 		return modelView;
 	}
 
-	// TODO Move to ComputerCrud as get request
+	// TODO Move to ComputerCrud as get request and define a call to render
+	// modal form
 	@RequestMapping("/computer/add")
 	public ModelAndView add(
-			@ModelAttribute ValidationErrorPage validationErrorPage) {
+			@ModelAttribute ValidationErrorPage<ComputerDTO> validationErrorPage) {
 
-		// List<Company> companyList = companyList("%");
 		ModelAndView modelView = new ModelAndView("addComputer");
 
-		// modelView.addObject("companyList", companyList);
 		return modelView;
 	}
 
@@ -94,25 +96,33 @@ public class DashboardController {
 		logger.debug("Pagination build");
 		Integer total = computerService.count(search);
 
-		int startPage = currentPage - 5;
-
-		if (startPage < 1) {
-			startPage = 1;
-		}
-
+		int startPage = currentPage - 4;
 		int nbPages = total / elementsPerPage;
-		if (total % elementsPerPage > 0)
-			nbPages++;
+		int endPage = currentPage + 4;
 
-		if (currentPage > nbPages)
-			currentPage = nbPages;
+		if (elementsPerPage > total) {
+			currentPage = 1;
+			startPage = 1;
+			endPage = 1;
 
-		if (elementsPerPage > total)
-			elementsPerPage = total;
+		} else {
 
-		int endPage = currentPage + 5;
-		if (endPage > nbPages) {
-			endPage = nbPages;
+			if (startPage < 1) {
+				endPage += Math.abs(startPage) + 1;
+				startPage = 1;
+			}
+
+			if (total % elementsPerPage > 0) {
+				nbPages++;
+			}
+
+			if (currentPage > nbPages) {
+				currentPage = nbPages;
+				endPage = nbPages;
+
+			} else if (endPage > nbPages) {
+				endPage = nbPages;
+			}
 		}
 
 		return Pagination.builder()
@@ -133,8 +143,8 @@ public class DashboardController {
 	 * @return
 	 */
 	@ModelAttribute("page")
-	private Page<Computer> dashboardPage(
-			@ModelAttribute Page<Computer> page,
+	private Page<ComputerDTO> dashboardPage(
+			@ModelAttribute Page<ComputerDTO> page,
 			@RequestParam(defaultValue = "1") Integer currentPage,
 			@RequestParam(value = "elementsPerPage", defaultValue = "20") Integer elementsPerPage) {
 
@@ -157,15 +167,16 @@ public class DashboardController {
 	 * @param orderDirection
 	 * @return
 	 */
-	private List<Computer> computerList(
+	private List<ComputerDTO> computerList(
 			String search,
 			Long orderById,
 			Integer currentPage,
 			Integer elementsPerPage,
 			Boolean orderDirection) {
 
-		return computerService.find(search,
+		Mapper<ComputerDTO, Computer> computerMapper = new ComputerMapperImpl();
+		return computerMapper.invert(computerService.find(search,
 				(currentPage - 1) * elementsPerPage, elementsPerPage,
-				orderById, orderDirection);
+				orderById, orderDirection));
 	}
 }

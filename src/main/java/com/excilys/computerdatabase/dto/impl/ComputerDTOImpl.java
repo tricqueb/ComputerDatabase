@@ -1,6 +1,5 @@
 package com.excilys.computerdatabase.dto.impl;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -101,18 +100,18 @@ public class ComputerDTOImpl implements ComputerDTO {
 				+ ", discontinued=" + discontinued + "]";
 	}
 
-	// TODO Move constraints to interface ?
-	@NotNull(message = "An identificator must be specified")
+	@NotNull(message = "error.00")
 	private String id;
-	@Valid
+	// @Valid
 	private CompanyDTO companyDto;
-	@NotBlank(message = "A computer name must be specified")
-	@Length(min = 1, max = 255, message = "computer name must be between 1 and 255 characters")
+
+	@NotBlank(message = "error.10")
+	@Length(min = 1, max = 255, message = "error.11")
 	private String name;
 
-	@Pattern(regexp = "(\\d{4})-(([0][0-9])|([1][0-2]))-(([0-2][0-9])|(3[0-1]))|^$")
+	@Pattern(regexp = "(\\d{4})-(([0][0-9])|([1][0-2]))-(([0-2][0-9])|(3[0-1]))|^$", message = "error.21")
 	private String introduced;
-	@Pattern(regexp = "(\\d{4})-(([0][0-9])|([1][0-2]))-(([0-2][0-9])|(3[0-1]))|^$")
+	@Pattern(regexp = "(\\d{4})-(([0][0-9])|([1][0-2]))-(([0-2][0-9])|(3[0-1]))|^$", message = "error.31")
 	private String discontinued;
 
 }

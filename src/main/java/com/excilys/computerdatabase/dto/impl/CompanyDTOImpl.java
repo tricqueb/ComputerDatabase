@@ -2,10 +2,13 @@ package com.excilys.computerdatabase.dto.impl;
 
 import javax.validation.constraints.NotNull;
 
+import lombok.ToString;
+
 import org.hibernate.validator.constraints.Length;
 
 import com.excilys.computerdatabase.dto.CompanyDTO;
 
+@ToString
 public class CompanyDTOImpl implements CompanyDTO {
 	// Builder
 	public static class Builder {
@@ -78,10 +81,10 @@ public class CompanyDTOImpl implements CompanyDTO {
 		this.name = name;
 	}
 
-	@NotNull
+	@NotNull(message = "error.40")
 	private String id;
 
-	@Length(min = 1, max = 255, message = "Company name must be between 1 and 255 characters")
+	@Length(min = 0, max = 255, message = "error.41")
 	private String name;
 
 }

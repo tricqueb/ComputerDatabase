@@ -1,17 +1,20 @@
-package com.excilys.computerdatabase.connections;
+package com.excilys.computerdatabase.connection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ConnectionBoxImpl implements ConnectionBox {
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.excilys.computerdatabase.services.impl.ConnectionBox#getConnection()
+	 * com.excilys.computerdatabase.service.impl.ConnectionBox#getConnection()
 	 */
 	public Connection getConnection() {
 		return connection;
@@ -21,7 +24,7 @@ public class ConnectionBoxImpl implements ConnectionBox {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.excilys.computerdatabase.services.impl.ConnectionBox#setConnection
+	 * com.excilys.computerdatabase.service.impl.ConnectionBox#setConnection
 	 * (java.sql.Connection)
 	 */
 	public void setConnection(Connection connection) {
@@ -32,7 +35,7 @@ public class ConnectionBoxImpl implements ConnectionBox {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.excilys.computerdatabase.services.impl.ConnectionBox#getResultSet()
+	 * com.excilys.computerdatabase.service.impl.ConnectionBox#getResultSet()
 	 */
 	public ResultSet getResultSet() {
 		return resultSet;
@@ -41,8 +44,7 @@ public class ConnectionBoxImpl implements ConnectionBox {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.excilys.computerdatabase.services.impl.ConnectionBox#setResultSet
+	 * @see com.excilys.computerdatabase.service.impl.ConnectionBox#setResultSet
 	 * (java.sql.ResultSet)
 	 */
 	public void setResultSet(ResultSet resultSet) {
@@ -53,7 +55,7 @@ public class ConnectionBoxImpl implements ConnectionBox {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.excilys.computerdatabase.services.impl.ConnectionBox#getStatement()
+	 * com.excilys.computerdatabase.service.impl.ConnectionBox#getStatement()
 	 */
 	public PreparedStatement getStatement() {
 		return statement;
@@ -62,8 +64,7 @@ public class ConnectionBoxImpl implements ConnectionBox {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.excilys.computerdatabase.services.impl.ConnectionBox#setStatement
+	 * @see com.excilys.computerdatabase.service.impl.ConnectionBox#setStatement
 	 * (java.sql.PreparedStatement)
 	 */
 	public void setStatement(PreparedStatement statement) {
@@ -73,8 +74,7 @@ public class ConnectionBoxImpl implements ConnectionBox {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.excilys.computerdatabase.services.impl.ConnectionBox#setStatement
+	 * @see com.excilys.computerdatabase.service.impl.ConnectionBox#setStatement
 	 * (java.lang.String)
 	 */
 	public void setStatement(String query) throws SQLException {
@@ -125,4 +125,21 @@ public class ConnectionBoxImpl implements ConnectionBox {
 		return new Builder();
 	}
 
+	public void close() {
+		log.debug("Closing connections");
+		try {
+			if (statement != null)
+				statement.close();
+		} catch (SQLException e) {
+			log.error("Closing Error : " + e.getMessage());
+		} finally {
+			try {
+				if (resultSet != null)
+					resultSet.close();
+			} catch (SQLException e) {
+				log.error("Closing Error : " + e.getMessage());
+			}
+		}
+
+	}
 }

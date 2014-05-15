@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.mappers.impl;
+package com.excilys.computerdatabase.mapper.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import com.excilys.computerdatabase.domain.Company;
 import com.excilys.computerdatabase.dto.CompanyDTO;
 import com.excilys.computerdatabase.dto.impl.CompanyDTOImpl;
-import com.excilys.computerdatabase.mappers.Mapper;
+import com.excilys.computerdatabase.mapper.Mapper;
 
 public class CompanyMapperImpl implements Mapper<CompanyDTO, Company> {
 

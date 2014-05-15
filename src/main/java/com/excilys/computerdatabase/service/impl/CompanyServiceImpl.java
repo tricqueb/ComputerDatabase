@@ -1,67 +1,52 @@
-package com.excilys.computerdatabase.services.impl;
+package com.excilys.computerdatabase.service.impl;
 
-import java.sql.SQLException;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.computerdatabase.connections.ConnectionManager;
 import com.excilys.computerdatabase.dao.CompanyDao;
 import com.excilys.computerdatabase.domain.Company;
-import com.excilys.computerdatabase.services.CompanyService;
+import com.excilys.computerdatabase.service.CompanyService;
 
+@Transactional(readOnly = true, rollbackFor = DataRetrievalFailureException.class)
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
 	private static final Logger logger = LoggerFactory.getLogger(CompanyServiceImpl.class);
 	@Autowired
-	private ConnectionManager cm;
+	@Qualifier("DataSource")
+	private DataSource datasource;
 	@Autowired
 	private CompanyDao companyDao;
 
 	private CompanyServiceImpl() {
 	}
 
+	@Transactional
 	@Override
 	public List<Company> find(String cName) {
 		List<Company> cList = null;
-		logger.debug("Getting connection");
-		cm.initTransaction();
-		try {
-			logger.debug("Read for {}", cName);
-			cList = companyDao.find(cName);
-			cm.closeTransaction();
+		logger.debug("Read for {}", cName);
+		cList = companyDao.find(cName);
 
-		} catch (SQLException e) {
-			logger.error("find error : " + e.getMessage());
-
-		} finally {
-			cm.disconnect();
-		}
 		logger.debug("{} elements found ", cList);
 		return cList;
 	}
 
+	@Transactional
 	@Override
 	public Company find(Long cId) {
-		logger.debug("Getting connection");
 		Company company = null;
-		cm.initTransaction();
-		try {
-
-			logger.debug("Read for {}", cId);
-			company = companyDao.find(cId);
-			cm.closeTransaction();
-
-		} catch (SQLException e) {
-			logger.error("find error : " + e.getMessage());
-
-		} finally {
-			cm.disconnect();
-		}
+		logger.debug("Read for {}", cId);
+		company = companyDao.find(cId);
 		logger.debug("company {} found ", company);
 		return company;
 	}

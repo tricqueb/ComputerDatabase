@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.validators;
+package com.excilys.computerdatabase.validator;
 
 import java.util.List;
 

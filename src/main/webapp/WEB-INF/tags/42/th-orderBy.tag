@@ -3,7 +3,7 @@
 <%@ attribute name="text" required="true"%>
 <%@ attribute name="value" required="true"%>
 <%@ attribute name="action" required="true"%>
-<%@ attribute type="com.excilys.computerdatabase.pages.Page" name="page" required="true"%>
+<%@ attribute type="com.excilys.computerdatabase.page.Page" name="page" required="true"%>
 <%@ attribute name="width" required="false"%>
 <%@ attribute name="search" required="false"%>
 

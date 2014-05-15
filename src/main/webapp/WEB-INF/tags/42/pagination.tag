@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <%@ taglib tagdir="/WEB-INF/tags/42" prefix="KD"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
-<%-- <%@ attribute type="com.excilys.computerdatabase.pages.Pagination" name="pagination" required="true"%> --%>
 <%@ attribute name="action" required="true"%>
 <%@ attribute name="orderBy" required="true"%>
 <%@ attribute name="orderDirection" required="true"%>
@@ -42,7 +42,7 @@
 							${displayedPage} </a></li>
 				</c:if>
 				<c:if test="${displayedPage!=pagination.getCurrentPage()}">
-					<li><a
+					<li ><a
 						href=<c:url value="${action}">
 						<c:param name="currentPage" value="${displayedPage}" />
 						<c:param name="orderById" value="${orderBy}"/>
@@ -64,7 +64,7 @@
 		
 		<div class="pull-right pagination" style="margin:2px;">
 				<KD:search value="${pagination.getCurrentPage()}" method="currentPage"
-			action="Dashboard" column="2" />
+			action="Dashboard" column="2" springlabel="label.search" />
 		</div>
 	</div>
 	

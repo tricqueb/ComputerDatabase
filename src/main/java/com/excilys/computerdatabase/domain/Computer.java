@@ -1,6 +1,6 @@
 package com.excilys.computerdatabase.domain;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 public class Computer {
 
@@ -21,13 +21,13 @@ public class Computer {
 			return this;
 		}
 
-		public Builder introduced(Date introduced) {
-			computer.introduced = introduced;
+		public Builder introduced(Object introduced) {
+			computer.introduced = new DateTime(introduced);
 			return this;
 		}
 
-		public Builder discontinued(Date discontinued) {
-			computer.discontinued = discontinued;
+		public Builder discontinued(Object discontinued) {
+			computer.discontinued = new DateTime(discontinued);
 			return this;
 		}
 
@@ -76,31 +76,31 @@ public class Computer {
 		this.name = name;
 	}
 
-	public Date getIntroduced() {
+	public DateTime getIntroduced() {
 		return introduced;
 	}
 
-	public void setIntroduced(Date introduced) {
+	public void setIntroduced(DateTime introduced) {
 		this.introduced = introduced;
 	}
 
-	public Date getDiscontinued() {
+	public DateTime getDiscontinued() {
 		return discontinued;
 	}
 
-	public void setDiscontinued(Date discontinued) {
+	public void setDiscontinued(DateTime discontinued) {
 		this.discontinued = discontinued;
 	}
 
 	private Long id;
 	private String name;
 	private Company company;
-	private Date introduced, discontinued;
+	private DateTime introduced, discontinued;
 
 	public void update(
 			String name,
-			java.util.Date introducedDate,
-			java.util.Date discontinuedDate,
+			DateTime introducedDate,
+			DateTime discontinuedDate,
 			Company cy) {
 		setName(name);
 		setIntroduced(introducedDate);

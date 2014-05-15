@@ -1,6 +1,5 @@
-package com.excilys.computerdatabase.mappers.impl;
+package com.excilys.computerdatabase.mapper.impl;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.excilys.computerdatabase.domain.Computer;
 import com.excilys.computerdatabase.dto.ComputerDTO;
 import com.excilys.computerdatabase.dto.impl.ComputerDTOImpl;
-import com.excilys.computerdatabase.mappers.Mapper;
+import com.excilys.computerdatabase.mapper.Mapper;
 
 public class ComputerMapperImpl implements Mapper<ComputerDTO, Computer> {
 	private static final Logger logger = LoggerFactory.getLogger(ComputerMapperImpl.class);
@@ -18,7 +17,7 @@ public class ComputerMapperImpl implements Mapper<ComputerDTO, Computer> {
 
 	@Override
 	public Computer map(ComputerDTO computerDTO) {
-
+		logger.debug("mapping data...");
 		Computer.Builder builder = Computer.Builder();
 
 		if (computerDTO.getId() != null && !computerDTO.getId().isEmpty())
@@ -29,11 +28,11 @@ public class ComputerMapperImpl implements Mapper<ComputerDTO, Computer> {
 
 		if (computerDTO.getIntroduced() != null)
 			if (!computerDTO.getIntroduced().isEmpty())
-				builder.introduced(Date.valueOf(computerDTO.getIntroduced()));
+				builder.introduced(computerDTO.getIntroduced());
 
 		if (computerDTO.getDiscontinued() != null)
 			if (!computerDTO.getDiscontinued().isEmpty())
-				builder.discontinued(Date.valueOf(computerDTO.getDiscontinued()));
+				builder.discontinued(computerDTO.getDiscontinued());
 
 		if (computerDTO.getCompany() != null)
 			builder.company(companyMapper.map(computerDTO.getCompany()))
@@ -49,9 +48,10 @@ public class ComputerMapperImpl implements Mapper<ComputerDTO, Computer> {
 		ComputerDTOImpl.Builder builder = ComputerDTOImpl.Builder();
 		builder.id(String.valueOf(computer.getId())).name(computer.getName());
 		if (computer.getIntroduced() != null)
-			builder.introduced(String.valueOf(computer.getIntroduced()));
+			builder.introduced(computer.getIntroduced().toString("yyyy-MM-dd"));
 		if (computer.getDiscontinued() != null)
-			builder.discontinued(String.valueOf(computer.getDiscontinued()));
+			builder.discontinued(computer.getDiscontinued().toString(
+					"yyyy-MM-dd"));
 		if (computer.getCompany() != null)
 			builder.companydto(companyMapper.invert(computer.getCompany()));
 

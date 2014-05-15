@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.pages;
+package com.excilys.computerdatabase.page;
 
 import lombok.Getter;
 import lombok.Setter;

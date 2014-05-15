@@ -1,6 +1,5 @@
 package com.excilys.computerdatabase.dao;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import com.excilys.computerdatabase.domain.Computer;
@@ -18,14 +17,14 @@ public interface ComputerDao {
 	 * 
 	 * @param o
 	 */
-	public void create(Computer o) throws SQLException;
+	public void create(Computer o);
 
 	/**
 	 * Delete an existing element in db
 	 * 
 	 * @param o
 	 */
-	public void delete(Computer o) throws SQLException;
+	public void delete(Computer o);
 
 	/**
 	 * Delete an existing element in db
@@ -33,7 +32,7 @@ public interface ComputerDao {
 	 * @param id
 	 *            of computer
 	 */
-	void delete(Long id) throws SQLException;
+	void delete(Long id);
 
 	/**
 	 * (Find by name)
@@ -45,8 +44,7 @@ public interface ComputerDao {
 	 */
 	public List<Computer> find(
 
-	String o, Integer offset, Integer limit, Long ob, Boolean desc)
-			throws SQLException;
+	String o, Integer offset, Integer limit, Long ob, Boolean desc);
 
 	/**
 	 * Find by id
@@ -54,17 +52,17 @@ public interface ComputerDao {
 	 * @param o
 	 * @return
 	 */
-	public Computer find(long o) throws SQLException;
+	public Computer find(long o);
 
 	/**
 	 * Replace an existing element by another
 	 * 
 	 * @param o
 	 */
-	public void update(Computer o) throws SQLException;
+	public void update(Computer o);
 
-	List<Computer> find() throws SQLException;
+	List<Computer> find();
 
-	public int count(String search) throws SQLException;
+	public int count(String search);
 
 }

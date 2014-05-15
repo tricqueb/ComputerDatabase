@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.validators;
+package com.excilys.computerdatabase.validator;
 
 //TODO Make one error one code id
 public enum ErrorCodes {

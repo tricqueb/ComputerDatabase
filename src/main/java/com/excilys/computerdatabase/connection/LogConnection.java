@@ -1,13 +1,14 @@
-package com.excilys.computerdatabase.connections;
+package com.excilys.computerdatabase.connection;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
-import org.springframework.beans.BeansException;
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
 
 import ch.qos.logback.core.db.ConnectionSource;
@@ -17,8 +18,7 @@ import ch.qos.logback.core.db.dialect.SQLDialectCode;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 @Component
-public class LogConnection extends ContextAwareBase implements
-		ConnectionSource, ApplicationContextAware {
+public class LogConnection extends ContextAwareBase implements ConnectionSource {
 
 	private String driverClass = null;
 	private String url = null;
@@ -33,14 +33,14 @@ public class LogConnection extends ContextAwareBase implements
 	private boolean supportsGetGeneratedKeys = false;
 	private boolean supportsBatchUpdates = false;
 
-	private ApplicationContext applicationContext;
 	@Autowired
-	private ConnectionManager cm;
+	@Qualifier("DataSource")
+	private DataSource dataSource;
 
 	public void start() {
 		try {
 			if (driverClass != null) {
-				cm = (ConnectionManager) applicationContext.getBean("connectionManager");
+
 				Class.forName(driverClass);
 				discoverConnectionProperties();
 				// SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
@@ -93,7 +93,7 @@ public class LogConnection extends ContextAwareBase implements
 	 * @see ch.qos.logback.core.db.ConnectionSource#getConnection()
 	 */
 	public Connection getConnection() throws SQLException {
-		return cm.getConnection();
+		return DataSourceUtils.getConnection(dataSource);
 	}
 
 	/**
@@ -192,16 +192,5 @@ public class LogConnection extends ContextAwareBase implements
 
 	public void stop() {
 		started = false;
-	}
-
-	/**
-	 * Get Spring application context FIXME: Aha Spring is initializing his
-	 * container after appender initialization...
-	 */
-	@Override
-	public void setApplicationContext(
-			final ApplicationContext applicationContext) throws BeansException {
-		// System.out.println("setting context");
-		this.applicationContext = applicationContext;
 	}
 }

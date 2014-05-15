@@ -1,7 +1,8 @@
-package com.excilys.computerdatabase.servlets;
+package com.excilys.computerdatabase.servlet;
 
 import java.util.Set;
 
+import javax.sql.DataSource;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -10,6 +11,7 @@ import javax.validation.ValidatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,14 +19,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.excilys.computerdatabase.connections.ConnectionManager;
 import com.excilys.computerdatabase.dto.ComputerDTO;
 import com.excilys.computerdatabase.dto.impl.CompanyDTOImpl;
 import com.excilys.computerdatabase.dto.impl.ComputerDTOImpl;
-import com.excilys.computerdatabase.mappers.impl.ComputerMapperImpl;
-import com.excilys.computerdatabase.pages.ValidationErrorPage;
-import com.excilys.computerdatabase.services.CompanyService;
-import com.excilys.computerdatabase.services.ComputerService;
+import com.excilys.computerdatabase.mapper.impl.ComputerMapperImpl;
+import com.excilys.computerdatabase.page.ValidationErrorPage;
+import com.excilys.computerdatabase.service.CompanyService;
+import com.excilys.computerdatabase.service.ComputerService;
 
 @Controller
 @RequestMapping("/Computer")
@@ -32,7 +33,8 @@ public class ComputerCRUDController {
 	private static final Logger logger = LoggerFactory.getLogger(ComputerCRUDController.class);
 
 	@Autowired
-	private ConnectionManager cm;
+	@Qualifier("DataSource")
+	private DataSource datasource;
 	@Autowired
 	private CompanyService companyService;
 	@Autowired
@@ -43,27 +45,25 @@ public class ComputerCRUDController {
 		return new ComputerDTOImpl();
 	}
 
-	// TODO Perform a search on the new element after adding it ?
 	@RequestMapping(value = "/Create", method = RequestMethod.POST)
 	public String create(
 			@ModelAttribute ComputerDTO computerDto,
 			@RequestParam("companyId") String companyId,
-
 			RedirectAttributes redirectAttribute) {
 
 		computerDto.setCompany(CompanyDTOImpl.Builder().id(companyId).build());
+		logger.debug("Validation of {}", computerDto);
 
 		// Validation
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		Validator validator = factory.getValidator();
+		Validator validator = validator();
+
+		// TODO No company validation done
 		Set<ConstraintViolation<ComputerDTO>> constraintViolations = validator.validateProperty(
 				computerDto, "name");
 
 		constraintViolations.addAll(validator.validateProperty(computerDto,
-				"companyDto"));
-		// ------------
-		constraintViolations.addAll(validator.validateProperty(computerDto,
 				"introduced"));
+
 		constraintViolations.addAll(validator.validateProperty(computerDto,
 				"discontinued"));
 
@@ -108,6 +108,7 @@ public class ComputerCRUDController {
 			logger.warn("Error happened on update");
 			ValidationErrorPage<ComputerDTO> validationErrorPage = validationErrorPage(
 					computerDto, true, constraintViolations, "block");
+			logger.debug("Validation error: " + validationErrorPage);
 			redirectAttribute.addFlashAttribute(validationErrorPage);
 
 		}
@@ -116,21 +117,17 @@ public class ComputerCRUDController {
 
 	@RequestMapping(value = "/Delete", method = RequestMethod.POST)
 	public String delete(
-			@RequestParam("id") Long id,
+			@RequestParam("id") String id,
 			RedirectAttributes redirectAttribute) {
 
-		// FIXME weak type conversion
-		ComputerDTO computerDto = ComputerDTOImpl.Builder()
-				.id(id.toString())
-				.build();
+		ComputerDTO computerDto = ComputerDTOImpl.Builder().id(id).build();
 
 		Validator validator = validator();
 		Set<ConstraintViolation<ComputerDTO>> constraintViolations = validator.validateProperty(
 				computerDto, "id");
 
-		// Error can't be empty
 		if (constraintViolations.isEmpty()) {
-			logger.warn("Delete is valid, calling service");
+			logger.info("Delete is valid, calling service");
 
 			// Mapping
 			ComputerMapperImpl computerMapper = new ComputerMapperImpl();
@@ -157,9 +154,9 @@ public class ComputerCRUDController {
 
 		return ValidationErrorPage.<ComputerDTO> builder()
 				.dto(computerDto)
-				.modalShow(null)
+				.modalShow(modalShow)
 				.constraintViolation(contraintViolations)
-				.hideErrors("block")
+				.hideErrors(hideErrors)
 				.build();
 	}
 

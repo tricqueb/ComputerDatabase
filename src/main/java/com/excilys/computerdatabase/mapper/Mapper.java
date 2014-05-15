@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.mappers;
+package com.excilys.computerdatabase.mapper;
 
 import java.util.List;
 
