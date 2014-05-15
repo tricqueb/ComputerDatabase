@@ -1,9 +1,12 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.excilys.computerdatabase</groupId>
 	<artifactId>computer-database</artifactId>
 	<version>1</version>
-	<packaging>war</packaging>
+	<packaging>pom</packaging>
 	<properties>
 		<jdkVersion>1.7</jdkVersion>
 		<springVersion>4.0.4.RELEASE</springVersion>
@@ -20,6 +23,15 @@
 		<joda-timeVersion>2.3</joda-timeVersion>
 		<mavenVersion>2.5.1</mavenVersion>
 	</properties>
+	
+    <modules>
+        <module>core</module>
+        <module>persistence</module>
+        <module>service</module>
+        <module>binding</module>
+        <module>webapp</module>
+    </modules>
+
 	<dependencies>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -91,6 +103,18 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<version>${springVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${springVersion}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
