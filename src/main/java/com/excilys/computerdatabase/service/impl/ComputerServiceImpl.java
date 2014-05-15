@@ -57,6 +57,7 @@ public class ComputerServiceImpl implements ComputerService {
 		logger.debug("Deleting {} ", c.getId());
 		computerDao.delete(c.getId());
 		logger.warn("Element {} has been deleted", c.getName());
+
 	}
 
 	/*
