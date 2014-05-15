@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.servlet;
+package com.excilys.computerdatabase.controller;
 
 import java.util.List;
 
@@ -6,11 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
 import com.excilys.computerdatabase.domain.Company;
 import com.excilys.computerdatabase.domain.Computer;
@@ -155,6 +158,13 @@ public class DashboardController {
 				page.getOrderById(), currentPage, elementsPerPage,
 				page.getOrderDirection()));
 		return page;
+	}
+
+	@ExceptionHandler({ NoHandlerFoundException.class,
+			NoSuchRequestHandlingMethodException.class })
+	public String handleIOException() {
+		logger.debug("Bouh");
+		return "error";
 	}
 
 	/**

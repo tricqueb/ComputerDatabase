@@ -21,7 +21,7 @@
     </connectionSource>
   </appender>
 
-  <logger name="com.excilys.computerdatabase.servlet.Dashboard" level="DEBUG"/>
+  <logger name="com.excilys.computerdatabase.controller.Dashboard" level="DEBUG"/>
   
   <logger name="com.excilys.computerdatabase.service" level="WARN">
     <appender-ref ref="DB" />
