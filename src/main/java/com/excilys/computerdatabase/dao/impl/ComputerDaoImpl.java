@@ -103,7 +103,7 @@ public class ComputerDaoImpl implements ComputerDao {
 				.build();
 
 		try {
-			cnb.setStatement("DELETE sdqf from computer where id=?;");
+			cnb.setStatement("DELETE from computer where id=?;");
 
 			cnb.getStatement().setString(1, Long.toString(id));
 			cnb.getStatement().executeUpdate();
