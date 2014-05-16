@@ -5,7 +5,6 @@
 <%@ attribute name="action" required="true"%>
 <%@ attribute type="com.excilys.computerdatabase.page.Page" name="page" required="true"%>
 <%@ attribute name="width" required="false"%>
-<%@ attribute name="search" required="false"%>
 
 <c:set scope="request" var="orderDirectionLocal" value="false" />
 <c:if test="${page.getOrderById() eq value}">
@@ -23,7 +22,7 @@
 				<c:param name="currentPage" value="${pagination.getCurrentPage()}" />
 				<c:param name="orderById" value="${value}"/>
 				<c:param name="orderDirection" value="${orderDirectionLocal}"/>
-				<c:param name="search" value="${search}"/>
+				<c:param name="search" value="${page.search}"/>
 			</c:url>
 	>
 		<c:out value="${text}"></c:out>

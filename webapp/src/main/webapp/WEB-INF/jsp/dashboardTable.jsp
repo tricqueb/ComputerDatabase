@@ -11,10 +11,10 @@
 <table class="computers table table-striped">
 		<thead>
 			<tr>
-				<KD:th-orderBy text="${ComputerNameLabel}" value="2" action="Dashboard" page="${page}" search="${search}" width="30%" />
-				<KD:th-orderBy text="${IntroducedDateLabel}" value="3" action="Dashboard" page="${page}" search="${search}" />
-				<KD:th-orderBy text="${DiscontinuedDateLabel}" value="4" action="Dashboard" page="${page}" search="${search}"/>
-				<KD:th-orderBy text="${CompanyNameLabel}" value="6" action="Dashboard" page="${page}" search="${search}" width="20%"/>
+				<KD:th-orderBy text="${ComputerNameLabel}" value="2" action="Dashboard" page="${page}"  width="30%" />
+				<KD:th-orderBy text="${IntroducedDateLabel}" value="3" action="Dashboard" page="${page}"  />
+				<KD:th-orderBy text="${DiscontinuedDateLabel}" value="4" action="Dashboard" page="${page}" />
+				<KD:th-orderBy text="${CompanyNameLabel}" value="6" action="Dashboard" page="${page}"  width="20%"/>
 				<th></th>
 			</tr>
 		</thead>
