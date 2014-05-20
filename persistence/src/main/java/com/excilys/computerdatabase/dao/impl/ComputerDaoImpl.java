@@ -1,10 +1,11 @@
 package com.excilys.computerdatabase.dao.impl;
 
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -12,12 +13,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.DataAccessResourceFailureException;
-import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import com.excilys.computerdatabase.connection.ConnectionBox;
-import com.excilys.computerdatabase.connection.ConnectionBoxImpl;
 import com.excilys.computerdatabase.dao.ComputerDao;
 import com.excilys.computerdatabase.domain.Company;
 import com.excilys.computerdatabase.domain.Computer;
@@ -31,105 +33,92 @@ import com.excilys.computerdatabase.domain.Computer;
 public class ComputerDaoImpl implements ComputerDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(ComputerDaoImpl.class);
+
+	private JdbcTemplate jdbcTemplate;
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+	private SimpleJdbcInsert updateComputer;
+
 	@Autowired
 	@Qualifier("DataSource")
-	private DataSource datasource;
+	public void setDataSource(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+		this.updateComputer = new SimpleJdbcInsert(dataSource).withTableName("computer");
+		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(
+				dataSource);
+	}
 
 	private ComputerDaoImpl() {
 	}
 
+	// TODO Test if null values are correctly added
+	// TODO Test if conversion is needed
 	public void create(Computer computer) {
 
-		ConnectionBox cnb = ConnectionBoxImpl.Builder()
-				.connection(DataSourceUtils.getConnection(datasource))
-				.build();
+		Map<String, Object> parameters = new HashMap<String, Object>();
 
-		try {
-			cnb.setStatement("INSERT into computer(name,introduced,discontinued,company_id) VALUES(?,?,?,?);");
+		parameters.put("name", computer.getName());
 
-			cnb.getStatement().setString(1, computer.getName());
+		if (computer.getIntroduced() != null)
+			parameters.put("introduced", new Date(computer.getIntroduced()
+					.toDate()
+					.getTime()));
+		else
+			parameters.put("introduced", null);
 
-			if (computer.getIntroduced() != null)
-				cnb.getStatement().setDate(2,
-						new Date(computer.getIntroduced().toDate().getTime()));
-			else
-				cnb.getStatement().setNull(2, Types.NULL);
+		if (computer.getDiscontinued() != null)
+			parameters.put("discontinued", new Date(computer.getDiscontinued()
+					.toDate()
+					.getTime()));
+		else
+			parameters.put("discontinued", null);
 
-			if (computer.getDiscontinued() != null)
-				cnb.getStatement()
-						.setDate(
-								3,
-								new Date(computer.getDiscontinued()
-										.toDate()
-										.getTime()));
-			else
-				cnb.getStatement().setNull(3, Types.NULL);
+		if (computer.getCompany() != null)
+			parameters.put("company_id", computer.getCompany().getId());
+		else
+			parameters.put("company_id", null);
 
-			if (computer.getCompany() != null)
-				cnb.getStatement().setLong(4, computer.getCompany().getId());
-			else
-				cnb.getStatement().setNull(4, Types.NULL);
+		updateComputer.execute(parameters);
 
-			cnb.getStatement().executeUpdate();
-			cnb.close();
-		} catch (SQLException e) {
-			logger.error("Error on create of {}" + computer);
-			e.printStackTrace();
-			throw new DataAccessResourceFailureException(
-					"Error on create of computer");
-		}
 	}
 
 	public void delete(Computer computer) {
-		ConnectionBox cnb = ConnectionBoxImpl.Builder()
-				.connection(DataSourceUtils.getConnection(datasource))
-				.build();
-		try {
-			cnb.setStatement("DELETE from computer where id=?;");
+		this.jdbcTemplate.update("delete from computer where id = ?",
+				computer.getId());
 
-			cnb.getStatement().setString(1, Long.toString(computer.getId()));
-			cnb.getStatement().executeUpdate();
-		} catch (SQLException e) {
-			logger.error("Error on delete of {}" + computer);
-			e.printStackTrace();
-			throw new DataAccessResourceFailureException(
-					"Error on delete of computer");
-		}
 	}
 
 	public void delete(Long id) {
-		ConnectionBox cnb = ConnectionBoxImpl.Builder()
-				.connection(DataSourceUtils.getConnection(datasource))
-				.build();
-
-		try {
-			cnb.setStatement("DELETE from computer where id=?;");
-
-			cnb.getStatement().setString(1, Long.toString(id));
-			cnb.getStatement().executeUpdate();
-		} catch (SQLException e) {
-			logger.error("Error on delete of {}" + id);
-			e.printStackTrace();
-			throw new DataAccessResourceFailureException(
-					"Error on delete of id");
-		}
+		this.jdbcTemplate.update("delete from computer where id = ?", id);
 	}
 
 	public List<Computer> find() {
-		ConnectionBox cnb = ConnectionBoxImpl.Builder()
-				.connection(DataSourceUtils.getConnection(datasource))
-				.build();
 
-		logger.debug("Find all");
-		try {
-			cnb.setStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id;");
-		} catch (SQLException e) {
-			logger.error("Error on find all");
-			e.printStackTrace();
-			throw new DataAccessResourceFailureException("Error on find all");
+		return this.jdbcTemplate.query(
+				"Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id;",
+				new ComputerMapper());
+	}
+
+	private static final class ComputerMapper implements RowMapper<Computer> {
+
+		public Computer mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Computer computer = new Computer();
+			Company company = new Company();
+			computer = Computer.Builder()
+					.id(rs.getLong(1))
+					.name(rs.getString(2))
+					.introduced(rs.getDate(3))
+					.discontinued(rs.getDate(4))
+					.build();
+			if (rs.getLong(5) != 0) {
+				company = Company.Builder()
+						.id(rs.getLong(5))
+						.name(rs.getString(6))
+						.build();
+
+			}
+			computer.setCompany(company);
+			return computer;
 		}
-
-		return doFind(cnb);
 	}
 
 	// TODO Add a filter function to separate "LIKE" part.
@@ -145,166 +134,80 @@ public class ComputerDaoImpl implements ComputerDao {
 
 		StringBuilder query;
 		query = new StringBuilder(
-				"Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.name LIKE ? OR cy.name LIKE ? ORDER BY ? ");
+				"Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.name LIKE :search OR cy.name LIKE :search ORDER BY :orderBy ");
 
 		if (orderBy == null)
 			orderBy = 1l;
 
-		if (desc)
+		if (desc) {
 			query.append("DESC ");
-
-		query.append("LIMIT ? OFFSET ?");
-
-		ConnectionBox cnb = ConnectionBoxImpl.Builder()
-				.connection(DataSourceUtils.getConnection(datasource))
-				.build();
-		try {
-			cnb.setStatement(query.toString());
-
-			cnb.getStatement().setString(1, "%" + computerName + "%");
-			cnb.getStatement().setString(2, "%" + computerName + "%");
-			cnb.getStatement().setLong(3, orderBy);
-			if (limit == null)
-				cnb.getStatement().setString(4, "ALL");
-			else
-				cnb.getStatement().setLong(4, limit);
-			if (offset == null)
-				cnb.getStatement().setLong(5, 0);
-			else
-				cnb.getStatement().setLong(5, offset);
-		} catch (SQLException e) {
-			logger.error("Error on find of {}" + computerName);
-			e.printStackTrace();
-			throw new DataAccessResourceFailureException(
-					"Error on find of computerName");
 		}
-		return doFind(cnb);
+
+		query.append("LIMIT :limit OFFSET :offset");
+
+		MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource(
+				"search", "%" + computerName + "%");
+		sqlParameterSource.addValue("orderBy", orderBy);
+
+		if (limit == null)
+			sqlParameterSource.addValue("limit", "ALL");
+		else
+			sqlParameterSource.addValue("limit", limit);
+		if (offset == null)
+			sqlParameterSource.addValue("offset", 0);
+		else
+			sqlParameterSource.addValue("offset", offset);
+
+		return this.namedParameterJdbcTemplate.query(query.toString(),
+				sqlParameterSource, new ComputerMapper());
 	}
 
 	public int count(String search) {
-		// Connection
-		ConnectionBox cnb = ConnectionBoxImpl.Builder()
-				.connection(DataSourceUtils.getConnection(datasource))
-				.build();
-
-		Integer result = 0;
 		logger.debug("Counting element with {} as search parameter: " + search);
-		try {
-			cnb.setStatement("select count(*) from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.name LIKE ? OR cy.name LIKE ?;");
 
-			cnb.getStatement().setString(1, "%" + search + "%");
-			cnb.getStatement().setString(2, "%" + search + "%");
-			cnb.setResultSet(cnb.getStatement().executeQuery());
-			while (cnb.getResultSet().next())
-				result = cnb.getResultSet().getInt(1);
+		// Connection
+		return this.jdbcTemplate.queryForObject(
+				"select count(*) from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.name LIKE ? OR cy.name LIKE ?;",
+				Integer.class, "%" + search + "%", "%" + search + "%");
 
-			cnb.close();
-		} catch (SQLException e) {
-			logger.error("Error on count of {}" + search);
-			e.printStackTrace();
-			throw new DataAccessResourceFailureException(
-					"Error on count of search");
-		}
-		return result;
 	}
 
 	@Override
 	public Computer find(long computerId) {
-		ConnectionBox cnb = ConnectionBoxImpl.Builder()
-				.connection(DataSourceUtils.getConnection(datasource))
-				.build();
-		try {
-			cnb.setStatement("Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.id = ?;");
 
-			cnb.getStatement().setLong(1, computerId);
-		} catch (SQLException e) {
-			logger.error("Error on find of {}" + computerId);
-			e.printStackTrace();
-			throw new DataAccessResourceFailureException(
-					"Error on find of computerId");
-		}
-		return doFind(cnb).get(0);
-	}
-
-	private List<Computer> doFind(ConnectionBox cnb) {
-		logger.debug("do Find");
-		List<Computer> cList = new ArrayList<Computer>();
-		try {
-			cnb.setResultSet(cnb.getStatement().executeQuery());
-			logger.debug("Filling Computer list");
-			while (cnb.getResultSet().next()) {
-				Computer c;
-				Company cy = null;
-				c = Computer.Builder()
-						.id(cnb.getResultSet().getLong(1))
-						.name(cnb.getResultSet().getString(2))
-						.introduced(cnb.getResultSet().getDate(3))
-						.discontinued(cnb.getResultSet().getDate(4))
-						.build();
-				if (cnb.getResultSet().getLong(5) != 0) {
-					cy = Company.Builder()
-							.id(cnb.getResultSet().getLong(5))
-							.name(cnb.getResultSet().getString(6))
-							.build();
-				}
-				c.setCompany(cy);
-				cList.add(c);
-			}
-			logger.debug("Done: {}", cList.size());
-
-			cnb.close();
-		} catch (SQLException e) {
-			logger.error("Error on find query");
-			e.printStackTrace();
-			throw new DataAccessResourceFailureException("Error on find query");
-		}
-		return cList;
+		return this.jdbcTemplate.queryForObject(
+				"Select cr.id,cr.name,cr.introduced,cr.discontinued,cy.id,cy.name from computer as cr left outer join company as cy ON cy.id=cr.company_id where cr.id = ?;",
+				new ComputerMapper(), computerId);
 	}
 
 	@Override
 	public void update(Computer computer) {
-		ConnectionBox cnb = ConnectionBoxImpl.Builder()
-				.connection(DataSourceUtils.getConnection(datasource))
-				.build();
-		try {
-			cnb.setStatement("UPDATE computer SET name=?,introduced=?,discontinued=?,company_id=? where id=?;");
+		String query;
+		query = "update computer set name=:name, introduced = :introduced, discontinued = :discontinued,company_id=:company_id where id=:id ";
 
-			cnb.getStatement().setString(1, computer.getName());
+		MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource(
+				"name", computer.getName());
 
-			if (computer.getIntroduced() != null)
-				cnb.getStatement().setDate(2,
-						new Date(computer.getIntroduced().toDate().getTime()));
-			else {
-				logger.debug("Setting null value");
-				cnb.getStatement().setNull(2, Types.NULL);
-			}
+		sqlParameterSource.addValue("id", computer.getId());
 
-			if (computer.getDiscontinued() != null)
-				cnb.getStatement()
-						.setDate(
-								3,
-								new Date(computer.getDiscontinued()
-										.toDate()
-										.getTime()));
-			else {
-				logger.debug("Setting null value");
-				cnb.getStatement().setNull(3, Types.NULL);
-			}
+		if (computer.getIntroduced() != null)
+			sqlParameterSource.addValue("introduced", new Date(
+					computer.getIntroduced().toDate().getTime()));
+		else
+			sqlParameterSource.addValue("introduced", null);
 
-			if (computer.getCompany() != null)
-				cnb.getStatement().setLong(4, computer.getCompany().getId());
-			else
-				cnb.getStatement().setNull(4, Types.NULL);
+		if (computer.getDiscontinued() != null)
+			sqlParameterSource.addValue("discontinued", new Date(
+					computer.getDiscontinued().toDate().getTime()));
+		else
+			sqlParameterSource.addValue("discontinued", null);
+		if (computer.getCompany() != null)
+			sqlParameterSource.addValue("company_id", computer.getCompany()
+					.getId());
+		else
+			sqlParameterSource.addValue("company_id", null);
 
-			cnb.getStatement().setLong(5, computer.getId());
+		this.namedParameterJdbcTemplate.update(query, sqlParameterSource);
 
-			cnb.getStatement().executeUpdate();
-		} catch (SQLException e) {
-			logger.error("Error on update of {}" + computer);
-			e.printStackTrace();
-			throw new DataAccessResourceFailureException(
-					"Error on update of computer");
-		}
-		cnb.close();
 	}
 }

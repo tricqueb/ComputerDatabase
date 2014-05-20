@@ -22,12 +22,18 @@ public class Computer {
 		}
 
 		public Builder introduced(Object introduced) {
-			computer.introduced = new DateTime(introduced);
+			if (introduced != null)
+				computer.introduced = new DateTime(introduced);
+			else
+				computer.introduced = null;
 			return this;
 		}
 
 		public Builder discontinued(Object discontinued) {
-			computer.discontinued = new DateTime(discontinued);
+			if (discontinued != null)
+				computer.discontinued = new DateTime(discontinued);
+			else
+				computer.discontinued = null;
 			return this;
 		}
 

@@ -11,7 +11,8 @@
 		<jdkVersion>1.7</jdkVersion>
 		<springVersion>4.0.4.RELEASE</springVersion>
 		<spring-dataVersion>1.7.1.RELEASE</spring-dataVersion>
-		<hibernateVersion>5.1.0.Final</hibernateVersion>
+		<hibernateVersion>4.3.5.Final</hibernateVersion>
+		<hibernate-validatorVersion>5.1.0.Final</hibernate-validatorVersion>
 		<logback-classicVersion>1.0.13</logback-classicVersion>
 		<bonecpVersion>0.8.0.RELEASE</bonecpVersion>
 		<lombokVersion>1.12.6</lombokVersion>
@@ -98,8 +99,14 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
-				<version>${hibernateVersion}</version>
+				<version>${hibernate-validatorVersion}</version>
 			</dependency>
+			
+			<dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernateVersion}</version>
+        </dependency>
 
 			<!-- Spring -->
 			<dependency>
