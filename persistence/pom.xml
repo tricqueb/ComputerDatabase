@@ -8,37 +8,38 @@
 	</parent>
 	<artifactId>persistence</artifactId>
 	<name>persistence</name>
-	    <packaging>jar</packaging>
+	<packaging>jar</packaging>
 
 	<dependencies>
-	
-	<dependency>
+
+		<dependency>
 			<groupId>com.excilys.computerdatabase</groupId>
 			<artifactId>core</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.jolbox</groupId>
 			<artifactId>bonecp</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		
+
+			
 		<dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-        </dependency>
-		
-<!-- 		Spring -->
+			<groupId>org.jboss.logging</groupId>
+			<artifactId>jboss-logging</artifactId>
+		</dependency>
+
+		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -47,5 +48,11 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+		</dependency>
+
+
 	</dependencies>
 </project>

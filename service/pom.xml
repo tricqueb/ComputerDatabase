@@ -8,14 +8,14 @@
 	</parent>
 	<artifactId>service</artifactId>
 	<name>service</name>
-	    <packaging>jar</packaging>
+	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.excilys.computerdatabase</groupId>
 			<artifactId>persistence</artifactId>
 		</dependency>
-<!-- 		Spring -->
+		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
@@ -24,5 +24,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
 		</dependency>
+		
+
 	</dependencies>
 </project>

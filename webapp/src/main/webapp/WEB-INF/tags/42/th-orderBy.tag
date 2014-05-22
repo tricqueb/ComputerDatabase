@@ -7,7 +7,7 @@
 <%@ attribute name="width" required="false"%>
 
 <c:set scope="request" var="orderDirectionLocal" value="false" />
-<c:if test="${page.getOrderById() eq value}">
+<c:if test="${page.getOrderByColumn() eq value}">
 	<c:choose>
 		<c:when test="${page.getOrderDirection() eq true}">
 			<c:set scope="request" var="orderDirectionLocal" value="false" />
@@ -20,7 +20,7 @@
 
 <th style="width:${width}"><a href=<c:url value="${action}">
 				<c:param name="currentPage" value="${pagination.getCurrentPage()}" />
-				<c:param name="orderById" value="${value}"/>
+				<c:param name="orderByColumn" value="${value}"/>
 				<c:param name="orderDirection" value="${orderDirectionLocal}"/>
 				<c:param name="search" value="${page.search}"/>
 			</c:url>

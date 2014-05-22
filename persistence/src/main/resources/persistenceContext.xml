@@ -14,7 +14,7 @@
 	<context:component-scan base-package="com.excilys.computerdatabase.connection" />
 	<context:component-scan base-package="com.excilys.computerdatabase.dao" />
 
-<!-- BoneCP configuration -->
+	<!-- BoneCP configuration -->
 	<bean id="DataSource" class="com.jolbox.bonecp.BoneCPDataSource"
 		destroy-method="close">
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
@@ -24,6 +24,33 @@
 		<property name="password" value="root" />
 		<property name="defaultAutoCommit" value="true" />
 	</bean>
-	
-	
-	 </beans>
+
+	<!-- I might need to drop recreate database scheme with hbm2ddl.auto=update -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="DataSource" />
+		<property name="packagesToScan" value="com.excilys.computerdatabase.domain"/>
+		<property name="hibernateProperties">
+			<map>
+				<!-- Change the dialect -->
+
+				<entry key="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
+
+				<entry key="cache.provider_class" value="org.hibernate.cache.internal.NoCacheProvider" />
+
+				<entry key="show_sql" value="true" />
+
+				<entry key="current_session_context_class" value="thread" />
+
+				<!-- This is not for production ! It bound the current session to the 
+					current thread -->
+
+				<entry key="hibernate.max_fetch_depth" value="1" />
+				
+				<entry key="hibernate.id.new_generator_mappings" value="true"/>
+
+			</map>
+		</property>
+	</bean>
+
+</beans>

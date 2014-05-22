@@ -24,7 +24,7 @@
 			<li><a
 				href=<c:url value="${action}">
 						<c:param name="currentPage" value="${predecessor}" />
-						<c:param name="orderById" value="${orderBy}"/>
+						<c:param name="orderByColumn" value="${orderBy}"/>
 						<c:param name="orderDirection" value="${orderDirection}"/>
 						<c:param name="search" value="${page.search}"/>
 					</c:url>>&laquo;</a></li>
@@ -35,7 +35,7 @@
 					<li class="active"><a
 						href=<c:url value="${action}">
 						<c:param name="currentPage" value="${displayedPage}" />
-						<c:param name="orderById" value="${orderBy}"/>
+						<c:param name="orderByColumn" value="${orderBy}"/>
 						<c:param name="orderDirection" value="${orderDirection}"/>
 						<c:param name="search" value="${page.search}"/>
 					</c:url>>
@@ -45,7 +45,7 @@
 					<li ><a
 						href=<c:url value="${action}">
 						<c:param name="currentPage" value="${displayedPage}" />
-						<c:param name="orderById" value="${orderBy}"/>
+						<c:param name="orderByColumn" value="${orderBy}"/>
 						<c:param name="orderDirection" value="${orderDirection}"/>
 						<c:param name="search" value="${page.search}"/>
 					</c:url>>
@@ -56,7 +56,7 @@
 			<li><a
 				href=<c:url value="${action}">
 						<c:param name="currentPage" value="${next}" />
-						<c:param name="orderById" value="${orderBy}"/>
+						<c:param name="orderByColumn" value="${orderBy}"/>
 						<c:param name="orderDirection" value="${orderDirection}"/>
 						<c:param name="search" value="${page.search}"/>			
 					</c:url>>&raquo;</a></li>

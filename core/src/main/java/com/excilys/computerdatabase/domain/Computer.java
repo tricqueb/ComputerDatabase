@@ -1,7 +1,19 @@
 package com.excilys.computerdatabase.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+@Entity
+@Table(name = "computer")
 public class Computer {
 
 	public static class Builder {
@@ -58,6 +70,9 @@ public class Computer {
 				+ discontinued + "]";
 	}
 
+	@Id
+	@GeneratedValue(generator = "SequenceStyleGenerator")
+	@GenericGenerator(name = "SequenceStyleGenerator", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator")
 	public Long getId() {
 		return id;
 	}
@@ -66,6 +81,8 @@ public class Computer {
 		this.id = id;
 	}
 
+	@JoinColumn(name = "company_id")
+	@ManyToOne(fetch = FetchType.EAGER)
 	public Company getCompany() {
 		return company;
 	}
@@ -82,6 +99,7 @@ public class Computer {
 		this.name = name;
 	}
 
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	public DateTime getIntroduced() {
 		return introduced;
 	}
@@ -90,6 +108,7 @@ public class Computer {
 		this.introduced = introduced;
 	}
 
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	public DateTime getDiscontinued() {
 		return discontinued;
 	}

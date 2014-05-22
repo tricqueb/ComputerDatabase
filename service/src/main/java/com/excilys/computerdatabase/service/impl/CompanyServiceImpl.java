@@ -2,12 +2,9 @@ package com.excilys.computerdatabase.service.impl;
 
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +18,7 @@ import com.excilys.computerdatabase.service.CompanyService;
 public class CompanyServiceImpl implements CompanyService {
 
 	private static final Logger logger = LoggerFactory.getLogger(CompanyServiceImpl.class);
-	@Autowired
-	@Qualifier("DataSource")
-	private DataSource datasource;
+
 	@Autowired
 	private CompanyDao companyDao;
 

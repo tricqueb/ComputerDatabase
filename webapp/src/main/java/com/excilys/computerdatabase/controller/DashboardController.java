@@ -57,7 +57,6 @@ public class DashboardController {
 			@ModelAttribute ValidationErrorPage<ComputerDTO> validationErrorPage) {
 
 		ModelAndView modelView = new ModelAndView("addComputer");
-
 		return modelView;
 	}
 
@@ -73,12 +72,10 @@ public class DashboardController {
 	}
 
 	@ModelAttribute("total")
-	private Integer total(@RequestParam(defaultValue = "") String search) {
-
+	private Long total(@RequestParam(defaultValue = "") String search) {
 		// @RequestParam(required = false) String search
 		logger.debug("Total");
 		return computerService.count(search);
-
 	}
 
 	/**
@@ -97,10 +94,10 @@ public class DashboardController {
 			@RequestParam(value = "elementsPerPage", defaultValue = "20") Integer elementsPerPage,
 			@RequestParam(defaultValue = "") String search) {
 		logger.debug("Pagination build");
-		Integer total = computerService.count(search);
+		Long total = computerService.count(search);
 
 		int startPage = currentPage - 4;
-		int nbPages = total / elementsPerPage;
+		int nbPages = (int) (total / elementsPerPage);
 		int endPage = currentPage + 4;
 
 		if (elementsPerPage > total) {
@@ -155,7 +152,7 @@ public class DashboardController {
 				currentPage, elementsPerPage);
 
 		page.setComputerList(computerList(page.getSearch(),
-				page.getOrderById(), currentPage, elementsPerPage,
+				page.getOrderByColumn(), currentPage, elementsPerPage,
 				page.getOrderDirection()));
 		return page;
 	}
@@ -171,7 +168,7 @@ public class DashboardController {
 	 * Service request to obtain computerList
 	 * 
 	 * @param search
-	 * @param orderById
+	 * @param orderByColumn
 	 * @param currentPage
 	 * @param elementsPerPage
 	 * @param orderDirection
@@ -179,7 +176,7 @@ public class DashboardController {
 	 */
 	private List<ComputerDTO> computerList(
 			String search,
-			Long orderById,
+			String orderByColumn,
 			Integer currentPage,
 			Integer elementsPerPage,
 			Boolean orderDirection) {
@@ -187,6 +184,6 @@ public class DashboardController {
 		Mapper<ComputerDTO, Computer> computerMapper = new ComputerMapperImpl();
 		return computerMapper.invert(computerService.find(search,
 				(currentPage - 1) * elementsPerPage, elementsPerPage,
-				orderById, orderDirection));
+				orderByColumn, orderDirection));
 	}
 }

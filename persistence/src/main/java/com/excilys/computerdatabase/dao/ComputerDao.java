@@ -27,14 +27,6 @@ public interface ComputerDao {
 	public void delete(Computer o);
 
 	/**
-	 * Delete an existing element in db
-	 * 
-	 * @param id
-	 *            of computer
-	 */
-	void delete(Long id);
-
-	/**
 	 * (Find by name)
 	 * 
 	 * @param o
@@ -44,7 +36,7 @@ public interface ComputerDao {
 	 */
 	public List<Computer> find(
 
-	String o, Integer offset, Integer limit, Long ob, Boolean desc);
+	String o, Integer offset, Integer limit, String orderBy, Boolean desc);
 
 	/**
 	 * Find by id
@@ -63,6 +55,6 @@ public interface ComputerDao {
 
 	List<Computer> find();
 
-	public int count(String search);
+	public Long count(String search);
 
 }

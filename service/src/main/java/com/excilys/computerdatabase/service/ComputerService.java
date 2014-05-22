@@ -14,13 +14,13 @@ public interface ComputerService {
 
 	public Computer find(Long cId);
 
-	public Integer count(String search);
+	public Long count(String search);
 
 	public List<Computer> find(
 			String cName,
 			Integer offset,
 			Integer limit,
-			Long orderBy,
+			String orderBy,
 			Boolean desc);
 
 	public void update(Computer c);

@@ -2,12 +2,9 @@ package com.excilys.computerdatabase.service.impl;
 
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +17,7 @@ import com.excilys.computerdatabase.service.ComputerService;
 public class ComputerServiceImpl implements ComputerService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
-	@Autowired
-	@Qualifier("DataSource")
-	private DataSource datasource;
+
 	@Autowired
 	private ComputerDao computerDao;
 
@@ -55,7 +50,7 @@ public class ComputerServiceImpl implements ComputerService {
 	@Override
 	public void delete(Computer c) {
 		logger.debug("Deleting {} ", c.getId());
-		computerDao.delete(c.getId());
+		computerDao.delete(c);
 		logger.warn("Element {} has been deleted", c.getName());
 
 	}
@@ -84,8 +79,8 @@ public class ComputerServiceImpl implements ComputerService {
 	 */
 
 	@Override
-	public Integer count(String search) {
-		Integer count = null;
+	public Long count(String search) {
+		Long count = null;
 		logger.debug("Counting {} elements", search);
 		count = computerDao.count(search);
 		logger.debug("{} Element have been found", count);
@@ -105,7 +100,7 @@ public class ComputerServiceImpl implements ComputerService {
 			String cName,
 			Integer offset,
 			Integer limit,
-			Long orderBy,
+			String orderBy,
 			Boolean desc) {
 		List<Computer> cList = null;
 		logger.debug("Reading {} elements", cName);

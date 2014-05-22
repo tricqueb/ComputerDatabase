@@ -6,8 +6,6 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
 
@@ -33,8 +31,8 @@ public class LogConnection extends ContextAwareBase implements ConnectionSource 
 	private boolean supportsGetGeneratedKeys = false;
 	private boolean supportsBatchUpdates = false;
 
-	@Autowired
-	@Qualifier("DataSource")
+	// @Autowired
+	// @Qualifier("DataSource")
 	private DataSource dataSource;
 
 	public void start() {

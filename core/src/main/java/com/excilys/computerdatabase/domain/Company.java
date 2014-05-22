@@ -1,6 +1,14 @@
 package com.excilys.computerdatabase.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(name = "company")
 public class Company {
 
 	public static class Builder {
@@ -29,6 +37,9 @@ public class Company {
 		return new Builder();
 	}
 
+	@Id
+	@GeneratedValue(generator = "SequenceStyleGenerator")
+	@GenericGenerator(name = "SequenceStyleGenerator", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator")
 	public Long getId() {
 		return id;
 	}

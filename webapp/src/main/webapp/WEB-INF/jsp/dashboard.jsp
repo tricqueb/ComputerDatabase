@@ -22,7 +22,7 @@
 
 	<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
   		<div class="container"> 
-			<KD:pagination action="Dashboard"  orderBy="${page.getOrderById()}" orderDirection="${page.getOrderDirection()}"/>
+			<KD:pagination action="Dashboard"  orderBy="${page.getOrderByColumn()}" orderDirection="${page.getOrderDirection()}"/>
   		</div>
 	</nav>
 </div>

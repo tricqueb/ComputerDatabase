@@ -15,7 +15,7 @@ public class Page<T> {
 
 		super();
 		orderDirection = false;
-		orderById = 2l;
+		orderByColumn = "name";
 		search = "";
 	}
 
@@ -27,5 +27,5 @@ public class Page<T> {
 
 	Boolean orderDirection;
 
-	Long orderById;
+	String orderByColumn;
 }
