@@ -2,8 +2,11 @@ package com.excilys.computerdatabase.dao.impl;
 
 import java.util.List;
 
-import org.hibernate.Query;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,41 +56,37 @@ public class ComputerDaoImpl implements ComputerDao {
 	// (WARNING : Care about data type)
 	@Override
 	public List<Computer> find(
-
-			String computerName,
+			String search,
 			Integer offset,
 			Integer limit,
 			String orderBy,
 			Boolean desc) {
 
-		String queryString = "from Computer as cr left outer join fetch cr.company as cy where cr.name LIKE :search ORDER BY ";
+		Criteria criteria = this.sessionFactory.getCurrentSession()
+				.createCriteria(Computer.class)
+				.createAlias("company", "company", JoinType.LEFT_OUTER_JOIN)
+				.add(Restrictions.or(
+						Restrictions.like("name", "%" + search + "%"),
+						Restrictions.like("company.name", "%" + search + "%")));
 
 		if (orderBy == null)
-			orderBy = "cr.id";
+			orderBy = "id";
 
-		else if (orderBy.contentEquals("company"))
-			orderBy = "cy.name";
+		else if (orderBy.contentEquals("company")) {
+			orderBy = "company.name";
+		}
+
+		if (desc)
+			criteria.addOrder(Order.desc(orderBy));
 		else
-			orderBy = "cr." + orderBy;
-
-		queryString += orderBy;
-
-		if (desc) {
-			queryString += " DESC";
-		} else
-			queryString += " ASC";
-
-		Query query = this.sessionFactory.getCurrentSession().createQuery(
-				queryString);
-
-		query.setString("search", "%" + computerName + "%");
+			criteria.addOrder(Order.asc(orderBy));
 
 		if (limit != null)
-			query.setMaxResults(limit);
+			criteria.setMaxResults(limit);
 		if (offset != null)
-			query.setFirstResult(offset);
+			criteria.setFirstResult(offset);
 
-		return query.list();
+		return criteria.list();
 	}
 
 	public Long count(String search) {
@@ -103,9 +102,8 @@ public class ComputerDaoImpl implements ComputerDao {
 	public Computer find(long computerId) {
 
 		return (Computer) this.sessionFactory.getCurrentSession()
-				.createQuery(
-						"from Computer as cr left outer join cr.ompany as cy where id=:id")
-				.setLong(0, computerId)
+				.createCriteria(Computer.class)
+				.add(Restrictions.idEq(computerId))
 				.uniqueResult();
 	}
 
