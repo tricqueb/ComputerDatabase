@@ -28,6 +28,8 @@
 		<lombokVersion>1.12.6</lombokVersion>
 		<joda-timeVersion>2.3</joda-timeVersion>
 
+		<querydslVersion>3.3.3</querydslVersion>
+
 		<mavenVersion>2.5.1</mavenVersion>
 	</properties>
 
@@ -175,6 +177,18 @@
 				<artifactId>usertype.core</artifactId>
 				<version>3.2.0.GA</version>
 			</dependency>
+
+			<dependency>
+				<groupId>com.mysema.querydsl</groupId>
+				<artifactId>querydsl-apt</artifactId>
+				<version>${querydslVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.mysema.querydsl</groupId>
+				<artifactId>querydsl-jpa</artifactId>
+				<version>${querydslVersion}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -226,5 +240,25 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.mysema.maven</groupId>
+					<artifactId>apt-maven-plugin</artifactId>
+					<version>1.1.1</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>process</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>target/generated-sources/java</outputDirectory>
+								<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 </project>

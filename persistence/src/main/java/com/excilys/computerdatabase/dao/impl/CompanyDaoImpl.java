@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import com.excilys.computerdatabase.dao.CompanyDao;
 import com.excilys.computerdatabase.domain.Company;
+import com.excilys.computerdatabase.domain.QCompany;
+import com.mysema.query.jpa.hibernate.HibernateQuery;
 
 @Repository
 public class CompanyDaoImpl implements CompanyDao {
@@ -29,21 +31,24 @@ public class CompanyDaoImpl implements CompanyDao {
 	public List<Company> find(String companyName) {
 		logger.info("looking for {}", companyName);
 
-		return this.sessionFactory.getCurrentSession()
-				.createQuery("from Company where name LIKE :name")
-				.setString("name", "%" + companyName + "%")
-				.list();
+		HibernateQuery query = new HibernateQuery(
+				this.sessionFactory.getCurrentSession());
+		QCompany company = QCompany.company;
+
+		return query.from(company)
+				.where(company.name.like(companyName))
+				.list(company);
 	}
 
 	public Company find(long companyId) {
 		logger.info("looking for {}", companyId);
 
-		// Query
-		return (Company) this.sessionFactory.getCurrentSession()
-				.createQuery(
-						"Select cy.id,cy.name from Company as cy where cy.id = :id")
-				.setLong("id", companyId)
-				.uniqueResult();
-	}
+		HibernateQuery query = new HibernateQuery(
+				this.sessionFactory.getCurrentSession());
+		QCompany company = QCompany.company;
 
+		return query.from(company)
+				.where(company.id.eq(companyId))
+				.uniqueResult(company);
+	}
 }

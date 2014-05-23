@@ -6,6 +6,7 @@
 		<artifactId>computer-database</artifactId>
 		<version>1</version>
 	</parent>
+	
 	<artifactId>core</artifactId>
 	<name>core</name>
 	<packaging>jar</packaging>
@@ -23,5 +24,26 @@
 			<artifactId>usertype.core</artifactId>
 
 		</dependency>
+
+		<dependency>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-apt</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.mysema.maven</groupId>
+				<artifactId>apt-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+	
 </project>
