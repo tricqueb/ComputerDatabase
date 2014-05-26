@@ -11,10 +11,10 @@
 <table class="computers table table-striped">
 		<thead>
 			<tr>
-				<KD:th-orderBy text="${ComputerNameLabel}" value="name" action="Dashboard" page="${page}"  width="30%" />
-				<KD:th-orderBy text="${IntroducedDateLabel}" value="introduced" action="Dashboard" page="${page}"  />
-				<KD:th-orderBy text="${DiscontinuedDateLabel}" value="discontinued" action="Dashboard" page="${page}" />
-				<KD:th-orderBy text="${CompanyNameLabel}" value="company" action="Dashboard" page="${page}"  width="20%"/>
+				<KD:th-orderBy text="${ComputerNameLabel}" value="name" action="Dashboard" width="30%" />
+				<KD:th-orderBy text="${IntroducedDateLabel}" value="introduced" action="Dashboard" />
+				<KD:th-orderBy text="${DiscontinuedDateLabel}" value="discontinued" action="Dashboard"  />
+				<KD:th-orderBy text="${CompanyNameLabel}" value="company.name" action="Dashboard" width="20%"/>
 				<th></th>
 			</tr>
 		</thead>
@@ -22,13 +22,13 @@
 
 			<!-- Afficher tous les éléments d'une collection dans le request-->
 
-			<c:forEach var="el" items="${page.getComputerList()}">
+			<c:forEach var="el" items="${page.getContent()}">
 				<tr>
 					<KD:tdStyle value="${el.getId()}" name="id" hidden="none" action="Dashboard"/>
 					<KD:tdStyle value="${el.getName()}" name="name" action="Dashboard"/>
 					<KD:tdStyle value="${el.getIntroduced()}" name="introduced" action="Dashboard"/>
 					<KD:tdStyle value="${el.getDiscontinued()}" name="discontinued" action="Dashboard"/>
-					<KD:tdStyle id="${el.getCompany().getId()}" name="companyName"
+					<KD:tdStyle id="${el.getCompany().getId()}" name="company.name"
 							value="${el.getCompany().getName()}" action="Dashboard"/>
 					<td>
 				

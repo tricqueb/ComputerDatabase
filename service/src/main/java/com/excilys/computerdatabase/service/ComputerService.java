@@ -1,6 +1,7 @@
 package com.excilys.computerdatabase.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.excilys.computerdatabase.domain.Computer;
 
@@ -16,15 +17,8 @@ public interface ComputerService {
 
 	public Long count(String search);
 
-	public List<Computer> find(
-			String cName,
-			Integer offset,
-			Integer limit,
-			String orderBy,
-			Boolean desc);
+	public Page<Computer> find(String computerName, Pageable page);
 
 	public void update(Computer c);
-
-	public List<Computer> find();
 
 }

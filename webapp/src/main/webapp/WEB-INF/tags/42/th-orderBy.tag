@@ -3,26 +3,30 @@
 <%@ attribute name="text" required="true"%>
 <%@ attribute name="value" required="true"%>
 <%@ attribute name="action" required="true"%>
-<%@ attribute type="com.excilys.computerdatabase.page.Page" name="page" required="true"%>
 <%@ attribute name="width" required="false"%>
 
-<c:set scope="request" var="orderDirectionLocal" value="false" />
-<c:if test="${page.getOrderByColumn() eq value}">
+
+<!-- Getting OrderBy and direction values -->
+<c:set var="orderBy" value="${page.getSort().iterator().next().getProperty()}"/>
+<c:set var="direction" value="${page.getSort().iterator().next().getDirection()}"/>
+
+
+<c:set scope="request" var="orderDirectionLocal" value="ASC" />
+<c:if test="${orderBy eq value}">
 	<c:choose>
-		<c:when test="${page.getOrderDirection() eq true}">
-			<c:set scope="request" var="orderDirectionLocal" value="false" />
+		<c:when test="${direction eq 'DESC'}">
+			<c:set scope="request" var="orderDirectionLocal" value="ASC" />
 		</c:when>
 		<c:otherwise>
-			<c:set scope="request" var="orderDirectionLocal" value="true" />
+			<c:set scope="request" var="orderDirectionLocal" value="DESC" />
 		</c:otherwise>
 	</c:choose>
 </c:if>
 
 <th style="width:${width}"><a href=<c:url value="${action}">
-				<c:param name="currentPage" value="${pagination.getCurrentPage()}" />
-				<c:param name="orderByColumn" value="${value}"/>
-				<c:param name="orderDirection" value="${orderDirectionLocal}"/>
-				<c:param name="search" value="${page.search}"/>
+						<c:param name="page" value="${page.getNumber()}" />
+						<c:param name="sort" value="${value},${orderDirectionLocal}"/>
+						<c:param name="search" value="${search}"/>
 			</c:url>
 	>
 		<c:out value="${text}"></c:out>

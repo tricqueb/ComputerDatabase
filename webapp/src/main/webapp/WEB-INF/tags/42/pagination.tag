@@ -4,66 +4,73 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <%@ attribute name="action" required="true"%>
-<%@ attribute name="orderBy" required="true"%>
-<%@ attribute name="orderDirection" required="true"%>
 
+<!-- Getting OrderBy and direction values -->
+<c:set var="orderBy" value="${page.getSort().iterator().next().getProperty()}"/>
+<c:set var="direction" value="${page.getSort().iterator().next().getDirection()}"/>
 
-<c:set var="predecessor" value="${pagination.getCurrentPage()-1}" />
-<c:if test="${pagination.getCurrentPage()==pagination.getStartPage()}">
-	<c:set var="predecessor" value="${pagination.getCurrentPage()}" />
+<c:set var="predecessor" value="${page.getNumber()-1}" />
+<c:if test="${page.isFirstPage()}">
+	<c:set var="predecessor" value="${page.getNumber()}" />
 </c:if>
 
-<c:set var="next" value="${pagination.getCurrentPage()+1}" />
-<c:if test="${pagination.getCurrentPage()==pagination.getEndPage()}">
-	<c:set var="next" value="${pagination.getCurrentPage()}" />
+<c:set var="next" value="${page.getNumber()+1}" />
+<c:if test="${page.getNumber()==page.getTotalPages()}">
+	<c:set var="next" value="${page.getNumber()}" />
 </c:if>
 	
+<c:set var="paginationStart" value="${page.getNumber()-5}" />
+<c:if test="${paginationStart<=0}">
+	<c:set var="paginationStart" value="1" />
+</c:if>
+
+<c:set var="paginationEnd" value="${page.getNumber()+5}" />
+<c:if test="${paginationStart>page.getTotalPages()}">
+	<c:set var="paginationEnd" value="${page.getTotalPages()}" />
+</c:if>
+
 	<div class=""  style="text-align:center; width:100%;">
 		<ul class="pagination" style="margin:1px">
-
 			<li><a
 				href=<c:url value="${action}">
-						<c:param name="currentPage" value="${predecessor}" />
-						<c:param name="orderByColumn" value="${orderBy}"/>
-						<c:param name="orderDirection" value="${orderDirection}"/>
-						<c:param name="search" value="${page.search}"/>
+						<c:param name="page" value="${predecessor}" />
+						<c:param name="sort" value="${orderBy},${direction}"/>
+						<c:param name="search" value="${search}"/>
 					</c:url>>&laquo;</a></li>
 
-			<c:forEach var="displayedPage" begin="${pagination.getStartPage()}" end="${pagination.getEndPage()}">
+			<c:forEach var="displayedPage" begin="${paginationStart}" end="${paginationEnd}">
 
-				<c:if test="${displayedPage==pagination.getCurrentPage()}">
+				<c:if test="${displayedPage == page.getNumber()+1}">
 					<li class="active"><a
 						href=<c:url value="${action}">
-						<c:param name="currentPage" value="${displayedPage}" />
-						<c:param name="orderByColumn" value="${orderBy}"/>
-						<c:param name="orderDirection" value="${orderDirection}"/>
-						<c:param name="search" value="${page.search}"/>
+						<c:param name="page" value="${displayedPage-1}" />
+						<c:param name="sort" value="${orderBy},${direction}"/>
+						<c:param name="search" value="${search}"/>
 					</c:url>>
 							${displayedPage} </a></li>
 				</c:if>
-				<c:if test="${displayedPage!=pagination.getCurrentPage()}">
+				<c:if test="${displayedPage!=page.getNumber()+1}">
 					<li ><a
 						href=<c:url value="${action}">
-						<c:param name="currentPage" value="${displayedPage}" />
-						<c:param name="orderByColumn" value="${orderBy}"/>
-						<c:param name="orderDirection" value="${orderDirection}"/>
-						<c:param name="search" value="${page.search}"/>
+						<c:param name="page" value="${displayedPage-1}" />
+						<c:param name="sort" value="${orderBy},${direction}"/>
+						<c:param name="search" value="${search}"/>
 					</c:url>>
-							${displayedPage} </a></li>
+							${displayedPage} </a>
+							</li>
 				</c:if>
 			</c:forEach>
 
 			<li><a
 				href=<c:url value="${action}">
-						<c:param name="currentPage" value="${next}" />
-						<c:param name="orderByColumn" value="${orderBy}"/>
-						<c:param name="orderDirection" value="${orderDirection}"/>
-						<c:param name="search" value="${page.search}"/>			
+						<c:param name="page" value="${next}" />
+						<c:param name="sort" value="${orderBy},${direction}"/>
+						<c:param name="search" value="${search}"/>
 					</c:url>>&raquo;</a></li>
 		</ul>
 		
 		<div class="pull-right pagination" style="margin:2px;">
-				<KD:search value="${pagination.getCurrentPage()}" method="currentPage"
+				<KD:search value="${page.getNumber()+1}" method="page"
 			action="Dashboard" column="2" springlabel="label.search" />
 		</div>
 	</div>

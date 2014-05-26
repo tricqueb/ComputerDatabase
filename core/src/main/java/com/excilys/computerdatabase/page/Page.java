@@ -14,7 +14,7 @@ public class Page<T> {
 	public Page() {
 
 		super();
-		orderDirection = false;
+		orderDirection = "ASC";
 		orderByColumn = "name";
 		search = "";
 	}
@@ -25,7 +25,7 @@ public class Page<T> {
 
 	String search;
 
-	Boolean orderDirection;
+	String orderDirection;
 
 	String orderByColumn;
 }

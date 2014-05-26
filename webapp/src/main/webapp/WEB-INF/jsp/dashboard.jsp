@@ -7,7 +7,7 @@
 
 <div class=container>
 
-	<h1 id="homeTitle" class="page-header">${total} <spring:message code="label.h1" /></h1>
+	<h1 id="homeTitle" class="page-header">${page.getTotalElements()} <spring:message code="label.h1" /></h1>
 
 	<jsp:include page="/WEB-INF/jsp/editComputerModal.jsp" />
 
@@ -22,7 +22,7 @@
 
 	<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
   		<div class="container"> 
-			<KD:pagination action="Dashboard"  orderBy="${page.getOrderByColumn()}" orderDirection="${page.getOrderDirection()}"/>
+			<KD:pagination action="Dashboard"/>
   		</div>
 	</nav>
 </div>

@@ -10,6 +10,14 @@
 <%@ attribute name="springlabel" required="true"%>
 <%@ attribute name="inline" required="false"%>
 
+
+<!-- Getting OrderBy and direction values -->
+<c:set var="orderBy"
+	value="${page.getSort().iterator().next().getProperty()}" />
+<c:set var="direction"
+	value="${page.getSort().iterator().next().getDirection()}" />
+
+
 <spring:message code="${springlabel}" var="placeholder" />
 
 <form class="" action="${action}" method="GET">
@@ -17,10 +25,9 @@
 		 <input class="form-control" type="${method}" id="${id}"
 			name="${method}" value="${value}" placeholder="${placeholder}"
 			size="${column}" />
-			<input type="hidden" name="orderByColumn" value="${page.getOrderByColumn()}" /> 
-		<input type="hidden" name="orderDirection" value="${page.getOrderDirection()}" />
-		<c:if test="${method == 'currentPage'}" >
-			<input type="hidden" name="search" value="${page.search}" />
+			<input type="hidden" name="sort" value="${orderBy},${direction}" /> 
+		<c:if test="${method == 'page'}" >
+			<input type="hidden" name="search" value="${search}" />
 		</c:if>
 	</div>
 </form>

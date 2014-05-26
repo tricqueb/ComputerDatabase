@@ -1,14 +1,14 @@
 package com.excilys.computerdatabase.service.impl;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.computerdatabase.dao.ComputerDao;
+import com.excilys.computerdatabase.dao.repository.ComputerRepository;
 import com.excilys.computerdatabase.domain.Computer;
 import com.excilys.computerdatabase.service.ComputerService;
 
@@ -19,7 +19,7 @@ public class ComputerServiceImpl implements ComputerService {
 	private static final Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
 
 	@Autowired
-	private ComputerDao computerDao;
+	private ComputerRepository computerRepository;
 
 	public ComputerServiceImpl() {
 	}
@@ -34,10 +34,9 @@ public class ComputerServiceImpl implements ComputerService {
 	 */
 	@Transactional(readOnly = false)
 	@Override
-	public void create(Computer c) {
-
-		logger.warn("Ajout de {}", c.getName());
-		computerDao.create(c);
+	public void create(Computer computer) {
+		logger.warn("Ajout de {}", computer.getName());
+		computerRepository.save(computer);
 	}
 
 	/*
@@ -48,11 +47,10 @@ public class ComputerServiceImpl implements ComputerService {
 	 */
 	@Transactional(readOnly = false)
 	@Override
-	public void delete(Computer c) {
-		logger.debug("Deleting {} ", c.getId());
-		computerDao.delete(c);
-		logger.warn("Element {} has been deleted", c.getName());
-
+	public void delete(Computer computer) {
+		logger.debug("Deleting {} ", computer.getId());
+		computerRepository.delete(computer);
+		logger.warn("Element {} has been deleted", computer.getName());
 	}
 
 	/*
@@ -63,12 +61,9 @@ public class ComputerServiceImpl implements ComputerService {
 	 */
 
 	@Override
-	public Computer find(Long cId) {
-		Computer computer = null;
-		logger.debug("Reading for {} ", cId);
-		computer = computerDao.find(cId);
-		logger.debug("Element {} have been found", computer);
-		return computer;
+	public Computer find(Long id) {
+		logger.debug("Reading for {} ", id);
+		return computerRepository.findOne(id);
 	}
 
 	/*
@@ -80,11 +75,9 @@ public class ComputerServiceImpl implements ComputerService {
 
 	@Override
 	public Long count(String search) {
-		Long count = null;
 		logger.debug("Counting {} elements", search);
-		count = computerDao.count(search);
-		logger.debug("{} Element have been found", count);
-		return count;
+		return computerRepository.countByNameContainingOrCompany_NameContaining(
+				search, search);
 	}
 
 	/*
@@ -96,17 +89,11 @@ public class ComputerServiceImpl implements ComputerService {
 	 */
 
 	@Override
-	public List<Computer> find(
-			String cName,
-			Integer offset,
-			Integer limit,
-			String orderBy,
-			Boolean desc) {
-		List<Computer> cList = null;
-		logger.debug("Reading {} elements", cName);
-		cList = computerDao.find(cName, offset, limit, orderBy, desc);
-		logger.debug("{} Element have been found", cList.size());
-		return cList;
+	public Page<Computer> find(String computerName, Pageable page) {
+		logger.debug("Reading {} elements", computerName);
+		return computerRepository.findByNameContainingOrCompany_NameContaining(
+				computerName, computerName, page);
+
 	}
 
 	/*
@@ -117,29 +104,12 @@ public class ComputerServiceImpl implements ComputerService {
 	 */
 	@Transactional(readOnly = false)
 	@Override
-	public void update(Computer c) {
-
-		computerDao.update(c);
+	public void update(Computer computer) {
 		logger.warn("Updating computer {} ({}) with new values:  {} {} {}",
-				c.getName(), c.getId(), c.getIntroduced(), c.getDiscontinued(),
-				c.getCompany());
+				computer.getName(), computer.getId(), computer.getIntroduced(),
+				computer.getDiscontinued(), computer.getCompany());
+		computerRepository.save(computer);
 		logger.debug("Update done");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.excilys.computerdatabase.service.impl.ComputerService#find()
-	 */
-
-	@Override
-	public List<Computer> find() {
-		List<Computer> cList = null;
-
-		logger.debug("Read all");
-		cList = computerDao.find();
-		logger.debug("{} Elements have been found", cList.size());
-		return cList;
-
-	}
 }

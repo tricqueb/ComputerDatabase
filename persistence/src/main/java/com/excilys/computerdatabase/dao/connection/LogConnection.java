@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.connection;
+package com.excilys.computerdatabase.dao.connection;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;

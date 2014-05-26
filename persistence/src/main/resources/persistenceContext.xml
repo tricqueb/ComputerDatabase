@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
            http://www.springframework.org/schema/context
-           http://www.springframework.org/schema/context/spring-context-3.0.xsd       
-           http://www.springframework.org/schema/tx
-           http://www.springframework.org/schema/tx/spring-tx.xsd
-           http://www.springframework.org/schema/aop
-           http://www.springframework.org/schema/aop/spring-aop.xsd">
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           http://www.springframework.org/schema/data/jpa
+           http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
 	<context:component-scan base-package="com.excilys.computerdatabase.connection" />
-	<context:component-scan base-package="com.excilys.computerdatabase.dao" />
-
+	
+	<jpa:repositories base-package="com.excilys.computerdatabase.dao.repository" />
+	
 	<!-- BoneCP configuration -->
 	<bean id="DataSource" class="com.jolbox.bonecp.BoneCPDataSource"
 		destroy-method="close">
@@ -25,32 +24,18 @@
 		<property name="defaultAutoCommit" value="true" />
 	</bean>
 
-	<!-- I might need to drop recreate database scheme with hbm2ddl.auto=update -->
-	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="DataSource" />
+		<property name="jpaVendorAdapter" ref="hibernateJpaAdapter" />
 		<property name="packagesToScan" value="com.excilys.computerdatabase.domain"/>
-		<property name="hibernateProperties">
-			<map>
-				<!-- Change the dialect -->
+	</bean>
 
-				<entry key="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
-
-				<entry key="cache.provider_class" value="org.hibernate.cache.internal.NoCacheProvider" />
-
-				<entry key="show_sql" value="true" />
-
-				<entry key="current_session_context_class" value="thread" />
-
-				<!-- This is not for production ! It bound the current session to the 
-					current thread -->
-
-				<entry key="hibernate.max_fetch_depth" value="1" />
-				
-				<entry key="hibernate.id.new_generator_mappings" value="true"/>
-
-			</map>
-		</property>
+	<bean id="hibernateJpaAdapter"
+		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+		<property name="showSql" value="true" />
+		<property name="database" value="MYSQL"/>
 	</bean>
 
 </beans>

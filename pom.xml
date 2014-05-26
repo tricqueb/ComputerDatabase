@@ -11,7 +11,7 @@
 		<jdkVersion>1.7</jdkVersion>
 
 		<springVersion>4.0.4.RELEASE</springVersion>
-		<spring-dataVersion>1.7.1.RELEASE</spring-dataVersion>
+		<spring-data-jpaVersion>1.5.2.RELEASE</spring-data-jpaVersion>
 
 		<hibernateVersion>4.3.5.Final</hibernateVersion>
 		<hibernate-validatorVersion>5.1.0.Final</hibernate-validatorVersion>
@@ -128,12 +128,6 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
-				<exclusions>
-					<exclusion>
-						<groupId>commons-logging</groupId>
-						<artifactId>commons-logging</artifactId>
-					</exclusion>
-				</exclusions>
 				<version>${springVersion}</version>
 			</dependency>
 
@@ -157,21 +151,17 @@
 
 			<dependency>
 				<groupId>org.springframework</groupId>
-				<artifactId>spring-core</artifactId>
+				<artifactId>spring-orm</artifactId>
 				<version>${springVersion}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.springframework.data</groupId>
-				<artifactId>spring-data-commons</artifactId>
-				<version>${spring-dataVersion}</version>
+				<artifactId>spring-data-jpa</artifactId>
+				<version>${spring-data-jpaVersion}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-orm</artifactId>
-				<version>${springVersion}</version>
-			</dependency>
+
 			<dependency>
 				<groupId>org.jadira.usertype</groupId>
 				<artifactId>usertype.core</artifactId>
@@ -225,6 +215,13 @@
 			<version>${joda-timeVersion}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>99.0-does-not-exist</version>
+		</dependency>
+
+
 
 	</dependencies>
 	<build>
@@ -260,5 +257,13 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+
 	</build>
+	<repositories>
+		<repository>
+			<id>excilys</id>
+			<name>Excilys Repository</name>
+			<url>http://repository.excilys.com/content/repositories</url>
+		</repository>
+	</repositories>
 </project>
