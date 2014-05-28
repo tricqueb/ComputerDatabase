@@ -11,9 +11,23 @@
            http://www.springframework.org/schema/aop
            http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-
 	<import resource="classpath:serviceContext.xml" />
-	<context:component-scan base-package="com.excilys.computerdatabase.controller" />
+	<import resource="classpath:bindingContext.xml" />
+	
+	<context:annotation-config />
+	
+	<bean id="sortResolver"
+		class="org.springframework.data.web.SortHandlerMethodArgumentResolver" />
 
-	<bean class="org.springframework.data.web.config.SpringDataWebConfiguration" />
+<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+		<property name="defaultLocale" value="fr_FR" />
+	</bean>
+
+	
+	
+
+
+	
+	
 </beans>

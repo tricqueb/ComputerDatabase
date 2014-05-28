@@ -70,71 +70,6 @@ public class DashboardController {
 		return companyService.findAll();
 	}
 
-	//
-	// @ModelAttribute("total")
-	// private Long total(@RequestParam(defaultValue = "") String search) {
-	// // @RequestParam(required = false) String search
-	// logger.debug("Total");
-	// return computerService.count(search);
-	// }
-
-	/**
-	 * Define pagination state of computer dashboard
-	 * 
-	 * @param currentPage
-	 * @param elementsPerPage
-	 * @param search
-	 * @return
-	 */
-	// TODO clean that shit
-	// Define setter and getter in pagination ?
-	// @ModelAttribute
-	// private Pagination pagination(
-	// @RequestParam(defaultValue = "1") Integer currentPage,
-	// @RequestParam(value = "elementsPerPage", defaultValue = "20") Integer
-	// elementsPerPage,
-	// @RequestParam(defaultValue = "") String search) {
-	// logger.debug("Pagination build");
-	// Long total = computerService.count(search);
-	//
-	// int startPage = currentPage - 4;
-	// int nbPages = (int) (total / elementsPerPage);
-	// int endPage = currentPage + 4;
-	//
-	// if (elementsPerPage > total) {
-	// currentPage = 1;
-	// startPage = 1;
-	// endPage = 1;
-	//
-	// } else {
-	//
-	// if (startPage < 1) {
-	// endPage += Math.abs(startPage) + 1;
-	// startPage = 1;
-	// }
-	//
-	// if (total % elementsPerPage > 0) {
-	// nbPages++;
-	// }
-	//
-	// if (currentPage > nbPages) {
-	// currentPage = nbPages;
-	// endPage = nbPages;
-	//
-	// } else if (endPage > nbPages) {
-	// endPage = nbPages;
-	// }
-	// }
-	//
-	// return Pagination.builder()
-	// .currentPage(currentPage)
-	// .elementsPerPage(elementsPerPage)
-	// .endPage(endPage)
-	// .nbPages(nbPages)
-	// .startPage(startPage)
-	// .build();
-	// }
-
 	/**
 	 * Populate a page into the dashboard
 	 * 
@@ -160,27 +95,5 @@ public class DashboardController {
 		logger.debug("Bouh");
 		return "error";
 	}
-
-	/**
-	 * Service request to obtain computerList
-	 * 
-	 * @param search
-	 * @param orderByColumn
-	 * @param currentPage
-	 * @param elementsPerPage
-	 * @param orderDirection
-	 * @return
-	 */
-	// private Page<Computer> computerList(
-	// String search,
-	// String orderByColumn,
-	// Integer currentPage,
-	// Integer elementsPerPage,
-	// String sortDirection) {
-	//
-	// return computerService.find(search,
-	// (currentPage - 1) * elementsPerPage, elementsPerPage,
-	// orderByColumn, sortDirection);
-	// }
 
 }

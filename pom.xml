@@ -4,11 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.excilys.computerdatabase</groupId>
 	<artifactId>computer-database</artifactId>
-	<version>1</version>
+	<version>3.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
-		<jdkVersion>1.7</jdkVersion>
+	
+		<computerDatabaseVersion>3.4.0-SNAPSHOT</computerDatabaseVersion>
 
 		<springVersion>4.0.4.RELEASE</springVersion>
 		<spring-data-jpaVersion>1.5.2.RELEASE</spring-data-jpaVersion>
@@ -16,21 +17,25 @@
 		<hibernateVersion>4.3.5.Final</hibernateVersion>
 		<hibernate-validatorVersion>5.1.0.Final</hibernate-validatorVersion>
 
-		<logback-classicVersion>1.0.13</logback-classicVersion>
-
 		<bonecpVersion>0.8.0.RELEASE</bonecpVersion>
 		<guavaVersion>16.0.1</guavaVersion>
 		<mysqlVersion>5.1.30</mysqlVersion>
 
 		<javax.servlet-apiVersion>3.0.1</javax.servlet-apiVersion>
-		<junitVersion>4.11</junitVersion>
-		<jstlVersion>1.2</jstlVersion>
+
 		<lombokVersion>1.12.6</lombokVersion>
+
+		<jstlVersion>1.2</jstlVersion>
+
 		<joda-timeVersion>2.3</joda-timeVersion>
+		<joda-time-jsptagsVersion>1.1.1</joda-time-jsptagsVersion>
 
-		<querydslVersion>3.3.3</querydslVersion>
+		<logback-classicVersion>1.0.13</logback-classicVersion>
+		<junitVersion>4.11</junitVersion>
 
+		<jdkVersion>1.7</jdkVersion>
 		<mavenVersion>2.5.1</mavenVersion>
+
 	</properties>
 
 	<modules>
@@ -41,37 +46,45 @@
 		<module>webapp</module>
 	</modules>
 
+	<repositories>
+		<repository>
+			<id>excilys</id>
+			<name>Excilys Repository</name>
+			<url>http://repository.excilys.com/content/groups/public</url>
+		</repository>
+	</repositories>
+
 	<dependencyManagement>
 		<dependencies>
 
 			<dependency>
 				<groupId>com.excilys.computerdatabase</groupId>
 				<artifactId>core</artifactId>
-				<version>1</version>
+				<version>${computerDatabaseVersion}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.excilys.computerdatabase</groupId>
 				<artifactId>persistence</artifactId>
-				<version>1</version>
+				<version>${computerDatabaseVersion}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.excilys.computerdatabase</groupId>
 				<artifactId>service</artifactId>
-				<version>1</version>
+				<version>${computerDatabaseVersion}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.excilys.computerdatabase</groupId>
 				<artifactId>binding</artifactId>
-				<version>1</version>
+				<version>${computerDatabaseVersion}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.excilys.computerdatabase</groupId>
 				<artifactId>webapp</artifactId>
-				<version>1</version>
+				<version>${computerDatabaseVersion}</version>
 			</dependency>
 
 			<dependency>
@@ -91,13 +104,14 @@
 				<artifactId>mysql-connector-java</artifactId>
 				<version>${mysqlVersion}</version>
 			</dependency>
-
+			<!-- Javax -->
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>javax.servlet-api</artifactId>
 				<version>${javax.servlet-apiVersion}</version>
 			</dependency>
 
+			<!-- Javax -->
 			<dependency>
 				<groupId>jstl</groupId>
 				<artifactId>jstl</artifactId>
@@ -110,27 +124,13 @@
 				<version>${hibernate-validatorVersion}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-core</artifactId>
-				<version>${hibernateVersion}</version>
-			</dependency>
-
-
-			<!-- TODO Test if i really need it ? -->
-			<dependency>
-				<groupId>org.jboss.logging</groupId>
-				<artifactId>jboss-logging</artifactId>
-				<version>3.1.0.CR1</version>
-			</dependency>
-
 			<!-- Spring -->
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
 				<version>${springVersion}</version>
 			</dependency>
-
+	
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
@@ -144,23 +144,11 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-jdbc</artifactId>
-				<version>${springVersion}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-orm</artifactId>
-				<version>${springVersion}</version>
-			</dependency>
-
-			<dependency>
 				<groupId>org.springframework.data</groupId>
 				<artifactId>spring-data-jpa</artifactId>
 				<version>${spring-data-jpaVersion}</version>
 			</dependency>
-
+			<!-- Spring -->
 
 			<dependency>
 				<groupId>org.jadira.usertype</groupId>
@@ -169,16 +157,11 @@
 			</dependency>
 
 			<dependency>
-				<groupId>com.mysema.querydsl</groupId>
-				<artifactId>querydsl-apt</artifactId>
-				<version>${querydslVersion}</version>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time-jsptags</artifactId>
+				<version>${joda-time-jsptagsVersion}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>com.mysema.querydsl</groupId>
-				<artifactId>querydsl-jpa</artifactId>
-				<version>${querydslVersion}</version>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -194,6 +177,7 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>${logback-classicVersion}</version>
+			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
@@ -219,11 +203,11 @@
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>99.0-does-not-exist</version>
+			<scope>runtime</scope>
 		</dependency>
 
-
-
 	</dependencies>
+
 	<build>
 		<finalName>computer-database</finalName>
 		<plugins>
@@ -237,33 +221,8 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>com.mysema.maven</groupId>
-					<artifactId>apt-maven-plugin</artifactId>
-					<version>1.1.1</version>
-					<executions>
-						<execution>
-							<goals>
-								<goal>process</goal>
-							</goals>
-							<configuration>
-								<outputDirectory>target/generated-sources/java</outputDirectory>
-								<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+
 
 	</build>
-	<repositories>
-		<repository>
-			<id>excilys</id>
-			<name>Excilys Repository</name>
-			<url>http://repository.excilys.com/content/repositories</url>
-		</repository>
-	</repositories>
+
 </project>

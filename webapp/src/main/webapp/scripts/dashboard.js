@@ -1,6 +1,5 @@
 $(document).ready(function() {
 
-	  
 	//Filling with correponding line data when user click on edit button
 	$(".edit").click(function() {
 		var values = $($(this).parent()).prevAll();
@@ -15,7 +14,6 @@ $(document).ready(function() {
 		$("#computerForm").validate().resetForm();
 	});
 	
-
 	//Modal management
 	if( $("#editModal").attr("modalShow") == "true") {
 		$("#editModal").modal('toggle');
@@ -26,11 +24,21 @@ $(document).ready(function() {
 	jQuery.validator.addMethod(
 			"greaterThan", function(value,element,params) {
 				if(value!="")
-					return (value >= params);
+					return (Date.parse(value) >= Date.parse(params));
 				else
 					return true;
-			}, strings['error.33']);	
-
+			}, labels['error.33']);	
+	
+	//Regex method
+	$.validator.addMethod(
+	        "regex",
+	        function(value, element, regexp) {
+	            var re = new RegExp(regexp);
+	            return this.optional(element) || re.test(value);
+	        },
+	        "Format is not correct"
+	);
+	
 	$("#computerForm").validate({
 		errorContainer: "#formAlert",
 		errorPlacement: function(error, element) {
@@ -46,17 +54,21 @@ $(document).ready(function() {
 
 		rules: {
 			name: {required:true, maxlength:255},
-			introducedDate:{required:"#discontinuedDate:filled"	},
-			discontinuedDate:{greaterThan:$("#introducedDate").val()},
+			introduced:{required:"#discontinued:filled", regex:labels['js.format.date']},
+			discontinued:{greaterThan:$("#introduced").val(), regex:labels['js.format.date']},
 			company:{}
 		},
 		messages:{
 			name: {
-				required:strings['error.10'],
-				maxlength:strings['error.11']
+				required:labels['error.10'],
+				maxlength:labels['error.11']
 			},
-			introducedDate: {
-				required:strings['error.20'],
+			introduced: {
+				required:labels['error.20'],
+				regex:labels['error.21']
+			},
+			discontinued: {
+				regex:labels['error.31'],
 			}
 		},
 	});

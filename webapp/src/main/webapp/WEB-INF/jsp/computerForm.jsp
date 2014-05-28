@@ -26,13 +26,13 @@
 			<div id="introducedDateDiv" class="clearfix">
 				<label for="introduced"><spring:message code="label.IntroducedDate" /></label>
 				<div class="input">
-					<input id="introduced" value="${validationErrorPage.dto.getIntroduced()}" class="form-control" type="date" name="introduced" placeholder="YYYY-MM-DD" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])"/>
+					<input id="introduced" value="${validationErrorPage.dto.getIntroduced()}" class="form-control" type="text" name="introduced" placeholder="<spring:message code='label.dateFormat' />" />
 				</div>
 			</div>
 			<div id="discontinuedDateDiv" class="clearfix">
 				<label for="discontinued"><spring:message code="label.DiscontinuedDate" />:</label>
 				<div class="input">
-					<input id="discontinued" value="${validationErrorPage.dto.getDiscontinued()}" class="form-control" type="date" name="discontinued" placeholder="YYYY-MM-DD" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])"/>
+					<input id="discontinued" value="${validationErrorPage.dto.getDiscontinued()}" class="form-control" type="text" name="discontinued" placeholder="<spring:message code='label.dateFormat' />" />
 				</div>
 			</div>
 			<div class="form-group">

@@ -12,15 +12,12 @@
            http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 	<import resource="classpath:persistenceContext.xml" />
+	
 	<context:component-scan base-package="com.excilys.computerdatabase.service" />
 	<bean id="transactionManager"
-		class="org.springframework.orm.jpa.JpaTransactionManager"
-		>
+		class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory"/>
 	</bean>
-
-
 	
-<!-- <bean class="org.springframework.data.web.config.SpringDataWebConfiguration" /> -->
 	<tx:annotation-driven transaction-manager="transactionManager" />
 </beans>

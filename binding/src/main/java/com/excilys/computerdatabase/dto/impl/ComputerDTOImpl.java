@@ -1,13 +1,13 @@
 package com.excilys.computerdatabase.dto.impl;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.excilys.computerdatabase.dto.CompanyDTO;
 import com.excilys.computerdatabase.dto.ComputerDTO;
+import com.excilys.computerdatabase.validator.DateFormat;
 
 public class ComputerDTOImpl implements ComputerDTO {
 	// Builder
@@ -98,20 +98,20 @@ public class ComputerDTOImpl implements ComputerDTO {
 		return "ComputerDTO [id=" + id + ", companydto=" + companyDto
 				+ ", name=" + name + ", introduced=" + introduced
 				+ ", discontinued=" + discontinued + "]";
+
 	}
 
 	@NotNull(message = "error.00")
 	private String id;
-	// @Valid
 	private CompanyDTO companyDto;
 
 	@NotBlank(message = "error.10")
 	@Length(min = 1, max = 255, message = "error.11")
 	private String name;
 
-	@Pattern(regexp = "(\\d{4})-(([0][0-9])|([1][0-2]))-(([0-2][0-9])|(3[0-1]))|^$", message = "error.21")
+	@DateFormat(message = "error.21")
 	private String introduced;
-	@Pattern(regexp = "(\\d{4})-(([0][0-9])|([1][0-2]))-(([0-2][0-9])|(3[0-1]))|^$", message = "error.31")
+	@DateFormat(message = "error.31")
 	private String discontinued;
 
 }

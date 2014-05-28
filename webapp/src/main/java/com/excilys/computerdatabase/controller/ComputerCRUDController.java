@@ -19,10 +19,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.excilys.computerdatabase.domain.Computer;
 import com.excilys.computerdatabase.dto.ComputerDTO;
 import com.excilys.computerdatabase.dto.impl.CompanyDTOImpl;
 import com.excilys.computerdatabase.dto.impl.ComputerDTOImpl;
-import com.excilys.computerdatabase.mapper.impl.ComputerMapperImpl;
+import com.excilys.computerdatabase.mapper.Mapper;
 import com.excilys.computerdatabase.page.ValidationErrorPage;
 import com.excilys.computerdatabase.service.CompanyService;
 import com.excilys.computerdatabase.service.ComputerService;
@@ -39,6 +40,13 @@ public class ComputerCRUDController {
 	private CompanyService companyService;
 	@Autowired
 	ComputerService computerService;
+
+	@Autowired
+	Mapper<ComputerDTO, Computer> computerMapper;
+
+	public void setComputerMapper(Mapper<ComputerDTO, Computer> computerMapper) {
+		this.computerMapper = computerMapper;
+	}
 
 	@ModelAttribute
 	private ComputerDTO computerDto() {
@@ -68,7 +76,7 @@ public class ComputerCRUDController {
 				"discontinued"));
 
 		if (constraintViolations.isEmpty()) {
-			ComputerMapperImpl computerMapper = new ComputerMapperImpl();
+
 			computerService.create(computerMapper.map(computerDto));
 		} else { // Error handling
 			logger.warn("Error happened on create");
@@ -100,7 +108,6 @@ public class ComputerCRUDController {
 			logger.warn("Update is valid, calling service");
 
 			// Mapping
-			ComputerMapperImpl computerMapper = new ComputerMapperImpl();
 			computerService.update(computerMapper.map(computerDto));
 
 		} else {
@@ -130,7 +137,6 @@ public class ComputerCRUDController {
 			logger.info("Delete is valid, calling service");
 
 			// Mapping
-			ComputerMapperImpl computerMapper = new ComputerMapperImpl();
 			computerService.delete(computerMapper.map(computerDto));
 
 		} else {

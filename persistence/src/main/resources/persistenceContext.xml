@@ -10,7 +10,6 @@
            http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
 	<context:component-scan base-package="com.excilys.computerdatabase.connection" />
-	
 	<jpa:repositories base-package="com.excilys.computerdatabase.dao.repository" />
 	
 	<!-- BoneCP configuration -->
@@ -34,7 +33,7 @@
 
 	<bean id="hibernateJpaAdapter"
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-		<property name="showSql" value="true" />
+		<property name="showSql" value="false" />
 		<property name="database" value="MYSQL"/>
 	</bean>
 

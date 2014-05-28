@@ -5,24 +5,28 @@
 	<parent>
 		<groupId>com.excilys.computerdatabase</groupId>
 		<artifactId>computer-database</artifactId>
-		<version>1</version>
+		<version>3.4.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>binding</artifactId>
 	<name>binding</name>
-    <packaging>jar</packaging>
-    
+	<packaging>jar</packaging>
+
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>com.excilys.computerdatabase</groupId>
 			<artifactId>core</artifactId>
 		</dependency>
-		
+
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<scope>provided</scope>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
 		</dependency>
 
 	</dependencies>

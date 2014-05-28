@@ -11,12 +11,14 @@
 <title><spring:message code="label.title" /></title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script type="text/javascript">
-  var strings = new Array();
-  strings['error.10'] = "<spring:message code='error.10' javaScriptEscape='true' />";
-  strings['error.11'] = "<spring:message code='error.11' javaScriptEscape='true' />";
-  strings['error.20'] = "<spring:message code='error.20' javaScriptEscape='true' />";
-  strings['error.33'] = "<spring:message code='error.33' javaScriptEscape='true' />";
-  
+  var labels = new Array();
+  labels['error.10'] = "<spring:message code='error.10' javaScriptEscape='true' />";
+  labels['error.11'] = "<spring:message code='error.11' javaScriptEscape='true' />";
+  labels['error.20'] = "<spring:message code='error.20' javaScriptEscape='true' />";
+  labels['error.21'] = "<spring:message code='error.21' javaScriptEscape='true' />";
+  labels['error.31'] = "<spring:message code='error.31' javaScriptEscape='true' />";
+  labels['error.33'] = "<spring:message code='error.33' javaScriptEscape='true' />";
+  labels['js.format.date'] = "<spring:message code='js.format.date' javaScriptEscape='true'/>";
 </script>
 </head>
 <body style="padding-bottom: 70px;" class="">
@@ -31,8 +33,8 @@
 					data-toggle="dropdown">Language <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						
-							<li><a href="<KD:dashboardLink lang="en"/>"> English </a></li>
-						<li><a href="<KD:dashboardLink lang="fr"/>">Français</a></li>
+							<li><a href="<KD:dashboardLink lang="en_EN"/>"> English </a></li>
+						<li><a href="<KD:dashboardLink lang="fr_FR"/>">Français</a></li>
 					</ul></li>
 		</div>
 	</nav>

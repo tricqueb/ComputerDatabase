@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.excilys.computerdatabase</groupId>
 		<artifactId>computer-database</artifactId>
-		<version>1</version>
+		<version>3.4.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>service</artifactId>
 	<name>service</name>
@@ -18,13 +18,7 @@
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
 		</dependency>
-		
-
 	</dependencies>
 </project>

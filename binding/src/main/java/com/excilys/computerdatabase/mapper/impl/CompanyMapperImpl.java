@@ -3,11 +3,17 @@ package com.excilys.computerdatabase.mapper.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.excilys.computerdatabase.domain.Company;
 import com.excilys.computerdatabase.dto.CompanyDTO;
 import com.excilys.computerdatabase.dto.impl.CompanyDTOImpl;
 import com.excilys.computerdatabase.mapper.Mapper;
 
+@Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class CompanyMapperImpl implements Mapper<CompanyDTO, Company> {
 
 	@Override

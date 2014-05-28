@@ -6,7 +6,6 @@
 <%@ taglib tagdir="/WEB-INF/tags/42" prefix="KD"%>
 
 <div class=container>
-
 	<h1 id="homeTitle" class="page-header">${page.getTotalElements()} <spring:message code="label.h1" /></h1>
 
 	<jsp:include page="/WEB-INF/jsp/editComputerModal.jsp" />
