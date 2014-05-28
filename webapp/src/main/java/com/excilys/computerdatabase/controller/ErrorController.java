@@ -32,6 +32,16 @@ public class ErrorController {
 		return modelView;
 	}
 
+	@RequestMapping("/error/401")
+	public ModelAndView handle401() {
+		ModelAndView modelView = new ModelAndView("error");
+
+		modelView.addObject("errorCode", 401);
+		modelView.addObject("message", "You have no right to do this ! ");
+
+		return modelView;
+	}
+
 	@RequestMapping("/error/403")
 	public ModelAndView handle403() {
 		ModelAndView modelView = new ModelAndView("error");

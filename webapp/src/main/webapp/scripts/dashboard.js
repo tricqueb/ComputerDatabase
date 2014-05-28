@@ -33,8 +33,8 @@ $(document).ready(function() {
 	$.validator.addMethod(
 	        "regex",
 	        function(value, element, regexp) {
-	            var re = new RegExp(regexp);
-	            return this.optional(element) || re.test(value);
+	            var regex = new RegExp(regexp);
+	            return this.optional(element) || regex.test(value);
 	        },
 	        "Format is not correct"
 	);

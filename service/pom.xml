@@ -16,6 +16,7 @@
 			<artifactId>persistence</artifactId>
 		</dependency>
 		<!-- Spring -->
+		
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>

@@ -1,33 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-3.0.xsd       
-           http://www.springframework.org/schema/tx
-           http://www.springframework.org/schema/tx/spring-tx.xsd
-           http://www.springframework.org/schema/aop
-           http://www.springframework.org/schema/aop/spring-aop.xsd">
+           http://www.springframework.org/schema/security
+          http://www.springframework.org/schema/security/spring-security.xsd">
 
 	<import resource="classpath:serviceContext.xml" />
 	<import resource="classpath:bindingContext.xml" />
-	
+
 	<context:annotation-config />
-	
+
+	<!-- Resolve sort parameters in request -->
 	<bean id="sortResolver"
 		class="org.springframework.data.web.SortHandlerMethodArgumentResolver" />
 
-<bean id="localeResolver"
+	<!-- Resolve the session cookie containing locale value for internationalization -->
+	<bean id="localeResolver"
 		class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
 		<property name="defaultLocale" value="fr_FR" />
 	</bean>
 
-	
-	
+	<!-- Security Digest authentification with a stateless session -->
+	<bean id="digestFilter"
+		class="org.springframework.security.web.authentication.www.DigestAuthenticationFilter">
+		<property name="userDetailsService" ref="userDetailsService" />
+		<property name="authenticationEntryPoint" ref="digestEntryPoint" />
+	</bean>
 
+	<bean id="digestEntryPoint"
+		class="org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint">
+		<property name="realmName" value="Contacts Realm via Digest Authentication" />
+		<property name="key" value="acegi" />
+		<property name="nonceValiditySeconds" value="10" />
+	</bean>
 
-	
-	
+	<security:http create-session="stateless"
+		entry-point-ref="digestEntryPoint">
+		<security:intercept-url pattern="/Computer/*"
+			access="ROLE_ADMIN" />
+		<security:custom-filter ref="digestFilter"
+			after="BASIC_AUTH_FILTER" />
+	</security:http>
+
+	<security:authentication-manager>
+		<security:authentication-provider
+			user-service-ref="userDetailsService" />
+	</security:authentication-manager>
+
 </beans>
+

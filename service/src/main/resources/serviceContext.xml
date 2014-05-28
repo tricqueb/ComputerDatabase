@@ -12,12 +12,17 @@
            http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 	<import resource="classpath:persistenceContext.xml" />
-	
+
 	<context:component-scan base-package="com.excilys.computerdatabase.service" />
-	<bean id="transactionManager"
-		class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
-	
+
+	<!-- Spring security access to database -->
+	<bean id="userDetailsService"
+		class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">
+		<property name="dataSource" ref="DataSource" />
+	</bean>
+
 	<tx:annotation-driven transaction-manager="transactionManager" />
 </beans>
