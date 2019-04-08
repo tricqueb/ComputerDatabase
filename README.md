@@ -1,4 +1,4 @@
-training-computer-database-template
+raining-computer-database-template
 ============================
 
 1 - Create a new eclipse dynamic web project named "computer-database" and paste the files in it
